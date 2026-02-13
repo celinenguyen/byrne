@@ -135,10 +135,9 @@
   // Slide clipboard for Cmd+C / Cmd+V
   let copiedSlideIndex: number | null = null;
 
-  function isFormElement(el: EventTarget | null): boolean {
+  function isInsideDetailsPanel(el: EventTarget | null): boolean {
     if (!el || !(el instanceof HTMLElement)) return false;
-    const tag = el.tagName;
-    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+    return !!el.closest('[data-details-panel]');
   }
 
   function onKeyDown(e: KeyboardEvent) {
@@ -146,7 +145,7 @@
 
     // In edit: arrow keys navigate slides unless in a form field
     if (mode === 'edit') {
-      if (isFormElement(e.target)) return;
+      if (isInsideDetailsPanel(e.target)) return;
 
       // Cmd+C: copy current slide
       if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
@@ -232,7 +231,7 @@
           class="w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/30 shrink-0"
           onmousedown={() => startResize('right')}
         ></div>
-        <div class="h-full overflow-y-auto border-l border-border" style="width: {rightWidth}%">
+        <div class="h-full overflow-y-auto border-l border-border" style="width: {rightWidth}%" data-details-panel>
           <div class="flex items-center justify-between px-3 py-2 border-b border-border">
             <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Edit slide</span>
             <button
