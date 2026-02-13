@@ -8,8 +8,8 @@
   }
   let { data }: Props = $props();
 
-  let quote = $derived(data.text?.['quote'] || '');
-  let attribution = $derived(data.text?.['attribution'] || '');
+  let quote = $derived(data.text?.[0] || '');
+  let attribution = $derived(data.text?.[1] || '');
 </script>
 
 <BaseLayout>

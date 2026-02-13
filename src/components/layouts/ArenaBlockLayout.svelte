@@ -8,9 +8,9 @@
   }
   let { data }: Props = $props();
 
-  let image = $derived(data.images?.['blockImage'] || '');
-  let title = $derived(data.text?.['title'] || '');
-  let channel = $derived(data.text?.['channel'] || '');
+  let image = $derived(data.images?.[0] || '');
+  let title = $derived(data.text?.[0] || '');
+  let channel = $derived(data.text?.[1] || '');
 </script>
 
 <BaseLayout>

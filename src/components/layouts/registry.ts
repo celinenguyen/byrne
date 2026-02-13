@@ -4,7 +4,7 @@ import TitleLayout from './TitleLayout.svelte';
 import ImageLayout from './ImageLayout.svelte';
 import TextLayout from './TextLayout.svelte';
 import Image2UpLayout from './Image2UpLayout.svelte';
-import Image3UpLayout from './Image3UpLayout.svelte';
+
 import TweetLayout from './TweetLayout.svelte';
 import SubstackLayout from './SubstackLayout.svelte';
 import QuoteLayout from './QuoteLayout.svelte';
@@ -15,7 +15,7 @@ import titleSettings from './TitleLayout.settings.json';
 import imageSettings from './ImageLayout.settings.json';
 import textSettings from './TextLayout.settings.json';
 import image2UpSettings from './Image2UpLayout.settings.json';
-import image3UpSettings from './Image3UpLayout.settings.json';
+
 import tweetSettings from './TweetLayout.settings.json';
 import substackSettings from './SubstackLayout.settings.json';
 import quoteSettings from './QuoteLayout.settings.json';
@@ -58,13 +58,6 @@ export const layouts: Record<string, LayoutDefinition> = {
     description: 'Two images side by side',
     component: Image2UpLayout as unknown as Component,
     schema: image2UpSettings,
-  },
-  Image3Up: {
-    id: 'Image3Up',
-    displayName: '3-Up Image',
-    description: 'Three images in a row',
-    component: Image3UpLayout as unknown as Component,
-    schema: image3UpSettings,
   },
   Tweet: {
     id: 'Tweet',
@@ -115,6 +108,8 @@ export function formatSlotSummary(schema: LayoutSettings): string {
     ? Object.values(schema.text).filter((s) => s.type === 'required').length
     : 0;
 
+  const urlCount = schema.url ? Object.keys(schema.url).length : 0;
+
   const imgStr = imgCount === 0
     ? '0 images'
     : imgReq === imgCount
@@ -125,12 +120,6 @@ export function formatSlotSummary(schema: LayoutSettings): string {
     : txtReq === txtCount
       ? `${txtCount} text`
       : `${txtReq}–${txtCount} text`;
-  return `${imgStr}, ${txtStr}`;
-}
-
-/** Get the first text slot key for a layout (for preview in slide list) */
-export function getFirstTextKey(layoutId: string): string | undefined {
-  const def = layouts[layoutId];
-  if (!def?.schema.text) return undefined;
-  return Object.keys(def.schema.text)[0];
+  const urlStr = urlCount > 0 ? ', 1 url' : '';
+  return `${imgStr}, ${txtStr}${urlStr}`;
 }

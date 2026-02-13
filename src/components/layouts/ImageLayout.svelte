@@ -8,8 +8,8 @@
   }
   let { data }: Props = $props();
 
-  let imageSrc = $derived(data.images?.['image'] || '');
-  let caption = $derived(data.text?.['caption'] || '');
+  let imageSrc = $derived(data.images?.[0] || '');
+  let caption = $derived(data.text?.[0] || '');
   let captionHtml = $derived(marked.parse(caption, { async: false }) as string);
 </script>
 

@@ -8,8 +8,8 @@
   }
   let { data }: Props = $props();
 
-  let title = $derived(data.text?.['title'] || '');
-  let subtitle = $derived(data.text?.['subtitle'] || '');
+  let title = $derived(data.text?.[0] || '');
+  let subtitle = $derived(data.text?.[1] || '');
 </script>
 
 <BaseLayout>

@@ -8,7 +8,7 @@
   }
   let { data }: Props = $props();
 
-  let body = $derived(data.text?.['body'] || '');
+  let body = $derived(data.text?.[0] || '');
   let bodyHtml = $derived(marked.parse(body, { async: false }) as string);
 </script>
 

@@ -73,7 +73,7 @@ export function addSlide(layout: string = 'Title') {
       id: nanoid(),
       order: d.slides.length,
       layout,
-      data: { images: {}, text: {} },
+      data: { images: [], text: [], url: '' },
       notes: '',
     };
     d.slides = [...d.slides, newSlide];

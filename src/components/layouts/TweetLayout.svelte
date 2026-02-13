@@ -7,9 +7,9 @@
   }
   let { data }: Props = $props();
 
-  let screenshot = $derived(data.images?.['screenshot'] || '');
-  let attribution = $derived(data.text?.['attribution'] || '');
-  let commentary = $derived(data.text?.['commentary'] || '');
+  let screenshot = $derived(data.images?.[0] || '');
+  let attribution = $derived(data.text?.[0] || '');
+  let commentary = $derived(data.text?.[1] || '');
 </script>
 
 <BaseLayout>

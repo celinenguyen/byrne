@@ -9,9 +9,9 @@
   }
   let { data }: Props = $props();
 
-  let thumbnail = $derived(data.images?.['thumbnail'] || '');
-  let title = $derived(data.text?.['title'] || '');
-  let excerpt = $derived(data.text?.['excerpt'] || '');
+  let thumbnail = $derived(data.images?.[0] || '');
+  let title = $derived(data.text?.[0] || '');
+  let excerpt = $derived(data.text?.[1] || '');
   let excerptHtml = $derived(marked.parse(excerpt, { async: false }) as string);
 </script>
 

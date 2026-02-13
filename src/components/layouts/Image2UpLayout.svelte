@@ -8,10 +8,10 @@
   }
   let { data }: Props = $props();
 
-  let imgLeft = $derived(data.images?.['left'] || '');
-  let imgRight = $derived(data.images?.['right'] || '');
-  let capLeft = $derived(data.text?.['leftCaption'] || '');
-  let capRight = $derived(data.text?.['rightCaption'] || '');
+  let imgLeft = $derived(data.images?.[0] || '');
+  let imgRight = $derived(data.images?.[1] || '');
+  let capLeft = $derived(data.text?.[0] || '');
+  let capRight = $derived(data.text?.[1] || '');
   let capLeftHtml = $derived(marked.parse(capLeft, { async: false }) as string);
   let capRightHtml = $derived(marked.parse(capRight, { async: false }) as string);
 </script>

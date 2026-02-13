@@ -2,7 +2,6 @@
   import type { Slide, SlideData } from '../lib/types';
   import { updateSlide } from '../lib/store';
   import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
-  import { marked } from 'marked';
   import AddImagePopover from './AddImagePopover.svelte';
 
   interface Props {
@@ -20,23 +19,23 @@
   // Derived slot metadata for images
   let imageSlots = $derived.by(() => {
     const schema = layoutDef?.schema.images;
-    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
+    const used: { index: number; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
     if (schema) {
-      for (const [key, def] of Object.entries(schema)) {
+      Object.values(schema).forEach((def, index) => {
         used.push({
-          key,
+          index,
           isUsed: true,
           displayName: def.displayName,
           type: def.type,
-          hasContent: !!slide.data.images?.[key],
+          hasContent: !!slide.data.images?.[index],
         });
-      }
+      });
     }
-    // Pad to 3 with "not used" entries
-    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 3; i++) {
+    // Pad to 2 with "not used" entries
+    const notUsed: { index: number; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
+    for (let i = used.length; i < 2; i++) {
       notUsed.push({
-        key: `_unused_img_${i}`,
+        index: i,
         isUsed: false,
         displayName: 'not used',
         type: 'optional',
@@ -49,23 +48,23 @@
   // Derived slot metadata for text
   let textSlots = $derived.by(() => {
     const schema = layoutDef?.schema.text;
-    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
+    const used: { index: number; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
     if (schema) {
-      for (const [key, def] of Object.entries(schema)) {
+      Object.values(schema).forEach((def, index) => {
         used.push({
-          key,
+          index,
           isUsed: true,
           displayName: def.displayName,
           type: def.type,
-          hasContent: !!slide.data.text?.[key],
+          hasContent: !!slide.data.text?.[index],
         });
-      }
+      });
     }
-    // Pad to 3 with "not used" entries
-    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 3; i++) {
+    // Pad to 2 with "not used" entries
+    const notUsed: { index: number; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
+    for (let i = used.length; i < 2; i++) {
       notUsed.push({
-        key: `_unused_txt_${i}`,
+        index: i,
         isUsed: false,
         displayName: 'not used',
         type: 'optional',
@@ -75,32 +74,83 @@
     return [...used, ...notUsed];
   });
 
-  function updateImage(key: string, value: string) {
-    const newData: SlideData = {
-      ...slide.data,
-      images: { ...slide.data.images, [key]: value },
-    };
-    updateSlide(slide.id, { data: newData });
+  function updateImage(index: number, value: string) {
+    const images = [...slide.data.images];
+    images[index] = value;
+    updateSlide(slide.id, { data: { ...slide.data, images } });
   }
 
-  function updateText(key: string, value: string) {
-    const newData: SlideData = {
-      ...slide.data,
-      text: { ...slide.data.text, [key]: value },
-    };
-    updateSlide(slide.id, { data: newData });
+  function updateText(index: number, value: string) {
+    const text = [...slide.data.text];
+    text[index] = value;
+    updateSlide(slide.id, { data: { ...slide.data, text } });
   }
 
   function updateNotes(value: string) {
     updateSlide(slide.id, { notes: value });
   }
 
+  function updateUrl(value: string) {
+    const newData: SlideData = {
+      ...slide.data,
+      url: value,
+    };
+    updateSlide(slide.id, { data: newData });
+  }
+
   function changeLayout(layoutId: string) {
     updateSlide(slide.id, { layout: layoutId });
   }
 
-  // Preview markdown text
-  let previewKey = $state<string | null>(null);
+  // Whether the current layout has a URL slot
+  let hasUrlSlot = $derived(!!layoutDef?.schema.url);
+
+  // URL fetch state
+  let fetching = $state(false);
+  let fetchError = $state<string | null>(null);
+
+  async function handleFetch() {
+    const url = slide.data.url;
+    if (!url) return;
+    fetching = true;
+    fetchError = null;
+    try {
+      let endpoint: string;
+      if (slide.layout === 'ArenaBlock') {
+        endpoint = '/api/fetch-arena';
+      } else if (slide.layout === 'Article') {
+        endpoint = '/api/fetch-meta';
+      } else {
+        fetchError = 'Fetch not supported for this layout';
+        fetching = false;
+        return;
+      }
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        fetchError = result.error || 'Fetch failed';
+        fetching = false;
+        return;
+      }
+      // Auto-populate slots based on layout
+      if (slide.layout === 'ArenaBlock') {
+        if (result.image) updateImage(0, result.image);
+        if (result.title) updateText(0, result.title);
+        if (result.channel) updateText(1, result.channel);
+      } else if (slide.layout === 'Article') {
+        if (result.image) updateImage(0, result.image);
+        if (result.title) updateText(0, result.title);
+      }
+    } catch (err) {
+      fetchError = String(err);
+    } finally {
+      fetching = false;
+    }
+  }
 </script>
 
 <div class="p-3 space-y-3 text-sm">
@@ -126,11 +176,11 @@
               <!-- Thumbnail area -->
               {#if slot.isUsed}
                 {#if slot.hasContent}
-                  <AddImagePopover slotKey={slot.key} onimage={updateImage}>
+                  <AddImagePopover slotIndex={slot.index} onimage={updateImage}>
                     {#snippet trigger()}
                       <div class="flex-shrink-0 w-[60px] h-[45px] rounded overflow-hidden bg-muted/30 cursor-pointer border border-border hover:border-primary/50 transition-colors" title="Replace image">
                         <img
-                          src={slide.data.images[slot.key]}
+                          src={slide.data.images[slot.index]}
                           alt=""
                           class="w-full h-full object-cover"
                         />
@@ -138,7 +188,7 @@
                     {/snippet}
                   </AddImagePopover>
                 {:else}
-                  <AddImagePopover slotKey={slot.key} onimage={updateImage} />
+                  <AddImagePopover slotIndex={slot.index} onimage={updateImage} />
                 {/if}
               {:else}
                 <div class="flex-shrink-0 w-[60px] h-[45px] rounded bg-muted/20 border border-dashed border-border/50"></div>
@@ -156,6 +206,35 @@
             </div>
           {/each}
         </div>
+
+        <!-- URL slot -->
+        {#if hasUrlSlot}
+          <div class="space-y-1.5">
+            <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">URL</div>
+            <div class="border-l-2 border-l-primary rounded-md px-1.5 py-1">
+              <div class="flex items-center gap-1.5">
+                <input
+                  type="text"
+                  class="flex-1 px-2 py-1.5 border border-border rounded-md text-xs bg-background font-mono"
+                  placeholder="https://..."
+                  value={slide.data.url || ''}
+                  oninput={(e) => updateUrl(e.currentTarget.value)}
+                />
+                <button
+                  class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer
+                    {fetching ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground hover:bg-primary/90'}"
+                  disabled={fetching || !slide.data.url}
+                  onclick={handleFetch}
+                >
+                  {fetching ? 'Fetching...' : 'Fetch'}
+                </button>
+              </div>
+              {#if fetchError}
+                <p class="text-[10px] text-red-500 mt-1">{fetchError}</p>
+              {/if}
+            </div>
+          </div>
+        {/if}
 
         <!-- Text slots -->
         <div class="space-y-2">
@@ -179,31 +258,17 @@
                     <span class="text-xs text-muted-foreground/60 italic">not used</span>
                   {/if}
                 </div>
-                {#if slot.isUsed}
-                  <button
-                    class="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
-                    onclick={() => { previewKey = previewKey === slot.key ? null : slot.key; }}
-                  >
-                    {previewKey === slot.key ? 'Edit' : 'Preview'}
-                  </button>
-                {/if}
               </div>
 
               <!-- Textarea -->
-              {#if slot.isUsed && previewKey === slot.key}
-                <div class="border border-border rounded-md p-2 prose prose-sm max-w-none min-h-[60px] bg-gray-50/50">
-                  {@html marked.parse(slide.data.text?.[slot.key] || '', { async: false })}
-                </div>
-              {:else}
-                <textarea
+              <textarea
                   class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px] font-mono
                     {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
                   placeholder={slot.isUsed ? 'Markdown supported...' : ''}
-                  value={slot.isUsed ? (slide.data.text?.[slot.key] || '') : ''}
+                  value={slot.isUsed ? (slide.data.text?.[slot.index] || '') : ''}
                   disabled={!slot.isUsed}
-                  oninput={(e) => updateText(slot.key, e.currentTarget.value)}
+                  oninput={(e) => updateText(slot.index, e.currentTarget.value)}
                 ></textarea>
-              {/if}
             </div>
           {/each}
         </div>

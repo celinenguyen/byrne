@@ -2,11 +2,11 @@
   import type { Snippet } from 'svelte';
 
   interface Props {
-    slotKey: string;
-    onimage: (key: string, url: string) => void;
+    slotIndex: number;
+    onimage: (index: number, url: string) => void;
     trigger?: Snippet;
   }
-  let { slotKey, onimage, trigger }: Props = $props();
+  let { slotIndex, onimage, trigger }: Props = $props();
 
   let open = $state(false);
   let urlValue = $state('');
@@ -27,7 +27,7 @@
   function submitUrl() {
     const trimmed = urlValue.trim();
     if (!trimmed) return;
-    onimage(slotKey, trimmed);
+    onimage(slotIndex, trimmed);
     open = false;
   }
 
@@ -42,7 +42,7 @@
     const res = await fetch('/api/upload', { method: 'POST', body: formData });
     if (res.ok) {
       const { path } = await res.json();
-      onimage(slotKey, path);
+      onimage(slotIndex, path);
       open = false;
     }
   }

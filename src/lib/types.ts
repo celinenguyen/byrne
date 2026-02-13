@@ -6,8 +6,9 @@ export interface DeckMeta {
 }
 
 export interface SlideData {
-  images: Record<string, string>;
-  text: Record<string, string>;
+  images: string[];
+  text: string[];
+  url?: string;
 }
 
 export interface Slide {
@@ -32,4 +33,5 @@ export interface SlotDefinition {
 export interface LayoutSettings {
   images?: Record<string, SlotDefinition>;
   text?: Record<string, SlotDefinition>;
+  url?: Record<string, SlotDefinition>;
 }
