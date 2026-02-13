@@ -20,6 +20,9 @@ export const deck = writable<Deck | null>(null);
 export const currentSlideIndex = writable<number>(initial.slide);
 export const viewMode = writable<'edit' | 'present'>(initial.view);
 export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
+export const activeSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
+export const detailsOpen = writable<boolean>(true);
+export const slideListOpen = writable<boolean>(true);
 export const pendingDelete = writable<{
   slide: Slide;
   index: number;

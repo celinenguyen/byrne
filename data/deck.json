@@ -1,27 +1,17 @@
 {
   "slides": [
     {
+      "id": "KzQqTyfDzlEAlOi2h-khX",
+      "order": 1,
+      "layout": "Image2Up",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    },
+    {
       "id": "mbI59KzK_uhDhloKFD9qT",
-      "order": 1,
-      "layout": "Title",
-      "data": {
-        "images": [],
-        "text": [],
-        "url": ""
-      }
-    },
-    {
-      "id": "5j0VWUwLhOkFSpagJDRr9",
-      "order": 1,
-      "layout": "Title",
-      "data": {
-        "images": [],
-        "text": [],
-        "url": ""
-      }
-    },
-    {
-      "id": "o49MtbyRffqB8v-B2ym_L",
       "order": 2,
       "layout": "Title",
       "data": {
@@ -31,7 +21,17 @@
       }
     },
     {
-      "id": "It-8Uy3H06MatGN37XrLg",
+      "id": "5j0VWUwLhOkFSpagJDRr9",
+      "order": 2,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    },
+    {
+      "id": "o49MtbyRffqB8v-B2ym_L",
       "order": 3,
       "layout": "Title",
       "data": {
@@ -41,12 +41,15 @@
       }
     },
     {
-      "id": "KzQqTyfDzlEAlOi2h-khX",
+      "id": "It-8Uy3H06MatGN37XrLg",
       "order": 4,
-      "layout": "Image2Up",
+      "layout": "Title",
       "data": {
         "images": [],
-        "text": [],
+        "text": [
+          "here I am typing the title",
+          "and subheading"
+        ],
         "url": ""
       }
     },

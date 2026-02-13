@@ -4,6 +4,7 @@
   import Icon from './ui/Icon.svelte';
   import SlideThumbnail from './SlideThumbnail.svelte';
   import SlideListDropSlot from './SlideListDropSlot.svelte';
+  import DeleteSlideButton from './DeleteSlideButton.svelte';
   import { ContextMenu } from 'bits-ui';
   import {
     slides,
@@ -145,12 +146,7 @@
               <!-- to delete the slide -->            
               <div class="relative">
                 <SlideThumbnail {slide} class="rounded-xs {i === idx ? 'shadow-md' : 'shadow-sm'}" />
-                <button
-                  class="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 p-[0.3rem] rounded-full bg-muted-foreground text-white hover:bg-foreground cursor-pointer transition-colors"
-                  onclick={(e) => { e.stopPropagation(); softDeleteSlide(slide.id); }}
-                >
-                  <Icon name="x" size={13} />
-                </button>
+                <DeleteSlideButton slideId={slide.id} />
               </div>
             </div>
           {/snippet}

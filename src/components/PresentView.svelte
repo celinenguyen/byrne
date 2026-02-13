@@ -14,7 +14,6 @@
 <div class="w-full h-full flex items-center justify-center bg-black px-2">
   {#if slide}
     <div
-      class="flex items-center justify-center"
       style="width: min(100%, calc((100vh - 20px) * 16 / 9)); height: min(100%, calc((100vw - 20px) * 9 / 16));"
     >
       <SlideView {slide} />

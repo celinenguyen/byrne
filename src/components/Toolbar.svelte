@@ -1,7 +1,6 @@
 <script lang="ts">
   import Button from './ui/Button.svelte';
   import Icon from './ui/Icon.svelte';
-  import * as Tabs from './ui/tabs/index';
   import {
     viewMode,
     currentSlideIndex,
@@ -9,6 +8,8 @@
     slides,
     navigateSlide,
     deck,
+    detailsOpen,
+    slideListOpen,
   } from '../lib/store';
 
   let mode = $derived($viewMode);
@@ -25,12 +26,27 @@
   }
 </script>
 
-<div class="flex justify-center px-4 py-2 border-b border-border bg-background shrink-0">
-  <!-- view mode tabs -->
-  <Tabs.Root value={mode} onValueChange={(v) => viewMode.set(v as 'edit' | 'present')}>
-    <Tabs.List>
-      <Tabs.Trigger value="edit">Edit</Tabs.Trigger>
-      <Tabs.Trigger value="present">Present</Tabs.Trigger>
-    </Tabs.List>
-  </Tabs.Root>
+<div class="flex items-center justify-between px-4 py-2 border-b border-border bg-background shrink-0">
+  <!-- Toggle slide list -->
+  <button
+    class="p-1.5 rounded-md transition-colors cursor-pointer {$slideListOpen ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
+    title="{$slideListOpen ? 'Hide' : 'Show'} slide list"
+    onclick={() => slideListOpen.update((v) => !v)}
+  >
+    <Icon name="panel-left" size={16} />
+  </button>
+  <Button variant="outline" size="sm" onclick={() => viewMode.set('present')}>
+    {#snippet children()}
+      <Icon name="presentation" size={14} />
+      Present
+    {/snippet}
+  </Button>
+  <!-- Toggle details panel -->
+  <button
+    class="p-1.5 rounded-md transition-colors cursor-pointer {$detailsOpen ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
+    title="{$detailsOpen ? 'Hide' : 'Show'} details panel"
+    onclick={() => detailsOpen.update((v) => !v)}
+  >
+    <Icon name="panel-right" size={16} />
+  </button>
 </div>

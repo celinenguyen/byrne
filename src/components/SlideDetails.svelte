@@ -1,17 +1,16 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
-  import { updateSlide, focusSlot } from '../lib/store';
+  import { updateSlide, focusSlot, activeSlot } from '../lib/store';
   import { layouts, layoutList } from './layouts/registry';
   import AddImagePopover from './AddImagePopover.svelte';
   import Icon from './ui/Icon.svelte';
+  import * as Item from './ui/item';
 
   interface Props {
     slide: Slide | null;
-    collapsed?: boolean;
     onClose?: () => void;
-    onExpand?: () => void;
   }
-  let { slide, collapsed = false, onClose, onExpand }: Props = $props();
+  let { slide, onClose }: Props = $props();
 
   let layoutDef = $derived(slide ? layouts[slide.layout] : null);
 
@@ -83,21 +82,6 @@
   }
 </script>
 
-{#if collapsed && onExpand}
-  <!-- Collapsed: thin strip with expand button -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    class="group h-full shrink-0 flex flex-col items-center border-l border-border bg-muted/20 hover:bg-muted/40 px-1 pt-2 cursor-pointer transition-colors"
-    onclick={onExpand}
-    role="button"
-    tabindex="0"
-    title="Expand panel"
-    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onExpand(); }}
-  >
-    <Icon name="chevron-left" size={14} class="text-muted-foreground group-hover:text-foreground transition-colors" />
-    <span class="text-sm uppercase tracking-wider font-medium text-muted-foreground group-hover:text-foreground mt-2 [writing-mode:vertical-lr] transition-colors">Edit slide</span>
-  </div>
-{:else}
 <div class="inset-shadow-sm flex flex-col bg-muted/5">
   {#if onClose}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -209,6 +193,8 @@
                   data-slot-type="text"
                   data-slot-index={slot.index}
                   oninput={(e) => updateText(slot.index, e.currentTarget.value)}
+                  onfocus={() => activeSlot.set({ type: 'text', index: slot.index })}
+                  onblur={() => activeSlot.set(null)}
                 ></textarea>
             </div>
           {/each}
@@ -229,18 +215,21 @@
       Layout
     </button>
     {#if layoutOpen}
-      <div class="mt-2 space-y-1">
+      <div class="mt-2 grid grid-cols-2 gap-2">
         {#each layoutList as l}
-          <button
-            class="w-full px-3 py-2 rounded-md text-left transition-colors cursor-pointer
-              {slide.layout === l.id ? 'bg-primary text-primary-foreground' : 'hover:bg-accent text-foreground'}"
+          <Item.Root
+            variant="outline"
+            size="sm"
+            class="cursor-pointer {slide.layout === l.id ? 'ring-1 ring-primary border-primary bg-primary/5' : 'hover:bg-accent'}"
             onclick={() => changeLayout(l.id)}
           >
-            <div class="font-medium text-xs">{l.displayName}</div>
-            {#if l.description}
-              <div class="{slide.layout === l.id ? 'opacity-70' : 'text-muted-foreground'} text-[10px] mt-0.5">{l.description}</div>
-            {/if}
-          </button>
+            <Item.Content>
+              <Item.Title class="text-xs">{l.displayName}</Item.Title>
+              {#if l.description}
+                <Item.Description class="text-[10px]">{l.description}</Item.Description>
+              {/if}
+            </Item.Content>
+          </Item.Root>
         {/each}
       </div>
     {/if}
@@ -250,4 +239,3 @@
     <div class="px-4 py-6 text-sm text-muted-foreground">No slide selected</div>
   {/if}
 </div>
-{/if}

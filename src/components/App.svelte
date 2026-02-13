@@ -16,6 +16,8 @@
     softDeleteSlide,
     undoDelete,
     pendingDelete,
+    detailsOpen,
+    slideListOpen,
   } from '../lib/store';
 
   let mode = $derived($viewMode);
@@ -28,7 +30,7 @@
   let rightWidth = $state(25);
 
   // Collapsible details panel
-  let detailsOpen = $state(true);
+  let isDetailsOpen = $derived($detailsOpen);
 
   // Resizing state
   let resizing = $state<'left' | 'right' | null>(null);
@@ -219,14 +221,16 @@
   <div class="flex-1 min-h-0 flex">
     {#if mode === 'edit'}
       <!-- Left: Slide thumbnails -->
-      <div class="h-full overflow-y-auto border-r border-border bg-muted/30" style="width: {leftWidth}%">
-        <SlideList />
-      </div>
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div
-        class="w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/30 shrink-0"
-        onmousedown={() => startResize('left')}
-      ></div>
+      {#if $slideListOpen}
+        <div class="h-full overflow-y-auto border-r border-border bg-muted/30" style="width: {leftWidth}%">
+          <SlideList />
+        </div>
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+          class="w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/30 shrink-0"
+          onmousedown={() => startResize('left')}
+        ></div>
+      {/if}
 
       <!-- Center: Scrollable slide list -->
       <div class="h-full flex-1 min-w-0 overflow-y-auto p-6 space-y-6" bind:this={scrollContainer}>
@@ -247,17 +251,15 @@
       </div>
 
       <!-- Right: Collapsible SlideDetails -->
-      {#if detailsOpen}
+      {#if isDetailsOpen}
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
           class="w-1 cursor-col-resize hover:bg-primary/20 active:bg-primary/30 shrink-0"
           onmousedown={() => startResize('right')}
         ></div>
         <div class="h-full overflow-y-auto border-l border-border" style="width: {rightWidth}%" data-details-panel>
-          <SlideDetails slide={slide} onClose={() => { detailsOpen = false; }} />
+          <SlideDetails slide={slide} onClose={() => { detailsOpen.set(false); }} />
         </div>
-      {:else}
-        <SlideDetails slide={slide} collapsed onExpand={() => { detailsOpen = true; }} />
       {/if}
 
     {:else if mode === 'present'}
