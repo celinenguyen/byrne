@@ -11,6 +11,7 @@
     slides,
     currentSlideIndex,
     navigateSlide,
+    duplicateSlide,
   } from '../lib/store';
 
   let mode = $derived($viewMode);
@@ -131,6 +132,9 @@
     }
   });
 
+  // Slide clipboard for Cmd+C / Cmd+V
+  let copiedSlideIndex: number | null = null;
+
   function isFormElement(el: EventTarget | null): boolean {
     if (!el || !(el instanceof HTMLElement)) return false;
     const tag = el.tagName;
@@ -143,6 +147,19 @@
     // In edit: arrow keys navigate slides unless in a form field
     if (mode === 'edit') {
       if (isFormElement(e.target)) return;
+
+      // Cmd+C: copy current slide
+      if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
+        copiedSlideIndex = $currentSlideIndex;
+        return;
+      }
+      // Cmd+V: paste (duplicate) copied slide after current
+      if ((e.metaKey || e.ctrlKey) && e.key === 'v' && copiedSlideIndex !== null) {
+        e.preventDefault();
+        duplicateSlide(copiedSlideIndex);
+        return;
+      }
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         navigateSlide('next');

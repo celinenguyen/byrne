@@ -68,19 +68,53 @@ function debouncedSave() {
 }
 
 export function addSlide(layout: string = 'Title') {
+  const insertAfter = get(currentSlideIndex);
   deck.update((d) => {
     if (!d) return d;
     const newSlide: Slide = {
       id: nanoid(),
-      order: d.slides.length,
+      order: insertAfter + 1,
       layout,
       data: { images: [], text: [], url: '' },
       notes: '',
     };
-    d.slides = [...d.slides, newSlide];
+    // Shift slides after the insertion point
+    d.slides = [
+      ...d.slides.slice(0, insertAfter + 1),
+      newSlide,
+      ...d.slides.slice(insertAfter + 1).map((s) => ({ ...s, order: s.order + 1 })),
+    ];
     return { ...d };
   });
-  currentSlideIndex.set(get(slides).length - 1);
+  currentSlideIndex.set(insertAfter + 1);
+  debouncedSave();
+}
+
+export function duplicateSlide(index: number) {
+  const allSlides = get(slides);
+  const source = allSlides[index];
+  if (!source) return;
+  deck.update((d) => {
+    if (!d) return d;
+    const newSlide: Slide = {
+      id: nanoid(),
+      order: index + 1,
+      layout: source.layout,
+      data: {
+        images: [...source.data.images],
+        text: [...source.data.text],
+        url: source.data.url,
+      },
+      notes: source.notes,
+    };
+    d.slides = [
+      ...d.slides.slice(0, index + 1),
+      newSlide,
+      ...d.slides.slice(index + 1).map((s) => ({ ...s, order: s.order + 1 })),
+    ];
+    return { ...d };
+  });
+  currentSlideIndex.set(index + 1);
   debouncedSave();
 }
 
