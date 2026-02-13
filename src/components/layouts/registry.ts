@@ -11,16 +11,16 @@ import QuoteLayout from './QuoteLayout.svelte';
 import ArenaBlockLayout from './ArenaBlockLayout.svelte';
 import ArticleLayout from './ArticleLayout.svelte';
 
-import titleSettings from './TitleLayout.settings.json';
-import imageSettings from './ImageLayout.settings.json';
-import textSettings from './TextLayout.settings.json';
-import image2UpSettings from './Image2UpLayout.settings.json';
+import titleSettings from './TitleLayout.json';
+import imageSettings from './ImageLayout.json';
+import textSettings from './TextLayout.json';
+import image2UpSettings from './Image2UpLayout.json';
 
-import tweetSettings from './TweetLayout.settings.json';
-import substackSettings from './SubstackLayout.settings.json';
-import quoteSettings from './QuoteLayout.settings.json';
-import arenaBlockSettings from './ArenaBlockLayout.settings.json';
-import articleSettings from './ArticleLayout.settings.json';
+import tweetSettings from './TweetLayout.json';
+import substackSettings from './SubstackLayout.json';
+import quoteSettings from './QuoteLayout.json';
+import arenaBlockSettings from './ArenaBlockLayout.json';
+import articleSettings from './ArticleLayout.json';
 
 export interface LayoutDefinition {
   id: string;
@@ -97,6 +97,31 @@ export const layouts: Record<string, LayoutDefinition> = {
 };
 
 export const layoutList = Object.values(layouts);
+
+export function getSlotInfoFromClass(
+  layoutId: string,
+  className: string,
+): { type: 'image' | 'text'; index: number; displayName: string } | null {
+  const match = className.match(/^layout-(text|image)-(.+)$/);
+  if (!match) return null;
+  const slotType = match[1] as 'text' | 'image';
+  const slotName = match[2];
+  const def = layouts[layoutId];
+  if (!def) return null;
+
+  const section = slotType === 'image' ? def.schema.images : def.schema.text;
+  if (!section) return null;
+
+  const keys = Object.keys(section);
+  const index = keys.indexOf(slotName);
+  if (index === -1) return null;
+
+  return {
+    type: slotType,
+    index,
+    displayName: section[slotName].displayName,
+  };
+}
 
 export function formatSlotSummary(schema: LayoutSettings): string {
   const imgCount = schema.images ? Object.keys(schema.images).length : 0;

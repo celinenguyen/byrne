@@ -6,12 +6,15 @@ A slide-based presentation builder built with Astro, Svelte 5, and Tailwind CSS.
 
 Layouts live in `src/components/layouts/`. Each layout needs two files:
 
-### 1. Settings file (`YourLayout.settings.json`)
+### 1. Settings file (`YourLayout.json`)
 
-Defines the named slots (images and text) the layout accepts. Each slot has a `displayName`, a `type` (`"required"` or `"optional"`), and an optional `placeholder`.
+Defines the named slots (images, text, and optionally url) the layout accepts. Each slot has a `displayName`, a `type` (`"required"` or `"optional"`), and an optional `placeholder`.
 
 ```json
 {
+  "url": {
+    "url": { "displayName": "Article URL", "type": "required" }
+  },
   "images": {
     "photo": { "displayName": "Photo", "type": "required" }
   },
@@ -22,7 +25,9 @@ Defines the named slots (images and text) the layout accepts. Each slot has a `d
 }
 ```
 
-Omit the `"images"` or `"text"` key entirely if the layout has none of that type.
+Omit the `"images"`, `"text"`, or `"url"` key entirely if the layout has none of that type.
+
+Layouts with a `url` slot show a URL input and Fetch button in the editor. For **ArenaBlock**, fetching calls the Are.na API and populates the image/text slots from the block data. For **Article**, fetching reads OG meta tags from the URL and populates the screenshot and title slots.
 
 ### 2. Svelte component (`YourLayout.svelte`)
 
@@ -32,7 +37,7 @@ The component receives `data: SlideData` as a prop and reads slot values from `d
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
-  import settings from './YourLayout.settings.json';
+  import settings from './YourLayout.json';
 
   interface Props {
     data: SlideData;
@@ -74,7 +79,7 @@ In `src/components/layouts/registry.ts`, import the component and settings, then
 
 ```ts
 import YourLayout from './YourLayout.svelte';
-import yourSettings from './YourLayout.settings.json';
+import yourSettings from './YourLayout.json';
 
 // Inside the layouts object:
 YourLayoutId: {
@@ -92,8 +97,9 @@ Each slot element gets a CSS class following the pattern `layout-{type}-{slotNam
 
 - **Image slots**: `layout-image-{name}` (e.g. `layout-image-screenshot`, `layout-image-left`)
 - **Text slots**: `layout-text-{name}` (e.g. `layout-text-title`, `layout-text-commentary`)
+- **URL slots**: stored in `data.url` (single string, not rendered in the layout component)
 
-The `{name}` matches the key used in the settings JSON file.
+The `{name}` matches the key used in the layout JSON file.
 
 ## Styling layouts
 
@@ -131,15 +137,18 @@ Or add rules directly in `src/styles/globals.css` where they apply without scopi
 
 ## Existing layouts and their slots
 
-| Layout | Image slots | Text slots |
-|--------|------------|------------|
-| **Title** | — | `title`, `subtitle` |
-| **Text** | — | `body` |
-| **Image** | `image` | `caption` |
-| **Image2Up** | `left`, `right` | `leftCaption`, `rightCaption` |
-| **Image3Up** | `image1`, `image2`, `image3` | `caption1`, `caption2`, `caption3` |
-| **Article** | `screenshot` | `commentary` |
-| **Tweet** | `screenshot` | `attribution`, `commentary` |
-| **Substack** | `thumbnail` | `title`, `excerpt` |
-| **Quote** | — | `quote`, `attribution` |
-| **ArenaBlock** | `blockImage` | `title`, `channel` |
+| Layout | URL slot | Image slots | Text slots |
+|--------|----------|------------|------------|
+| **Title** | — | — | `title`, `subtitle` |
+| **Text** | — | — | `body` |
+| **Image** | — | `image` | `caption` |
+| **Image2Up** | — | `left`, `right` | `leftCaption`, `rightCaption` |
+| **Article** | `url` | `screenshot` | `title`, `commentary` |
+| **Tweet** | — | `screenshot` | `attribution`, `commentary` |
+| **Substack** | — | `thumbnail` | `title`, `excerpt` |
+| **Quote** | — | — | `quote`, `attribution` |
+| **ArenaBlock** | `url` | `blockImage` | `title`, `channel` |
+
+## Potential future work
+
+- **Thumbnail image optimization**: If thumbnail image loading in the slide list becomes a performance bottleneck (many slides with large images), a server-side image resizing approach using a sharp-based `/api/thumbnail` endpoint could be layered on to serve pre-scaled images to the SlideThumbnail component.

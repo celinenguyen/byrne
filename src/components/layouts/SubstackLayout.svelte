@@ -2,7 +2,7 @@
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
   import { marked } from 'marked';
-  import settings from './SubstackLayout.settings.json';
+  import settings from './SubstackLayout.json';
 
   interface Props {
     data: SlideData;

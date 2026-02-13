@@ -19,6 +19,7 @@ const initial = getInitialParams();
 export const deck = writable<Deck | null>(null);
 export const currentSlideIndex = writable<number>(initial.slide);
 export const viewMode = writable<'edit' | 'preview' | 'present'>(initial.view);
+export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
 
 // Sync stores -> URL
 function syncURL() {

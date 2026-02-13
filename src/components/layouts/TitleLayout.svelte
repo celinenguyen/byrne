@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
-  import settings from './TitleLayout.settings.json';
+  import settings from './TitleLayout.json';
 
   interface Props {
     data: SlideData;

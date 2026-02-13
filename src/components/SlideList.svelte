@@ -1,5 +1,6 @@
 <script lang="ts">
   import Button from './ui/Button.svelte';
+  import SlideThumbnail from './SlideThumbnail.svelte';
   import {
     slides,
     currentSlideIndex,
@@ -105,8 +106,8 @@
 
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
-        class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors cursor-grab group relative select-none
-          {i === idx ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}
+        class="w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors cursor-grab group relative select-none
+          {i === idx ? 'ring-2 ring-primary' : 'hover:bg-accent'}
           {dragIndex === i ? 'opacity-30' : ''}"
         onclick={() => selectSlide(i)}
         onkeydown={(e) => { if (e.key === 'Enter') selectSlide(i); }}
@@ -118,22 +119,18 @@
         ondragleave={handleDragLeave}
         ondragend={handleDragEnd}
       >
-        <div class="flex items-center gap-2">
-          <span class="text-xs opacity-30 cursor-grab">⠿</span>
-          <span class="text-xs opacity-50 tabular-nums w-4">{i + 1}</span>
-          <span class="font-medium truncate">{slide.layout}</span>
+        <div class="relative">
+          <SlideThumbnail {slide} />
+          <div class="absolute bottom-1 left-1 bg-black/50 text-white text-[10px] font-medium px-1 py-0.5 rounded leading-tight">
+            {i + 1}
+          </div>
+          <button
+            class="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-black/50 text-white hover:bg-destructive/80 cursor-pointer transition-opacity"
+            onclick={(e) => { e.stopPropagation(); deleteSlide(slide.id); }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
-        {#if slide.data.text?.[0]}
-          <p class="mt-0.5 text-xs truncate opacity-60 ml-10">
-            {slide.data.text[0].slice(0, 50)}
-          </p>
-        {/if}
-        <button
-          class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/20 cursor-pointer"
-          onclick={(e) => { e.stopPropagation(); deleteSlide(slide.id); }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
       </div>
     {/each}
 

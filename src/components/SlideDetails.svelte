@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Slide, SlideData } from '../lib/types';
-  import { updateSlide } from '../lib/store';
+  import { updateSlide, focusSlot } from '../lib/store';
   import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
   import AddImagePopover from './AddImagePopover.svelte';
 
@@ -15,6 +15,25 @@
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
   let notesOpen = $state(true);
+
+  // Watch focusSlot store to focus the matching field
+  $effect(() => {
+    const slot = $focusSlot;
+    if (!slot) return;
+    // Ensure data section is open
+    dataOpen = true;
+    // Use tick to wait for DOM update
+    queueMicrotask(() => {
+      const el = document.querySelector<HTMLElement>(
+        `[data-slot-type="${slot.type}"][data-slot-index="${slot.index}"]`
+      );
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ block: 'nearest' });
+      }
+      focusSlot.set(null);
+    });
+  });
 
   // Derived slot metadata for images
   let imageSlots = $derived.by(() => {
@@ -172,6 +191,8 @@
             <div
               class="flex items-center gap-2 rounded-md px-1.5 py-1 transition-colors
                 {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
+              data-slot-type="image"
+              data-slot-index={slot.index}
             >
               <!-- Thumbnail area -->
               {#if slot.isUsed}
@@ -267,6 +288,8 @@
                   placeholder={slot.isUsed ? 'Markdown supported...' : ''}
                   value={slot.isUsed ? (slide.data.text?.[slot.index] || '') : ''}
                   disabled={!slot.isUsed}
+                  data-slot-type="text"
+                  data-slot-index={slot.index}
                   oninput={(e) => updateText(slot.index, e.currentTarget.value)}
                 ></textarea>
             </div>
