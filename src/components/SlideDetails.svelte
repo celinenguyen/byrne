@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
   import { updateSlide, focusSlot } from '../lib/store';
-  import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
+  import { layouts, layoutList } from './layouts/registry';
   import AddImagePopover from './AddImagePopover.svelte';
   import Icon from './ui/Icon.svelte';
 
@@ -240,7 +240,6 @@
             {#if l.description}
               <div class="{slide.layout === l.id ? 'opacity-70' : 'text-muted-foreground'} text-[10px] mt-0.5">{l.description}</div>
             {/if}
-            <div class="{slide.layout === l.id ? 'opacity-60' : 'text-muted-foreground/60'} text-[9px] mt-0.5">{formatSlotSummary(l.schema)}</div>
           </button>
         {/each}
       </div>

@@ -76,29 +76,3 @@ export function getSlotInfo(
     displayName: section[slotName].displayName,
   };
 }
-
-export function formatSlotSummary(schema: LayoutSettings): string {
-  const imgCount = schema.images ? Object.keys(schema.images).length : 0;
-  const imgReq = schema.images
-    ? Object.values(schema.images).filter((s) => s.isRequired).length
-    : 0;
-  const txtCount = schema.text ? Object.keys(schema.text).length : 0;
-  const txtReq = schema.text
-    ? Object.values(schema.text).filter((s) => s.isRequired).length
-    : 0;
-
-  const urlCount = schema.url ? Object.keys(schema.url).length : 0;
-
-  const imgStr = imgCount === 0
-    ? '0 images'
-    : imgReq === imgCount
-      ? `${imgCount} image${imgCount !== 1 ? 's' : ''}`
-      : `${imgReq}–${imgCount} images`;
-  const txtStr = txtCount === 0
-    ? '0 text'
-    : txtReq === txtCount
-      ? `${txtCount} text`
-      : `${txtReq}–${txtCount} text`;
-  const urlStr = urlCount > 0 ? ', 1 url' : '';
-  return `${imgStr}, ${txtStr}${urlStr}`;
-}

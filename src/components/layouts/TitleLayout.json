@@ -1,6 +1,9 @@
 {
+  "id": "Title",
+  "displayName": "Title",
+  "description": "Large heading with optional subtitle",
   "text": {
-    "title": { "displayName": "title", "isRequired": true, "placeholder": "Untitled" },
-    "subtitle": { "displayName": "subtitle", "isRequired": false }
+    "title": {"displayName": "title", "isRequired": true, "placeholder": "Untitled"},
+    "subtitle": {"displayName": "subtitle", "isRequired": false}
   }
 }

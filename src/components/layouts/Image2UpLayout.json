@@ -1,10 +1,13 @@
 {
+  "id": "Image2Up",
+  "displayName": "2-Up Image",
+  "description": "Two images side by side",
   "images": {
-    "left": { "displayName": "left", "isRequired": true },
-    "right": { "displayName": "right", "isRequired": true }
+    "left": {"displayName": "left", "isRequired": true},
+    "right": {"displayName": "right", "isRequired": true}
   },
   "text": {
-    "leftCaption": { "displayName": "left caption", "isRequired": false },
-    "rightCaption": { "displayName": "right caption", "isRequired": false }
+    "leftCaption": {"displayName": "left caption", "isRequired": false},
+    "rightCaption": {"displayName": "right caption", "isRequired": false}
   }
 }

@@ -72,29 +72,31 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-  class="w-full shadow-sm rounded-xs overflow-hidden border relative"
-  bind:this={containerEl}
-  onmouseover={handleMouseOver}
-  onmouseout={handleMouseOut}
-  onclick={handleClick}
->
-  {#if layoutDef}
-    <svelte:component this={layoutDef.component} data={slide.data} />
-  {:else}
-    <div class="aspect-video flex items-center justify-center bg-muted text-muted-foreground text-sm">
-      Unknown layout: {slide.layout}
-    </div>
-  {/if}
-
-  {#if interactive && hoveredEl && hoveredSlotInfo && overlayStyle}
-    <div
-      class="absolute pointer-events-none rounded-xs outline-1 outline-orange-500/50 -outline-offset-1 z-10"
-      style="{overlayStyle}"
-    >
-      <div class="absolute -top-[0.6rem] -right-[0.4rem] rounded-[0.8rem] bg-orange-600 text-white text-xs px-2 py-1 leading-tight">
-        {hoveredSlotInfo.displayName}
+<div class="px-3 py-2 rounded-md">
+  <div
+    class="w-full shadow-md rounded-xs overflow-hidden ring-1 ring-border relative"
+    bind:this={containerEl}
+    onmouseover={handleMouseOver}
+    onmouseout={handleMouseOut}
+    onclick={handleClick}
+  >
+    {#if layoutDef}
+      <svelte:component this={layoutDef.component} data={slide.data} />
+    {:else}
+      <div class="aspect-video flex items-center justify-center bg-muted text-muted-foreground text-sm">
+        Unknown layout: {slide.layout}
       </div>
-    </div>
-  {/if}
+    {/if}
+
+    {#if interactive && hoveredEl && hoveredSlotInfo && overlayStyle}
+      <div
+        class="absolute pointer-events-none rounded-xs outline-1 outline-orange-500/50 -outline-offset-1 z-10"
+        style="{overlayStyle}"
+      >
+        <div class="absolute -top-[0.6rem] -right-[0.4rem] rounded-[0.8rem] bg-orange-600 text-white text-xs px-2 py-1 leading-tight">
+          {hoveredSlotInfo.displayName}
+        </div>
+      </div>
+    {/if}
+  </div>
 </div>
