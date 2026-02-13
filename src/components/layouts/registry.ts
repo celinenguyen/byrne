@@ -5,22 +5,10 @@ import ImageLayout from './ImageLayout.svelte';
 import TextLayout from './TextLayout.svelte';
 import Image2UpLayout from './Image2UpLayout.svelte';
 
-import TweetLayout from './TweetLayout.svelte';
-import SubstackLayout from './SubstackLayout.svelte';
-import QuoteLayout from './QuoteLayout.svelte';
-import ArenaBlockLayout from './ArenaBlockLayout.svelte';
-import ArticleLayout from './ArticleLayout.svelte';
-
 import titleSettings from './TitleLayout.json';
 import imageSettings from './ImageLayout.json';
 import textSettings from './TextLayout.json';
 import image2UpSettings from './Image2UpLayout.json';
-
-import tweetSettings from './TweetLayout.json';
-import substackSettings from './SubstackLayout.json';
-import quoteSettings from './QuoteLayout.json';
-import arenaBlockSettings from './ArenaBlockLayout.json';
-import articleSettings from './ArticleLayout.json';
 
 export interface LayoutDefinition {
   id: string;
@@ -58,41 +46,6 @@ export const layouts: Record<string, LayoutDefinition> = {
     description: 'Two images side by side',
     component: Image2UpLayout as unknown as Component,
     schema: image2UpSettings,
-  },
-  Tweet: {
-    id: 'Tweet',
-    displayName: 'Tweet',
-    description: 'Tweet screenshot with attribution',
-    component: TweetLayout as unknown as Component,
-    schema: tweetSettings,
-  },
-  Substack: {
-    id: 'Substack',
-    displayName: 'Substack',
-    description: 'Article preview card',
-    component: SubstackLayout as unknown as Component,
-    schema: substackSettings,
-  },
-  Quote: {
-    id: 'Quote',
-    displayName: 'Quote',
-    description: 'Large pull-quote with attribution',
-    component: QuoteLayout as unknown as Component,
-    schema: quoteSettings,
-  },
-  ArenaBlock: {
-    id: 'ArenaBlock',
-    displayName: 'Are.na Block',
-    description: 'Are.na-style block display',
-    component: ArenaBlockLayout as unknown as Component,
-    schema: arenaBlockSettings,
-  },
-  Article: {
-    id: 'Article',
-    displayName: 'Article',
-    description: 'Article screenshot + commentary',
-    component: ArticleLayout as unknown as Component,
-    schema: articleSettings,
   },
 };
 

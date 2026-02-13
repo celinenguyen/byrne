@@ -9,7 +9,7 @@ function getInitialParams() {
   const view = params.get('view');
   const slide = params.get('slide');
   return {
-    view: (view === 'edit' || view === 'preview' || view === 'present') ? view : 'edit' as const,
+    view: (view === 'edit' || view === 'present') ? view : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
   };
 }
@@ -18,7 +18,7 @@ const initial = getInitialParams();
 
 export const deck = writable<Deck | null>(null);
 export const currentSlideIndex = writable<number>(initial.slide);
-export const viewMode = writable<'edit' | 'preview' | 'present'>(initial.view);
+export const viewMode = writable<'edit' | 'present'>(initial.view);
 export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
 
 // Sync stores -> URL

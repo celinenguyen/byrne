@@ -1,9 +1,0 @@
-{
-  "images": {
-    "thumbnail": { "displayName": "Thumbnail", "type": "optional" }
-  },
-  "text": {
-    "title": { "displayName": "Title", "type": "required", "placeholder": "Article title" },
-    "excerpt": { "displayName": "Excerpt", "type": "optional" }
-  }
-}

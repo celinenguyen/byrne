@@ -123,53 +123,6 @@
 
   // Whether the current layout has a URL slot
   let hasUrlSlot = $derived(!!layoutDef?.schema.url);
-
-  // URL fetch state
-  let fetching = $state(false);
-  let fetchError = $state<string | null>(null);
-
-  async function handleFetch() {
-    const url = slide.data.url;
-    if (!url) return;
-    fetching = true;
-    fetchError = null;
-    try {
-      let endpoint: string;
-      if (slide.layout === 'ArenaBlock') {
-        endpoint = '/api/fetch-arena';
-      } else if (slide.layout === 'Article') {
-        endpoint = '/api/fetch-meta';
-      } else {
-        fetchError = 'Fetch not supported for this layout';
-        fetching = false;
-        return;
-      }
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        fetchError = result.error || 'Fetch failed';
-        fetching = false;
-        return;
-      }
-      // Auto-populate slots based on layout
-      if (slide.layout === 'ArenaBlock') {
-        if (result.image) updateImage(0, result.image);
-        if (result.title) updateText(0, result.title);
-        if (result.channel) updateText(1, result.channel);
-      } else if (slide.layout === 'Article') {
-        if (result.image) updateImage(0, result.image);
-        if (result.title) updateText(0, result.title);
-      }
-    } catch (err) {
-      fetchError = String(err);
-    } finally {
-      fetching = false;
-    }
-  }
 </script>
 
 <div class="p-3 space-y-3 text-sm">
@@ -233,26 +186,13 @@
           <div class="space-y-1.5">
             <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">URL</div>
             <div class="border-l-2 border-l-primary rounded-md px-1.5 py-1">
-              <div class="flex items-center gap-1.5">
-                <input
-                  type="text"
-                  class="flex-1 px-2 py-1.5 border border-border rounded-md text-xs bg-background font-mono"
-                  placeholder="https://..."
-                  value={slide.data.url || ''}
-                  oninput={(e) => updateUrl(e.currentTarget.value)}
-                />
-                <button
-                  class="px-2.5 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer
-                    {fetching ? 'bg-muted text-muted-foreground' : 'bg-primary text-primary-foreground hover:bg-primary/90'}"
-                  disabled={fetching || !slide.data.url}
-                  onclick={handleFetch}
-                >
-                  {fetching ? 'Fetching...' : 'Fetch'}
-                </button>
-              </div>
-              {#if fetchError}
-                <p class="text-[10px] text-red-500 mt-1">{fetchError}</p>
-              {/if}
+              <input
+                type="text"
+                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background font-mono"
+                placeholder="https://..."
+                value={slide.data.url || ''}
+                oninput={(e) => updateUrl(e.currentTarget.value)}
+              />
             </div>
           </div>
         {/if}

@@ -1,9 +1,0 @@
-{
-  "images": {
-    "screenshot": { "displayName": "Screenshot", "type": "required" }
-  },
-  "text": {
-    "attribution": { "displayName": "Attribution", "type": "optional" },
-    "commentary": { "displayName": "Commentary", "type": "optional" }
-  }
-}
