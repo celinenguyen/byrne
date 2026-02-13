@@ -5,11 +5,10 @@
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let body = $derived(data.text?.['1'] || '');
+  let body = $derived(data.text?.['body'] || '');
   let bodyHtml = $derived(marked.parse(body, { async: false }) as string);
 </script>
 

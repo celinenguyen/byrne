@@ -103,7 +103,7 @@
       <div class="h-full flex-1 min-w-0 overflow-hidden flex items-center justify-center bg-muted/10 p-6">
         {#if slide}
           <div class="w-full max-w-4xl">
-            <SlideView {slide} context="desktop" />
+            <SlideView {slide} />
           </div>
         {:else}
           <div class="text-muted-foreground text-sm">No slide selected. Add a slide to get started.</div>
@@ -131,7 +131,7 @@
             class="w-full max-w-4xl mx-auto block cursor-pointer focus:outline-none {i === $currentSlideIndex ? 'ring-2 ring-primary rounded-sm' : ''}"
             onclick={() => currentSlideIndex.set(i)}
           >
-            <SlideView slide={s} context="desktop" />
+            <SlideView slide={s} />
           </button>
         {/each}
         {#if allSlides.length === 0}
@@ -145,7 +145,7 @@
         {#if slide}
           <div class="w-full h-full max-h-screen flex items-center justify-center">
             <div class="w-full" style="max-height: 100vh;">
-              <SlideView {slide} context="desktop" />
+              <SlideView {slide} />
             </div>
           </div>
         {:else}

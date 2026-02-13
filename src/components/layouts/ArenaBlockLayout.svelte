@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
+  import settings from './ArenaBlockLayout.settings.json';
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let image = $derived(data.images?.['1'] || '');
-  let title = $derived(data.text?.['1'] || '');
-  let channel = $derived(data.text?.['2'] || '');
+  let image = $derived(data.images?.['blockImage'] || '');
+  let title = $derived(data.text?.['title'] || '');
+  let channel = $derived(data.text?.['channel'] || '');
 </script>
 
 <BaseLayout>
@@ -22,7 +22,7 @@
         <div class="w-full aspect-square flex items-center justify-center text-gray-300 text-sm">Block image</div>
       {/if}
       <div class="p-3 border-t border-gray-200">
-        <p class="text-sm font-medium text-gray-800 truncate">{title || 'Block title'}</p>
+        <p class="text-sm font-medium text-gray-800 truncate">{title || settings.text.title.placeholder}</p>
         {#if channel}
           <p class="text-xs text-gray-400 mt-1">{channel}</p>
         {/if}

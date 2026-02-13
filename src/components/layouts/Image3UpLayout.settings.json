@@ -1,0 +1,12 @@
+{
+  "images": {
+    "image1": { "displayName": "Image 1", "type": "required" },
+    "image2": { "displayName": "Image 2", "type": "required" },
+    "image3": { "displayName": "Image 3", "type": "required" }
+  },
+  "text": {
+    "caption1": { "displayName": "Caption 1", "type": "optional" },
+    "caption2": { "displayName": "Caption 2", "type": "optional" },
+    "caption3": { "displayName": "Caption 3", "type": "optional" }
+  }
+}

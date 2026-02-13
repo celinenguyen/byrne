@@ -5,12 +5,11 @@
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let screenshot = $derived(data.images?.['1'] || '');
-  let commentary = $derived(data.text?.['1'] || '');
+  let screenshot = $derived(data.images?.['screenshot'] || '');
+  let commentary = $derived(data.text?.['commentary'] || '');
   let commentaryHtml = $derived(marked.parse(commentary, { async: false }) as string);
 </script>
 

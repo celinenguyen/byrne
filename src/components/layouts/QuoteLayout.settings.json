@@ -1,0 +1,6 @@
+{
+  "text": {
+    "quote": { "displayName": "Quote", "type": "required", "placeholder": "Quote text" },
+    "attribution": { "displayName": "Attribution", "type": "optional" }
+  }
+}

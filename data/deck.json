@@ -7,27 +7,12 @@
   },
   "slides": [
     {
-      "id": "PQv0Zj3DWTKSsoxGUSgYQ",
+      "id": "5tnSHH2vQ3fGUq5zLjFCW",
       "order": 0,
-      "layout": "Title",
-      "data": {
-        "images": {},
-        "text": {
-          "1": "\"literature\" is \"dying\"",
-          "2": ""
-        }
-      },
-      "notes": ""
-    },
-    {
-      "id": "15zr4FqgCNdWiQtDlGtvL",
-      "order": 1,
       "layout": "Image",
       "data": {
         "images": {},
-        "text": {
-          "1": "what happened to culture in 2026?"
-        }
+        "text": {}
       },
       "notes": ""
     }

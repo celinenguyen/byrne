@@ -5,12 +5,11 @@
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let imageSrc = $derived(data.images?.['1'] || '');
-  let caption = $derived(data.text?.['1'] || '');
+  let imageSrc = $derived(data.images?.['image'] || '');
+  let caption = $derived(data.text?.['caption'] || '');
   let captionHtml = $derived(marked.parse(caption, { async: false }) as string);
 </script>
 

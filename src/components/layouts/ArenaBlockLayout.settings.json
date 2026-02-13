@@ -1,0 +1,9 @@
+{
+  "images": {
+    "blockImage": { "displayName": "Block image", "type": "optional" }
+  },
+  "text": {
+    "title": { "displayName": "Title", "type": "optional", "placeholder": "Block title" },
+    "channel": { "displayName": "Channel", "type": "optional" }
+  }
+}

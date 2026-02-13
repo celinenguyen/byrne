@@ -1,0 +1,8 @@
+{
+  "images": {
+    "image": { "displayName": "Image", "type": "required" }
+  },
+  "text": {
+    "caption": { "displayName": "Caption", "type": "optional" }
+  }
+}

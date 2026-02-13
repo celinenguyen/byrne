@@ -2,16 +2,16 @@
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
   import { marked } from 'marked';
+  import settings from './SubstackLayout.settings.json';
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let thumbnail = $derived(data.images?.['1'] || '');
-  let title = $derived(data.text?.['1'] || '');
-  let excerpt = $derived(data.text?.['2'] || '');
+  let thumbnail = $derived(data.images?.['thumbnail'] || '');
+  let title = $derived(data.text?.['title'] || '');
+  let excerpt = $derived(data.text?.['excerpt'] || '');
   let excerptHtml = $derived(marked.parse(excerpt, { async: false }) as string);
 </script>
 
@@ -22,7 +22,7 @@
         <img src={thumbnail} alt="" class="w-full h-40 object-cover" />
       {/if}
       <div class="p-5">
-        <h3 class="text-lg font-semibold text-gray-900">{title || 'Article title'}</h3>
+        <h3 class="text-lg font-semibold text-gray-900">{title || settings.text.title.placeholder}</h3>
         {#if excerpt}
           <div class="mt-2 text-sm text-gray-500 prose prose-sm max-w-none">{@html excerptHtml}</div>
         {/if}

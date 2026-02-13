@@ -23,13 +23,13 @@ export interface Deck {
   slides: Slide[];
 }
 
-export interface LayoutFieldSchema {
-  min: number;
-  max: number;
-  labels?: Record<string, string>;
+export interface SlotDefinition {
+  displayName: string;
+  type: 'required' | 'optional';
+  placeholder?: string;
 }
 
-export interface LayoutSchema {
-  images?: LayoutFieldSchema;
-  text?: LayoutFieldSchema;
+export interface LayoutSettings {
+  images?: Record<string, SlotDefinition>;
+  text?: Record<string, SlotDefinition>;
 }

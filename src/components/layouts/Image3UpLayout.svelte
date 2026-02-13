@@ -5,14 +5,13 @@
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
   let images = $derived([
-    { src: data.images?.['1'] || '', cap: data.text?.['1'] || '' },
-    { src: data.images?.['2'] || '', cap: data.text?.['2'] || '' },
-    { src: data.images?.['3'] || '', cap: data.text?.['3'] || '' },
+    { src: data.images?.['image1'] || '', cap: data.text?.['caption1'] || '' },
+    { src: data.images?.['image2'] || '', cap: data.text?.['caption2'] || '' },
+    { src: data.images?.['image3'] || '', cap: data.text?.['caption3'] || '' },
   ]);
 </script>
 

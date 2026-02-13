@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { Slide, SlideData } from '../lib/types';
   import { updateSlide } from '../lib/store';
-  import { layouts, layoutList } from './layouts/registry';
+  import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
   import { marked } from 'marked';
+  import AddImagePopover from './AddImagePopover.svelte';
 
   interface Props {
     slide: Slide;
@@ -16,28 +17,62 @@
   let layoutOpen = $state(true);
   let notesOpen = $state(true);
 
-  // Image fields based on schema
-  let imageFields = $derived(() => {
+  // Derived slot metadata for images
+  let imageSlots = $derived.by(() => {
     const schema = layoutDef?.schema.images;
-    if (!schema) return [];
-    const fields: { key: string; label: string }[] = [];
-    for (let i = 1; i <= schema.max; i++) {
-      const key = String(i);
-      fields.push({ key, label: schema.labels?.[key] || `Image ${i}` });
+    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
+    if (schema) {
+      for (const [key, def] of Object.entries(schema)) {
+        used.push({
+          key,
+          isUsed: true,
+          displayName: def.displayName,
+          type: def.type,
+          hasContent: !!slide.data.images?.[key],
+        });
+      }
     }
-    return fields;
+    // Pad to 3 with "not used" entries
+    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
+    for (let i = used.length; i < 3; i++) {
+      notUsed.push({
+        key: `_unused_img_${i}`,
+        isUsed: false,
+        displayName: 'not used',
+        type: 'optional',
+        hasContent: false,
+      });
+    }
+    return [...used, ...notUsed];
   });
 
-  // Text fields based on schema
-  let textFields = $derived(() => {
+  // Derived slot metadata for text
+  let textSlots = $derived.by(() => {
     const schema = layoutDef?.schema.text;
-    if (!schema) return [];
-    const fields: { key: string; label: string }[] = [];
-    for (let i = 1; i <= schema.max; i++) {
-      const key = String(i);
-      fields.push({ key, label: schema.labels?.[key] || `Text ${i}` });
+    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
+    if (schema) {
+      for (const [key, def] of Object.entries(schema)) {
+        used.push({
+          key,
+          isUsed: true,
+          displayName: def.displayName,
+          type: def.type,
+          hasContent: !!slide.data.text?.[key],
+        });
+      }
     }
-    return fields;
+    // Pad to 3 with "not used" entries
+    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
+    for (let i = used.length; i < 3; i++) {
+      notUsed.push({
+        key: `_unused_txt_${i}`,
+        isUsed: false,
+        displayName: 'not used',
+        type: 'optional',
+        hasContent: false,
+      });
+    }
+    return [...used, ...notUsed];
   });
 
   function updateImage(key: string, value: string) {
@@ -64,28 +99,6 @@
     updateSlide(slide.id, { layout: layoutId });
   }
 
-  // Drag and drop for images
-  function handleDragOver(e: DragEvent) {
-    e.preventDefault();
-    if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
-  }
-
-  async function handleDrop(e: DragEvent, key: string) {
-    e.preventDefault();
-    const files = e.dataTransfer?.files;
-    if (!files || files.length === 0) return;
-    const file = files[0];
-    if (!file.type.startsWith('image/')) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-    if (res.ok) {
-      const { path } = await res.json();
-      updateImage(key, path);
-    }
-  }
-
   // Preview markdown text
   let previewKey = $state<string | null>(null);
 </script>
@@ -101,65 +114,99 @@
       Data
     </button>
     {#if dataOpen}
-      <div class="mt-2 space-y-3">
-        <!-- Image fields -->
-        {#each imageFields() as field}
-          <div>
-            <label class="block text-xs font-medium text-muted-foreground mb-1">{field.label}</label>
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div class="mt-2 space-y-4">
+        <!-- Image slots -->
+        <div class="space-y-1.5">
+          <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Images</div>
+          {#each imageSlots as slot}
             <div
-              class="border border-dashed border-border rounded-md p-2 transition-colors hover:border-primary/50"
-              ondragover={handleDragOver}
-              ondrop={(e) => handleDrop(e, field.key)}
+              class="flex items-center gap-2 rounded-md px-1.5 py-1 transition-colors
+                {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
             >
-              {#if slide.data.images?.[field.key]}
-                <img
-                  src={slide.data.images[field.key]}
-                  alt=""
-                  class="w-full h-24 object-contain rounded bg-gray-50"
-                />
+              <!-- Thumbnail area -->
+              {#if slot.isUsed}
+                {#if slot.hasContent}
+                  <AddImagePopover slotKey={slot.key} onimage={updateImage}>
+                    {#snippet trigger()}
+                      <div class="flex-shrink-0 w-[60px] h-[45px] rounded overflow-hidden bg-muted/30 cursor-pointer border border-border hover:border-primary/50 transition-colors" title="Replace image">
+                        <img
+                          src={slide.data.images[slot.key]}
+                          alt=""
+                          class="w-full h-full object-cover"
+                        />
+                      </div>
+                    {/snippet}
+                  </AddImagePopover>
+                {:else}
+                  <AddImagePopover slotKey={slot.key} onimage={updateImage} />
+                {/if}
               {:else}
-                <div class="h-16 flex items-center justify-center text-xs text-muted-foreground">
-                  Drop image here
+                <div class="flex-shrink-0 w-[60px] h-[45px] rounded bg-muted/20 border border-dashed border-border/50"></div>
+              {/if}
+
+              <!-- Label area -->
+              <div class="flex-1 min-w-0">
+                {#if slot.isUsed}
+                  <span class="text-xs font-medium">{slot.displayName}</span>
+                  <span class="ml-1 text-[9px] rounded px-1 py-0.5 {slot.type === 'required' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}">{slot.type === 'required' ? 'req' : 'opt'}</span>
+                {:else}
+                  <span class="text-xs text-muted-foreground/60 italic">not used</span>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <!-- Text slots -->
+        <div class="space-y-2">
+          <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Text</div>
+          {#each textSlots as slot}
+            {@const wrapperClass = slot.isUsed
+              ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
+              : 'not-used-in-layout'}
+            <div
+              class="rounded-md px-1.5 py-1 transition-colors
+                {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
+              data-slot-state={wrapperClass}
+            >
+              <!-- Header line -->
+              <div class="flex items-center justify-between mb-1">
+                <div>
+                  {#if slot.isUsed}
+                    <span class="text-xs font-medium">{slot.displayName}</span>
+                    <span class="ml-1 text-[9px] rounded px-1 py-0.5 {slot.type === 'required' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}">{slot.type === 'required' ? 'req' : 'opt'}</span>
+                  {:else}
+                    <span class="text-xs text-muted-foreground/60 italic">not used</span>
+                  {/if}
                 </div>
+                {#if slot.isUsed}
+                  <button
+                    class="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    onclick={() => { previewKey = previewKey === slot.key ? null : slot.key; }}
+                  >
+                    {previewKey === slot.key ? 'Edit' : 'Preview'}
+                  </button>
+                {/if}
+              </div>
+
+              <!-- Textarea -->
+              {#if slot.isUsed && previewKey === slot.key}
+                <div class="border border-border rounded-md p-2 prose prose-sm max-w-none min-h-[60px] bg-gray-50/50">
+                  {@html marked.parse(slide.data.text?.[slot.key] || '', { async: false })}
+                </div>
+              {:else}
+                <textarea
+                  class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px] font-mono
+                    {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
+                  placeholder={slot.isUsed ? 'Markdown supported...' : ''}
+                  value={slot.isUsed ? (slide.data.text?.[slot.key] || '') : ''}
+                  disabled={!slot.isUsed}
+                  oninput={(e) => updateText(slot.key, e.currentTarget.value)}
+                ></textarea>
               {/if}
             </div>
-            <input
-              type="text"
-              class="mt-1 w-full px-2 py-1 border border-border rounded text-xs bg-background"
-              placeholder="Or paste image URL..."
-              value={slide.data.images?.[field.key] || ''}
-              oninput={(e) => updateImage(field.key, e.currentTarget.value)}
-            />
-          </div>
-        {/each}
-
-        <!-- Text fields -->
-        {#each textFields() as field}
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs font-medium text-muted-foreground">{field.label}</label>
-              <button
-                class="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
-                onclick={() => { previewKey = previewKey === field.key ? null : field.key; }}
-              >
-                {previewKey === field.key ? 'Edit' : 'Preview'}
-              </button>
-            </div>
-            {#if previewKey === field.key}
-              <div class="border border-border rounded-md p-2 prose prose-sm max-w-none min-h-[60px] bg-gray-50/50">
-                {@html marked.parse(slide.data.text?.[field.key] || '', { async: false })}
-              </div>
-            {:else}
-              <textarea
-                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px] font-mono"
-                placeholder="Markdown supported..."
-                value={slide.data.text?.[field.key] || ''}
-                oninput={(e) => updateText(field.key, e.currentTarget.value)}
-              ></textarea>
-            {/if}
-          </div>
-        {/each}
+          {/each}
+        </div>
       </div>
     {/if}
   </div>
@@ -176,17 +223,18 @@
       Layout
     </button>
     {#if layoutOpen}
-      <div class="mt-2 grid grid-cols-2 gap-1.5">
+      <div class="mt-2 space-y-1">
         {#each layoutList as l}
           <button
-            class="px-2 py-2 rounded-md text-xs text-left transition-colors cursor-pointer
-              {slide.layout === l.id ? 'bg-primary text-primary-foreground' : 'bg-muted/50 hover:bg-accent text-foreground'}"
+            class="w-full px-3 py-2 rounded-md text-left transition-colors cursor-pointer
+              {slide.layout === l.id ? 'bg-primary text-primary-foreground' : 'hover:bg-accent text-foreground'}"
             onclick={() => changeLayout(l.id)}
           >
-            <div class="font-medium">{l.displayName}</div>
+            <div class="font-medium text-xs">{l.displayName}</div>
             {#if l.description}
-              <div class="opacity-60 text-[10px] mt-0.5">{l.description}</div>
+              <div class="{slide.layout === l.id ? 'opacity-70' : 'text-muted-foreground'} text-[10px] mt-0.5">{l.description}</div>
             {/if}
+            <div class="{slide.layout === l.id ? 'opacity-60' : 'text-muted-foreground/60'} text-[9px] mt-0.5">{formatSlotSummary(l.schema)}</div>
           </button>
         {/each}
       </div>

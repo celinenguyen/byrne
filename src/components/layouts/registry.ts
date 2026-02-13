@@ -1,5 +1,5 @@
 import type { Component } from 'svelte';
-import type { LayoutFieldSchema } from '../../lib/types';
+import type { LayoutSettings } from '../../lib/types';
 import TitleLayout from './TitleLayout.svelte';
 import ImageLayout from './ImageLayout.svelte';
 import TextLayout from './TextLayout.svelte';
@@ -11,15 +11,23 @@ import QuoteLayout from './QuoteLayout.svelte';
 import ArenaBlockLayout from './ArenaBlockLayout.svelte';
 import ArticleLayout from './ArticleLayout.svelte';
 
+import titleSettings from './TitleLayout.settings.json';
+import imageSettings from './ImageLayout.settings.json';
+import textSettings from './TextLayout.settings.json';
+import image2UpSettings from './Image2UpLayout.settings.json';
+import image3UpSettings from './Image3UpLayout.settings.json';
+import tweetSettings from './TweetLayout.settings.json';
+import substackSettings from './SubstackLayout.settings.json';
+import quoteSettings from './QuoteLayout.settings.json';
+import arenaBlockSettings from './ArenaBlockLayout.settings.json';
+import articleSettings from './ArticleLayout.settings.json';
+
 export interface LayoutDefinition {
   id: string;
   displayName: string;
   description?: string;
   component: Component;
-  schema: {
-    images?: LayoutFieldSchema;
-    text?: LayoutFieldSchema;
-  };
+  schema: LayoutSettings;
 }
 
 export const layouts: Record<string, LayoutDefinition> = {
@@ -28,102 +36,101 @@ export const layouts: Record<string, LayoutDefinition> = {
     displayName: 'Title',
     description: 'Large heading with optional subtitle',
     component: TitleLayout as unknown as Component,
-    schema: {
-      text: {
-        min: 1,
-        max: 2,
-        labels: { '1': 'Title', '2': 'Subtitle' },
-      },
-    },
+    schema: titleSettings,
   },
   Image: {
     id: 'Image',
     displayName: 'Image',
     description: 'Full-width image with caption',
     component: ImageLayout as unknown as Component,
-    schema: {
-      images: { min: 1, max: 1, labels: { '1': 'Image' } },
-      text: { min: 0, max: 1, labels: { '1': 'Caption' } },
-    },
+    schema: imageSettings,
   },
   Text: {
     id: 'Text',
     displayName: 'Text',
     description: 'Full-slide text block',
     component: TextLayout as unknown as Component,
-    schema: {
-      text: { min: 1, max: 1, labels: { '1': 'Body' } },
-    },
+    schema: textSettings,
   },
   Image2Up: {
     id: 'Image2Up',
     displayName: '2-Up Image',
     description: 'Two images side by side',
     component: Image2UpLayout as unknown as Component,
-    schema: {
-      images: { min: 2, max: 2, labels: { '1': 'Left image', '2': 'Right image' } },
-      text: { min: 0, max: 2, labels: { '1': 'Left caption', '2': 'Right caption' } },
-    },
+    schema: image2UpSettings,
   },
   Image3Up: {
     id: 'Image3Up',
     displayName: '3-Up Image',
     description: 'Three images in a row',
     component: Image3UpLayout as unknown as Component,
-    schema: {
-      images: { min: 3, max: 3, labels: { '1': 'Image 1', '2': 'Image 2', '3': 'Image 3' } },
-      text: { min: 0, max: 3, labels: { '1': 'Caption 1', '2': 'Caption 2', '3': 'Caption 3' } },
-    },
+    schema: image3UpSettings,
   },
   Tweet: {
     id: 'Tweet',
     displayName: 'Tweet',
     description: 'Tweet screenshot with attribution',
     component: TweetLayout as unknown as Component,
-    schema: {
-      images: { min: 1, max: 1, labels: { '1': 'Screenshot' } },
-      text: { min: 0, max: 2, labels: { '1': 'Attribution', '2': 'Commentary' } },
-    },
+    schema: tweetSettings,
   },
   Substack: {
     id: 'Substack',
     displayName: 'Substack',
     description: 'Article preview card',
     component: SubstackLayout as unknown as Component,
-    schema: {
-      images: { min: 0, max: 1, labels: { '1': 'Thumbnail' } },
-      text: { min: 1, max: 2, labels: { '1': 'Title', '2': 'Excerpt' } },
-    },
+    schema: substackSettings,
   },
   Quote: {
     id: 'Quote',
     displayName: 'Quote',
     description: 'Large pull-quote with attribution',
     component: QuoteLayout as unknown as Component,
-    schema: {
-      text: { min: 1, max: 2, labels: { '1': 'Quote', '2': 'Attribution' } },
-    },
+    schema: quoteSettings,
   },
   ArenaBlock: {
     id: 'ArenaBlock',
     displayName: 'Are.na Block',
     description: 'Are.na-style block display',
     component: ArenaBlockLayout as unknown as Component,
-    schema: {
-      images: { min: 0, max: 1, labels: { '1': 'Block image' } },
-      text: { min: 0, max: 2, labels: { '1': 'Title', '2': 'Channel' } },
-    },
+    schema: arenaBlockSettings,
   },
   Article: {
     id: 'Article',
     displayName: 'Article',
     description: 'Article screenshot + commentary',
     component: ArticleLayout as unknown as Component,
-    schema: {
-      images: { min: 1, max: 1, labels: { '1': 'Screenshot' } },
-      text: { min: 0, max: 1, labels: { '1': 'Commentary' } },
-    },
+    schema: articleSettings,
   },
 };
 
 export const layoutList = Object.values(layouts);
+
+export function formatSlotSummary(schema: LayoutSettings): string {
+  const imgCount = schema.images ? Object.keys(schema.images).length : 0;
+  const imgReq = schema.images
+    ? Object.values(schema.images).filter((s) => s.type === 'required').length
+    : 0;
+  const txtCount = schema.text ? Object.keys(schema.text).length : 0;
+  const txtReq = schema.text
+    ? Object.values(schema.text).filter((s) => s.type === 'required').length
+    : 0;
+
+  const imgStr = imgCount === 0
+    ? '0 images'
+    : imgReq === imgCount
+      ? `${imgCount} image${imgCount !== 1 ? 's' : ''}`
+      : `${imgReq}–${imgCount} images`;
+  const txtStr = txtCount === 0
+    ? '0 text'
+    : txtReq === txtCount
+      ? `${txtCount} text`
+      : `${txtReq}–${txtCount} text`;
+  return `${imgStr}, ${txtStr}`;
+}
+
+/** Get the first text slot key for a layout (for preview in slide list) */
+export function getFirstTextKey(layoutId: string): string | undefined {
+  const def = layouts[layoutId];
+  if (!def?.schema.text) return undefined;
+  return Object.keys(def.schema.text)[0];
+}

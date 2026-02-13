@@ -4,13 +4,12 @@
 
   interface Props {
     data: SlideData;
-    context?: 'desktop' | 'mobile';
   }
   let { data }: Props = $props();
 
-  let screenshot = $derived(data.images?.['1'] || '');
-  let attribution = $derived(data.text?.['1'] || '');
-  let commentary = $derived(data.text?.['2'] || '');
+  let screenshot = $derived(data.images?.['screenshot'] || '');
+  let attribution = $derived(data.text?.['attribution'] || '');
+  let commentary = $derived(data.text?.['commentary'] || '');
 </script>
 
 <BaseLayout>

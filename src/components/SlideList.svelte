@@ -7,6 +7,7 @@
     deleteSlide,
     reorderSlide,
   } from '../lib/store';
+  import { getFirstTextKey } from './layouts/registry';
 
   let allSlides = $derived($slides);
   let idx = $derived($currentSlideIndex);
@@ -98,6 +99,7 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="space-y-0" data-slide-list ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
     {#each allSlides as slide, i}
+      {@const firstTextKey = getFirstTextKey(slide.layout)}
       <!-- Drop indicator before this item -->
       {#if dropSlot === i}
         <div class="h-8 mx-1 my-1 rounded-md border-2 border-dashed border-primary/40 bg-primary/5 transition-all"></div>
@@ -123,9 +125,9 @@
           <span class="text-xs opacity-50 tabular-nums w-4">{i + 1}</span>
           <span class="font-medium truncate">{slide.layout}</span>
         </div>
-        {#if slide.data.text?.['1']}
+        {#if firstTextKey && slide.data.text?.[firstTextKey]}
           <p class="mt-0.5 text-xs truncate opacity-60 ml-10">
-            {slide.data.text['1'].slice(0, 50)}
+            {slide.data.text[firstTextKey].slice(0, 50)}
           </p>
         {/if}
         <button
