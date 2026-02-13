@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "Year in Review 2026",
+    "author": "Celine Nguyen",
+    "startDate": "2026-02-13",
+    "endDate": "2026-12-31"
+  },
+  "slides": [
+    {
+      "id": "PQv0Zj3DWTKSsoxGUSgYQ",
+      "order": 0,
+      "layout": "Title",
+      "data": {
+        "images": {},
+        "text": {
+          "1": "\"literature\" is \"dying\"",
+          "2": ""
+        }
+      },
+      "notes": ""
+    },
+    {
+      "id": "15zr4FqgCNdWiQtDlGtvL",
+      "order": 1,
+      "layout": "Image",
+      "data": {
+        "images": {},
+        "text": {
+          "1": "what happened to culture in 2026?"
+        }
+      },
+      "notes": ""
+    }
+  ]
+}

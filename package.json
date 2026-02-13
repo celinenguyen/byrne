@@ -1,0 +1,26 @@
+{
+  "name": "year-in-review",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.3",
+    "@astrojs/svelte": "^7.2.5",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "bits-ui": "^2.15.5",
+    "clsx": "^2.1.1",
+    "marked": "^17.0.2",
+    "nanoid": "^5.1.6",
+    "svelte": "^5.50.3",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
+  }
+}
