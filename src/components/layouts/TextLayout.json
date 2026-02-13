@@ -1,5 +1,5 @@
 {
   "text": {
-    "body": { "displayName": "Body", "type": "required" }
+    "body": { "displayName": "body", "type": "required" }
   }
 }

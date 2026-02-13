@@ -9,7 +9,7 @@
     slides,
     currentSlideIndex,
     addSlide,
-    deleteSlide,
+    softDeleteSlide,
     duplicateSlide,
     reorderSlide,
   } from '../lib';
@@ -105,15 +105,17 @@
   }
 </script>
 
-<div class="px-3 py-4 flex flex-col gap-6 bg-stone-50/5">
-  <Button class="mx-2 shadow-s text-stone-700 border-stone-200 bg-white hover:bg-stone-50 transition-colors" variant="outline" size="sm" onclick={() => addSlide()}>
+<div class="flex justify-center sticky top-0 z-10 bg-white/40 px-3 py-2 border-b border-border backdrop-blur-sm">
+  <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
     {#snippet children()}
       Add slide
     {/snippet}
   </Button>
+</div>
 
+<div class="px-3 py-4 flex flex-col gap-6 bg-muted/5 inset-shadow-sm">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="bg-stone-50/5 space-y-0 flex flex-col gap-2" data-slide-list bind:this={listContainer} ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
+  <div class="bg-muted/5 space-y-0 flex flex-col gap-2" data-slide-list bind:this={listContainer} ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
     {#each allSlides as slide, i}
       <!-- Drop indicator before this item -->
       {#if dropSlot === i}
@@ -128,7 +130,7 @@
               {...props}
               data-slide-thumb={i}
               class="w-full text-left px-2 py-2 rounded-md text-sm transition-colors cursor-grab group relative select-none
-                {i === idx ? 'ring-1 ring-stone-200 bg-stone-100' : 'hover:bg-stone-100'}
+                {i === idx ? 'ring-1 ring-border bg-muted' : 'hover:bg-muted'}
                 {dragIndex === i ? 'opacity-30' : ''}"
               onclick={() => selectSlide(i)}
               onkeydown={(e) => { if (e.key === 'Enter') selectSlide(i); }}
@@ -144,8 +146,8 @@
               <div class="relative">
                 <SlideThumbnail {slide} class="rounded-xs {i === idx ? 'shadow-md' : 'shadow-sm'}" />
                 <button
-                  class="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 p-[0.3rem] rounded-full bg-stone-400 text-white hover:bg-stone-600 cursor-pointer transition-colors"
-                  onclick={(e) => { e.stopPropagation(); deleteSlide(slide.id); }}
+                  class="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 p-[0.3rem] rounded-full bg-muted-foreground text-white hover:bg-foreground cursor-pointer transition-colors"
+                  onclick={(e) => { e.stopPropagation(); softDeleteSlide(slide.id); }}
                 >
                   <Icon name="x" size={13} />
                 </button>
@@ -165,7 +167,7 @@
             <ContextMenu.Separator class="my-1 h-px bg-border" />
             <ContextMenu.Item
               class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
-              onSelect={() => deleteSlide(slide.id)}
+              onSelect={() => softDeleteSlide(slide.id)}
             >
               <Icon name="trash" size={14} />
               Delete

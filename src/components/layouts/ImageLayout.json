@@ -1,8 +1,8 @@
 {
   "images": {
-    "image": { "displayName": "Image", "type": "required" }
+    "image": { "displayName": "image", "type": "required" }
   },
   "text": {
-    "caption": { "displayName": "Caption", "type": "optional" }
+    "caption": { "displayName": "caption", "type": "optional" }
   }
 }

@@ -14,11 +14,11 @@
 
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full px-16 text-center">
-    <h1 data-slot="text:title" class="text-5xl font-bold tracking-tight text-gray-900 leading-tight">
+    <h1 data-slot="text:title" class="text-5xl font-bold tracking-tight text-foreground leading-tight">
       {title || settings.text.title.placeholder}
     </h1>
     {#if subtitle}
-      <p data-slot="text:subtitle" class="mt-4 text-xl text-gray-500">{subtitle}</p>
+      <p data-slot="text:subtitle" class="mt-4 text-xl text-muted-foreground">{subtitle}</p>
     {/if}
   </div>
 </BaseLayout>

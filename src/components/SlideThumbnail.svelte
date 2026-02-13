@@ -32,7 +32,7 @@
       <svelte:component this={layoutDef.component} data={slide.data} />
     </div>
   {:else if !layoutDef}
-    <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-[8px]">
+    <div class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-[8px]">
       {slide.layout}
     </div>
   {/if}

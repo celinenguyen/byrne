@@ -148,12 +148,8 @@ Or add rules directly in `src/styles/globals.css` where they apply without scopi
 | **Text** | — | — | `body` |
 | **Image** | — | `image` | `caption` |
 | **Image2Up** | — | `left`, `right` | `leftCaption`, `rightCaption` |
-| **Article** | `url` | `screenshot` | `title`, `commentary` |
-| **Tweet** | — | `screenshot` | `attribution`, `commentary` |
-| **Substack** | — | `thumbnail` | `title`, `excerpt` |
-| **Quote** | — | — | `quote`, `attribution` |
-| **ArenaBlock** | `url` | `blockImage` | `title`, `channel` |
 
 ## Potential future work
 
 - **Thumbnail image optimization**: If thumbnail image loading in the slide list becomes a performance bottleneck (many slides with large images), a server-side image resizing approach using a sharp-based `/api/thumbnail` endpoint could be layered on to serve pre-scaled images to the SlideThumbnail component.
+- **Speaker notes**: Add a `notes` field back to slides for internal notes that aren't rendered in the slide itself. Could include a collapsible "Notes" section in SlideDetails and a presenter view that shows notes alongside the current slide.

@@ -4,7 +4,7 @@
   import SlideList from './SlideList.svelte';
   import SlideView from './SlideView.svelte';
   import SlideDetails from './SlideDetails.svelte';
-  import Icon from './ui/Icon.svelte';
+  import PresentView from './PresentView.svelte';
   import {
     loadDeck,
     viewMode,
@@ -13,15 +13,19 @@
     currentSlideIndex,
     navigateSlide,
     duplicateSlide,
+    softDeleteSlide,
+    undoDelete,
+    pendingDelete,
   } from '../lib/store';
 
   let mode = $derived($viewMode);
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
+  let pending = $derived($pendingDelete);
 
   // Pane widths (percentages)
-  let leftWidth = $state(20);
-  let rightWidth = $state(30);
+  let leftWidth = $state(15);
+  let rightWidth = $state(25);
 
   // Collapsible details panel
   let detailsOpen = $state(true);
@@ -148,6 +152,23 @@
     if (mode === 'edit') {
       if (isInsideDetailsPanel(e.target)) return;
 
+      // Delete / Backspace: soft-delete current slide
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        const s = $currentSlide;
+        if (s) {
+          e.preventDefault();
+          softDeleteSlide(s.id);
+        }
+        return;
+      }
+      // Cmd+Z: undo pending delete (otherwise let browser handle for text undo)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        if (pending) {
+          e.preventDefault();
+          undoDelete();
+          return;
+        }
+      }
       // Cmd+C: copy current slide
       if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         copiedSlideIndex = $currentSlideIndex;
@@ -233,51 +254,18 @@
           onmousedown={() => startResize('right')}
         ></div>
         <div class="h-full overflow-y-auto border-l border-border" style="width: {rightWidth}%" data-details-panel>
-          <div class="flex items-center justify-between px-3 py-2 border-b border-border">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Edit slide</span>
-            <button
-              class="p-1 rounded hover:bg-accent cursor-pointer text-muted-foreground"
-              onclick={() => { detailsOpen = false; }}
-              title="Collapse panel"
-            >
-              <Icon name="chevron-right" size={14} />
-            </button>
-          </div>
-          {#if slide}
-            <SlideDetails {slide} />
-          {/if}
+          <SlideDetails slide={slide} onClose={() => { detailsOpen = false; }} />
         </div>
       {:else}
-        <!-- Collapsed: thin strip with expand button -->
-        <div class="h-full flex flex-col items-center border-l border-border bg-muted/20 px-1 pt-2">
-          <button
-            class="p-1 rounded hover:bg-accent cursor-pointer text-muted-foreground"
-            onclick={() => { detailsOpen = true; }}
-            title="Expand panel"
-          >
-            <Icon name="chevron-left" size={14} />
-          </button>
-          <span class="text-[9px] text-muted-foreground mt-1 [writing-mode:vertical-lr]">Edit slide</span>
-        </div>
+        <SlideDetails slide={slide} collapsed onExpand={() => { detailsOpen = true; }} />
       {/if}
 
     {:else if mode === 'present'}
-      <!-- Present: full viewport single slide -->
-      <div class="w-full h-full flex items-center justify-center bg-black">
-        {#if slide}
-          <div class="w-full h-full max-h-screen flex items-center justify-center">
-            <div class="w-full" style="max-height: 100vh;">
-              <SlideView {slide} />
-            </div>
-          </div>
-        {:else}
-          <div class="text-white/50 text-sm">No slides. Press Escape to exit.</div>
-        {/if}
-      </div>
-      <!-- Minimal nav overlay -->
-      <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white/70 text-xs px-3 py-1.5 rounded-full">
-        {$currentSlideIndex + 1} / {allSlides.length} &middot; Esc to exit
-      </div>
+      <PresentView
+        slide={slide}
+        currentIndex={$currentSlideIndex}
+        slideCount={allSlides.length}
+      />
     {/if}
   </div>
 </div>

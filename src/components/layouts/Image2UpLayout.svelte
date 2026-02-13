@@ -19,27 +19,27 @@
 <BaseLayout>
   <div class="grid grid-cols-2 gap-4 h-full p-6">
     <div class="flex flex-col">
-      <div data-slot="image:left" class="flex-1 min-h-0 flex items-center justify-center bg-gray-50 rounded">
+      <div data-slot="image:left" class="flex-1 min-h-0 flex items-center justify-center bg-muted rounded">
         {#if imgLeft}
           <img src={imgLeft} alt="" class="max-w-full max-h-full object-contain" />
         {:else}
-          <div class="text-gray-300 text-sm">Image 1</div>
+          <div class="text-stone-300 text-sm">Image 1</div>
         {/if}
       </div>
       {#if capLeft}
-        <div data-slot="text:leftCaption" class="mt-2 text-xs text-gray-500 prose prose-sm max-w-none">{@html capLeftHtml}</div>
+        <div data-slot="text:leftCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none">{@html capLeftHtml}</div>
       {/if}
     </div>
     <div class="flex flex-col">
-      <div data-slot="image:right" class="flex-1 min-h-0 flex items-center justify-center bg-gray-50 rounded">
+      <div data-slot="image:right" class="flex-1 min-h-0 flex items-center justify-center bg-muted rounded">
         {#if imgRight}
           <img src={imgRight} alt="" class="max-w-full max-h-full object-contain" />
         {:else}
-          <div class="text-gray-300 text-sm">Image 2</div>
+          <div class="text-stone-300 text-sm">Image 2</div>
         {/if}
       </div>
       {#if capRight}
-        <div data-slot="text:rightCaption" class="mt-2 text-xs text-gray-500 prose prose-sm max-w-none">{@html capRightHtml}</div>
+        <div data-slot="text:rightCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none">{@html capRightHtml}</div>
       {/if}
     </div>
   </div>

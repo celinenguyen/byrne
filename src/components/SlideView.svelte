@@ -73,7 +73,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-  class="w-full shadow-sm rounded-sm overflow-hidden border border-border/50 relative"
+  class="w-full shadow-sm rounded-xs overflow-hidden border relative"
   bind:this={containerEl}
   onmouseover={handleMouseOver}
   onmouseout={handleMouseOut}
@@ -82,17 +82,17 @@
   {#if layoutDef}
     <svelte:component this={layoutDef.component} data={slide.data} />
   {:else}
-    <div class="aspect-video flex items-center justify-center bg-gray-100 text-gray-400 text-sm">
+    <div class="aspect-video flex items-center justify-center bg-muted text-muted-foreground text-sm">
       Unknown layout: {slide.layout}
     </div>
   {/if}
 
   {#if interactive && hoveredEl && hoveredSlotInfo && overlayStyle}
     <div
-      class="absolute pointer-events-none"
-      style="{overlayStyle};outline:2px solid #E8630A;outline-offset:-1px;z-index:10"
+      class="absolute pointer-events-none rounded-xs outline-1 outline-orange-500/50 -outline-offset-1 z-10"
+      style="{overlayStyle}"
     >
-      <div class="absolute top-0 right-0 bg-[#E8630A] text-white text-[10px] font-medium px-1.5 py-0.5 leading-tight">
+      <div class="absolute -top-[0.6rem] -right-[0.4rem] rounded-[0.8rem] bg-orange-600 text-white text-xs px-2 py-1 leading-tight">
         {hoveredSlotInfo.displayName}
       </div>
     </div>

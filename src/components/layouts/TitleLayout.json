@@ -1,6 +1,6 @@
 {
   "text": {
-    "title": { "displayName": "Title", "type": "required", "placeholder": "Untitled" },
-    "subtitle": { "displayName": "Subtitle", "type": "optional" }
+    "title": { "displayName": "title", "type": "required", "placeholder": "Untitled" },
+    "subtitle": { "displayName": "subtitle", "type": "optional" }
   }
 }

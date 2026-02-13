@@ -20,6 +20,11 @@ export const deck = writable<Deck | null>(null);
 export const currentSlideIndex = writable<number>(initial.slide);
 export const viewMode = writable<'edit' | 'present'>(initial.view);
 export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
+export const pendingDelete = writable<{
+  slide: Slide;
+  index: number;
+  timer: ReturnType<typeof setTimeout>;
+} | null>(null);
 
 // Sync stores -> URL
 function syncURL() {
@@ -53,6 +58,12 @@ export async function loadDeck() {
 }
 
 export async function saveDeck() {
+  // If a soft-delete is pending, finalize it (slide is already removed from deck)
+  const pending = get(pendingDelete);
+  if (pending) {
+    clearTimeout(pending.timer);
+    pendingDelete.set(null);
+  }
   const d = get(deck);
   if (!d) return;
   await fetch('/api/deck', {
@@ -88,7 +99,6 @@ export function addSlide(layout: string = 'Title') {
     order: insertAfter + 1,
     layout,
     data: { images: [], text: [], url: '' },
-    notes: '',
   });
 }
 
@@ -104,7 +114,6 @@ export function duplicateSlide(index: number) {
       text: [...source.data.text],
       url: source.data.url,
     },
-    notes: source.notes,
   });
 }
 
@@ -134,6 +143,63 @@ export function deleteSlide(id: string) {
   } else if (count === 0) {
     currentSlideIndex.set(0);
   }
+  debouncedSave();
+}
+
+export function commitPendingDelete() {
+  const pending = get(pendingDelete);
+  if (!pending) return;
+  clearTimeout(pending.timer);
+  pendingDelete.set(null);
+  saveDeck();
+}
+
+export function softDeleteSlide(id: string) {
+  commitPendingDelete();
+
+  const d = get(deck);
+  if (!d) return;
+  const slideIndex = d.slides.findIndex((s) => s.id === id);
+  if (slideIndex === -1) return;
+  const slide = { ...d.slides[slideIndex], data: { ...d.slides[slideIndex].data } };
+
+  // Remove from UI (no save)
+  deck.update((d) => {
+    if (!d) return d;
+    d.slides = d.slides
+      .filter((s) => s.id !== id)
+      .map((s, i) => ({ ...s, order: i }));
+    return { ...d };
+  });
+
+  const count = get(slides).length;
+  const idx = get(currentSlideIndex);
+  if (idx >= count && count > 0) {
+    currentSlideIndex.set(count - 1);
+  } else if (count === 0) {
+    currentSlideIndex.set(0);
+  }
+
+  const timer = setTimeout(() => commitPendingDelete(), 5000);
+  pendingDelete.set({ slide, index: slideIndex, timer });
+}
+
+export function undoDelete() {
+  const pending = get(pendingDelete);
+  if (!pending) return;
+  clearTimeout(pending.timer);
+
+  deck.update((d) => {
+    if (!d) return d;
+    const { slide, index } = pending;
+    const before = d.slides.slice(0, index);
+    const after = d.slides.slice(index);
+    d.slides = [...before, slide, ...after].map((s, i) => ({ ...s, order: i }));
+    return { ...d };
+  });
+
+  currentSlideIndex.set(pending.index);
+  pendingDelete.set(null);
   debouncedSave();
 }
 

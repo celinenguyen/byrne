@@ -16,7 +16,6 @@ export interface Slide {
   order: number;
   layout: string;
   data: SlideData;
-  notes: string;
 }
 
 export interface Deck {

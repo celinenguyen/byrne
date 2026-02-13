@@ -4,33 +4,33 @@
 
 @theme {
   --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(222.2 84% 4.9%);
+  --color-foreground: hsl(24 10% 10%);               /* stone-900 */
   --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(222.2 84% 4.9%);
+  --color-card-foreground: hsl(24 10% 10%);           /* stone-900 */
   --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(222.2 84% 4.9%);
-  --color-primary: hsl(222.2 47.4% 11.2%);
-  --color-primary-foreground: hsl(210 40% 98%);
-  --color-secondary: hsl(210 40% 96.1%);
-  --color-secondary-foreground: hsl(222.2 47.4% 11.2%);
-  --color-muted: hsl(210 40% 96.1%);
-  --color-muted-foreground: hsl(215.4 16.3% 46.9%);
-  --color-accent: hsl(210 40% 96.1%);
-  --color-accent-foreground: hsl(222.2 47.4% 11.2%);
+  --color-popover-foreground: hsl(24 10% 10%);        /* stone-900 */
+  --color-primary: hsl(24 10% 10%);                   /* stone-900 */
+  --color-primary-foreground: hsl(60 9.1% 97.8%);    /* stone-50 */
+  --color-secondary: hsl(60 4.8% 95.9%);             /* stone-100 */
+  --color-secondary-foreground: hsl(24 10% 10%);      /* stone-900 */
+  --color-muted: hsl(60 4.8% 95.9%);                 /* stone-100 */
+  --color-muted-foreground: hsl(25 5.3% 44.7%);      /* stone-500 */
+  --color-accent: hsl(60 4.8% 95.9%);                /* stone-100 */
+  --color-accent-foreground: hsl(24 10% 10%);         /* stone-900 */
   --color-destructive: hsl(0 84.2% 60.2%);
-  --color-destructive-foreground: hsl(210 40% 98%);
-  --color-border: hsl(214.3 31.8% 91.4%);
-  --color-input: hsl(214.3 31.8% 91.4%);
-  --color-ring: hsl(222.2 84% 4.9%);
+  --color-destructive-foreground: hsl(60 9.1% 97.8%); /* stone-50 */
+  --color-border: hsl(20 5.9% 90%);                  /* stone-200 */
+  --color-input: hsl(20 5.9% 90%);                   /* stone-200 */
+  --color-ring: hsl(24 10% 10%);                      /* stone-900 */
   --radius: 0.5rem;
-  --color-sidebar-background: hsl(0 0% 98%);
-  --color-sidebar-foreground: hsl(240 5.3% 26.1%);
-  --color-sidebar-primary: hsl(240 5.9% 10%);
-  --color-sidebar-primary-foreground: hsl(0 0% 98%);
-  --color-sidebar-accent: hsl(240 4.8% 95.9%);
-  --color-sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --color-sidebar-border: hsl(220 13% 91%);
-  --color-sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --color-sidebar-background: hsl(60 9.1% 97.8%);    /* stone-50 */
+  --color-sidebar-foreground: hsl(24 10% 10%);        /* stone-900 */
+  --color-sidebar-primary: hsl(24 10% 10%);           /* stone-900 */
+  --color-sidebar-primary-foreground: hsl(60 9.1% 97.8%); /* stone-50 */
+  --color-sidebar-accent: hsl(60 4.8% 95.9%);        /* stone-100 */
+  --color-sidebar-accent-foreground: hsl(24 10% 10%); /* stone-900 */
+  --color-sidebar-border: hsl(20 5.9% 90%);          /* stone-200 */
+  --color-sidebar-ring: hsl(24 10% 10%);              /* stone-900 */
 }
 
 @layer base {
