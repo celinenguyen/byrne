@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
-  import { layouts, getSlotInfoFromClass } from './layouts/registry';
+  import { layouts, getSlotInfo } from './layouts/registry';
   import { focusSlot } from '../lib/store';
 
   interface Props {
@@ -30,10 +30,8 @@
     if (!target || !(target instanceof HTMLElement)) return null;
     let el: HTMLElement | null = target;
     while (el && el !== containerEl) {
-      for (const cls of el.classList) {
-        const info = getSlotInfoFromClass(slide.layout, cls);
-        if (info) return { el, info };
-      }
+      const info = getSlotInfo(slide.layout, el);
+      if (info) return { el, info };
       el = el.parentElement;
     }
     return null;

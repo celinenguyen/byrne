@@ -1,6 +1,11 @@
 # Year in Review 2026
 
-A slide-based presentation builder built with Astro, Svelte 5, and Tailwind CSS.
+a frivolous little app for me to make presentations/decks/reports like
+- https://squad.metalabel.com/acf2026
+- https://khole.net/
+- https://x.com/mattstasoff/status/1995531653083517071
+
+
 
 ## Creating a new layout
 

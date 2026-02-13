@@ -51,14 +51,15 @@ export const layouts: Record<string, LayoutDefinition> = {
 
 export const layoutList = Object.values(layouts);
 
-export function getSlotInfoFromClass(
+export function getSlotInfo(
   layoutId: string,
-  className: string,
+  el: HTMLElement,
 ): { type: 'image' | 'text'; index: number; displayName: string } | null {
-  const match = className.match(/^layout-(text|image)-(.+)$/);
-  if (!match) return null;
-  const slotType = match[1] as 'text' | 'image';
-  const slotName = match[2];
+  const slotAttr = el.dataset.slot;
+  if (!slotAttr) return null;
+  const [slotType, slotName] = slotAttr.split(':');
+  if ((slotType !== 'text' && slotType !== 'image') || !slotName) return null;
+
   const def = layouts[layoutId];
   if (!def) return null;
 

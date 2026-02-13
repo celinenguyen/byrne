@@ -67,46 +67,9 @@ function debouncedSave() {
   saveTimeout = setTimeout(() => saveDeck(), 500);
 }
 
-export function addSlide(layout: string = 'Title') {
-  const insertAfter = get(currentSlideIndex);
+function insertSlideAfter(index: number, newSlide: Slide) {
   deck.update((d) => {
     if (!d) return d;
-    const newSlide: Slide = {
-      id: nanoid(),
-      order: insertAfter + 1,
-      layout,
-      data: { images: [], text: [], url: '' },
-      notes: '',
-    };
-    // Shift slides after the insertion point
-    d.slides = [
-      ...d.slides.slice(0, insertAfter + 1),
-      newSlide,
-      ...d.slides.slice(insertAfter + 1).map((s) => ({ ...s, order: s.order + 1 })),
-    ];
-    return { ...d };
-  });
-  currentSlideIndex.set(insertAfter + 1);
-  debouncedSave();
-}
-
-export function duplicateSlide(index: number) {
-  const allSlides = get(slides);
-  const source = allSlides[index];
-  if (!source) return;
-  deck.update((d) => {
-    if (!d) return d;
-    const newSlide: Slide = {
-      id: nanoid(),
-      order: index + 1,
-      layout: source.layout,
-      data: {
-        images: [...source.data.images],
-        text: [...source.data.text],
-        url: source.data.url,
-      },
-      notes: source.notes,
-    };
     d.slides = [
       ...d.slides.slice(0, index + 1),
       newSlide,
@@ -118,6 +81,33 @@ export function duplicateSlide(index: number) {
   debouncedSave();
 }
 
+export function addSlide(layout: string = 'Title') {
+  const insertAfter = get(currentSlideIndex);
+  insertSlideAfter(insertAfter, {
+    id: nanoid(),
+    order: insertAfter + 1,
+    layout,
+    data: { images: [], text: [], url: '' },
+    notes: '',
+  });
+}
+
+export function duplicateSlide(index: number) {
+  const source = get(slides)[index];
+  if (!source) return;
+  insertSlideAfter(index, {
+    id: nanoid(),
+    order: index + 1,
+    layout: source.layout,
+    data: {
+      images: [...source.data.images],
+      text: [...source.data.text],
+      url: source.data.url,
+    },
+    notes: source.notes,
+  });
+}
+
 export function updateSlide(id: string, updates: Partial<Slide>) {
   deck.update((d) => {
     if (!d) return d;
@@ -127,10 +117,6 @@ export function updateSlide(id: string, updates: Partial<Slide>) {
     return { ...d };
   });
   debouncedSave();
-}
-
-export function updateSlideData(id: string, data: SlideData) {
-  updateSlide(id, { data });
 }
 
 export function deleteSlide(id: string) {
@@ -179,3 +165,4 @@ export function navigateSlide(direction: 'prev' | 'next') {
     return Math.min(count - 1, idx + 1);
   });
 }
+

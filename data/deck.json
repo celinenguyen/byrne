@@ -1,34 +1,51 @@
 {
-  "meta": {
-    "title": "Year in Review 2026",
-    "author": "Celine Nguyen",
-    "startDate": "2026-02-13",
-    "endDate": "2026-12-31"
-  },
   "slides": [
     {
-      "id": "y_TcYMvo57GJUy-yhTUmo",
+      "id": "J82xrXboEeaPqdN1aFQQF",
       "order": 0,
-      "layout": "Article",
+      "layout": "Title",
       "data": {
-        "images": [
-          "https://d2w9rnfcy7mm78.cloudfront.net/43424140/original_e87f36b5ec5d220b451a6a25948f1704.webp?1770566103?bc=0"
-        ],
+        "images": [],
         "text": [
-          "End of year presentation"
+          "Here's some text!"
         ],
         "url": ""
       },
       "notes": ""
     },
     {
-      "id": "J82xrXboEeaPqdN1aFQQF",
+      "id": "m_tvMhwPGXe9NmJ6ZFogD",
       "order": 1,
+      "layout": "Text",
+      "data": {
+        "images": [],
+        "text": [
+          "questions for the culture",
+          "here's a subtitle"
+        ],
+        "url": ""
+      },
+      "notes": ""
+    },
+    {
+      "id": "ej0Q6h16s9qfCdVPaOrzD",
+      "order": 2,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      },
+      "notes": ""
+    },
+    {
+      "id": "HT7PTmshvfROKwWoMRBc-",
+      "order": 3,
       "layout": "Title",
       "data": {
         "images": [],
         "text": [
-          "Always a title slide"
+          "questions for the culture in 2026"
         ],
         "url": ""
       },

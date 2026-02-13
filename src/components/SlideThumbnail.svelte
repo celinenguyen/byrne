@@ -4,8 +4,9 @@
 
   interface Props {
     slide: Slide;
+    class?: string;
   }
-  let { slide }: Props = $props();
+  let { slide, class: className = '' }: Props = $props();
 
   let layoutDef = $derived(layouts[slide.layout]);
 
@@ -19,7 +20,7 @@
 </script>
 
 <div
-  class="w-full overflow-hidden relative rounded-sm border border-border/30"
+  class="w-full overflow-hidden relative {className}"
   style="aspect-ratio:16/9"
   bind:clientWidth={containerWidth}
 >

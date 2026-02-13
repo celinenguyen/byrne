@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { Slide, SlideData } from '../lib/types';
+  import type { Slide } from '../lib/types';
   import { updateSlide, focusSlot } from '../lib/store';
   import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
   import AddImagePopover from './AddImagePopover.svelte';
+  import Icon from './ui/Icon.svelte';
 
   interface Props {
     slide: Slide;
@@ -35,63 +36,30 @@
     });
   });
 
-  // Derived slot metadata for images
-  let imageSlots = $derived.by(() => {
-    const schema = layoutDef?.schema.images;
-    const used: { index: number; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
-    if (schema) {
-      Object.values(schema).forEach((def, index) => {
-        used.push({
-          index,
-          isUsed: true,
-          displayName: def.displayName,
-          type: def.type,
-          hasContent: !!slide.data.images?.[index],
-        });
-      });
-    }
-    // Pad to 2 with "not used" entries
-    const notUsed: { index: number; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 2; i++) {
-      notUsed.push({
-        index: i,
-        isUsed: false,
-        displayName: 'not used',
-        type: 'optional',
-        hasContent: false,
-      });
-    }
-    return [...used, ...notUsed];
-  });
+  type SlotMeta = { index: number; isUsed: boolean; displayName: string; type: string; hasContent: boolean };
 
-  // Derived slot metadata for text
-  let textSlots = $derived.by(() => {
-    const schema = layoutDef?.schema.text;
-    const used: { index: number; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
-    if (schema) {
-      Object.values(schema).forEach((def, index) => {
-        used.push({
+  function buildSlots(
+    schema: Record<string, { displayName: string; type: string }> | undefined,
+    dataArray: string[] | undefined,
+    padTo: number = 2,
+  ): SlotMeta[] {
+    const used: SlotMeta[] = schema
+      ? Object.values(schema).map((def, index) => ({
           index,
           isUsed: true,
           displayName: def.displayName,
           type: def.type,
-          hasContent: !!slide.data.text?.[index],
-        });
-      });
+          hasContent: !!dataArray?.[index],
+        }))
+      : [];
+    for (let i = used.length; i < padTo; i++) {
+      used.push({ index: i, isUsed: false, displayName: 'not used', type: 'optional', hasContent: false });
     }
-    // Pad to 2 with "not used" entries
-    const notUsed: { index: number; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 2; i++) {
-      notUsed.push({
-        index: i,
-        isUsed: false,
-        displayName: 'not used',
-        type: 'optional',
-        hasContent: false,
-      });
-    }
-    return [...used, ...notUsed];
-  });
+    return used;
+  }
+
+  let imageSlots = $derived(buildSlots(layoutDef?.schema.images, slide.data.images));
+  let textSlots = $derived(buildSlots(layoutDef?.schema.text, slide.data.text));
 
   function updateImage(index: number, value: string) {
     const images = [...slide.data.images];
@@ -109,20 +77,9 @@
     updateSlide(slide.id, { notes: value });
   }
 
-  function updateUrl(value: string) {
-    const newData: SlideData = {
-      ...slide.data,
-      url: value,
-    };
-    updateSlide(slide.id, { data: newData });
-  }
-
   function changeLayout(layoutId: string) {
     updateSlide(slide.id, { layout: layoutId });
   }
-
-  // Whether the current layout has a URL slot
-  let hasUrlSlot = $derived(!!layoutDef?.schema.url);
 </script>
 
 <div class="p-3 space-y-3 text-sm">
@@ -132,7 +89,7 @@
       class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
       onclick={() => { dataOpen = !dataOpen; }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {dataOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
+      <Icon name="chevron-right" size={12} class="transition-transform {dataOpen ? 'rotate-90' : ''}" />
       Data
     </button>
     {#if dataOpen}
@@ -180,22 +137,6 @@
             </div>
           {/each}
         </div>
-
-        <!-- URL slot -->
-        {#if hasUrlSlot}
-          <div class="space-y-1.5">
-            <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">URL</div>
-            <div class="border-l-2 border-l-primary rounded-md px-1.5 py-1">
-              <input
-                type="text"
-                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background font-mono"
-                placeholder="https://..."
-                value={slide.data.url || ''}
-                oninput={(e) => updateUrl(e.currentTarget.value)}
-              />
-            </div>
-          </div>
-        {/if}
 
         <!-- Text slots -->
         <div class="space-y-2">
@@ -247,7 +188,7 @@
       class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
       onclick={() => { layoutOpen = !layoutOpen; }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {layoutOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
+      <Icon name="chevron-right" size={12} class="transition-transform {layoutOpen ? 'rotate-90' : ''}" />
       Layout
     </button>
     {#if layoutOpen}
@@ -277,7 +218,7 @@
       class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
       onclick={() => { notesOpen = !notesOpen; }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {notesOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
+      <Icon name="chevron-right" size={12} class="transition-transform {notesOpen ? 'rotate-90' : ''}" />
       Notes
     </button>
     {#if notesOpen}
