@@ -1,4 +1,7 @@
 {
+  "url": {
+    "url": { "displayName": "Block URL", "type": "required" }
+  },
   "images": {
     "blockImage": { "displayName": "Block image", "type": "optional" }
   },

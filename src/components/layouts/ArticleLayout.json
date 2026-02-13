@@ -1,8 +1,12 @@
 {
+  "url": {
+    "url": { "displayName": "Article URL", "type": "required" }
+  },
   "images": {
-    "screenshot": { "displayName": "Screenshot", "type": "required" }
+    "screenshot": { "displayName": "Screenshot", "type": "optional" }
   },
   "text": {
+    "title": { "displayName": "Title", "type": "optional" },
     "commentary": { "displayName": "Commentary", "type": "optional" }
   }
 }

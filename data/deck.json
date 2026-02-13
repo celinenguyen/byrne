@@ -7,29 +7,15 @@
   },
   "slides": [
     {
-      "id": "5tnSHH2vQ3fGUq5zLjFCW",
-      "order": 0,
-      "layout": "ArenaBlock",
-      "data": {
-        "images": [
-          "https://images.are.na/eyJidWNrZXQiOiJhcmVuYV9pbWFnZXMiLCJrZXkiOiI0MzQyNDE0MC9vcmlnaW5hbF9lODdmMzZiNWVjNWQyMjBiNDUxYTZhMjU5NDhmMTcwNC53ZWJwIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxMjAwLCJoZWlnaHQiOjEyMDAsImZpdCI6Imluc2lkZSIsIndpdGhvdXRFbmxhcmdlbWVudCI6dHJ1ZX0sIndlYnAiOnsicXVhbGl0eSI6NzV9LCJqcGVnIjp7InF1YWxpdHkiOjc1fSwicm90YXRlIjpudWxsfX0=?bc=0"
-        ],
-        "text": [
-          "Keshi Pearl Earrings — mussels and muscles",
-          "✿ fashion ✿"
-        ],
-        "url": "https://www.are.na/block/43424140"
-      },
-      "notes": ""
-    },
-    {
       "id": "y_TcYMvo57GJUy-yhTUmo",
-      "order": 1,
+      "order": 0,
       "layout": "Article",
       "data": {
-        "images": [],
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/43424140/original_e87f36b5ec5d220b451a6a25948f1704.webp?1770566103?bc=0"
+        ],
         "text": [
-          "Here's a title"
+          "End of year presentation"
         ],
         "url": ""
       },
@@ -37,7 +23,7 @@
     },
     {
       "id": "J82xrXboEeaPqdN1aFQQF",
-      "order": 2,
+      "order": 1,
       "layout": "Title",
       "data": {
         "images": [],
