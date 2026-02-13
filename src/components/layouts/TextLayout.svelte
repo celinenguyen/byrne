@@ -14,8 +14,13 @@
 
 <BaseLayout>
   <div class="flex items-center justify-center h-full px-16 py-12">
-    <div class="prose prose-lg max-w-3xl">
+    <div class="layout-text-body prose prose-lg max-w-3xl">
       {@html bodyHtml}
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .layout-text-body {
+  }
+</style>

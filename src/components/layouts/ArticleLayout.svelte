@@ -15,7 +15,7 @@
 
 <BaseLayout>
   <div class="grid grid-cols-2 h-full">
-    <div class="flex items-center justify-center bg-gray-50 p-4">
+    <div class="layout-image-screenshot flex items-center justify-center bg-gray-50 p-4">
       {#if screenshot}
         <img src={screenshot} alt="" class="max-w-full max-h-full object-contain rounded shadow-sm" />
       {:else}
@@ -23,9 +23,16 @@
       {/if}
     </div>
     <div class="flex items-center p-8">
-      <div class="prose prose-sm max-w-none">
+      <div class="layout-text-commentary prose prose-sm max-w-none">
         {@html commentaryHtml}
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .layout-image-screenshot {
+  }
+  .layout-text-commentary {
+  }
+</style>

@@ -14,11 +14,18 @@
 
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full px-16 text-center">
-    <h1 class="text-5xl font-bold tracking-tight text-gray-900 leading-tight">
+    <h1 class="layout-text-title text-5xl font-bold tracking-tight text-gray-900 leading-tight">
       {title || settings.text.title.placeholder}
     </h1>
     {#if subtitle}
-      <p class="mt-4 text-xl text-gray-500">{subtitle}</p>
+      <p class="layout-text-subtitle mt-4 text-xl text-gray-500">{subtitle}</p>
     {/if}
   </div>
 </BaseLayout>
+
+<style>
+  .layout-text-title {
+  }
+  .layout-text-subtitle {
+  }
+</style>

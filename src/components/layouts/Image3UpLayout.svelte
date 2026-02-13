@@ -19,7 +19,7 @@
   <div class="grid grid-cols-3 gap-3 h-full p-6">
     {#each images as img, i}
       <div class="flex flex-col">
-        <div class="flex-1 min-h-0 flex items-center justify-center bg-gray-50 rounded">
+        <div class="layout-image-image{i + 1} flex-1 min-h-0 flex items-center justify-center bg-gray-50 rounded">
           {#if img.src}
             <img src={img.src} alt="" class="max-w-full max-h-full object-contain" />
           {:else}
@@ -27,9 +27,24 @@
           {/if}
         </div>
         {#if img.cap}
-          <div class="mt-2 text-xs text-gray-500">{@html marked.parse(img.cap, { async: false })}</div>
+          <div class="layout-text-caption{i + 1} mt-2 text-xs text-gray-500">{@html marked.parse(img.cap, { async: false })}</div>
         {/if}
       </div>
     {/each}
   </div>
 </BaseLayout>
+
+<style>
+  .layout-image-image1 {
+  }
+  .layout-image-image2 {
+  }
+  .layout-image-image3 {
+  }
+  .layout-text-caption1 {
+  }
+  .layout-text-caption2 {
+  }
+  .layout-text-caption3 {
+  }
+</style>

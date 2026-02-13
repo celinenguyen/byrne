@@ -14,7 +14,7 @@
 
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full p-8 bg-gray-50">
-    <div class="max-w-lg w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="layout-image-screenshot max-w-lg w-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {#if screenshot}
         <img src={screenshot} alt="" class="w-full" />
       {:else}
@@ -22,10 +22,19 @@
       {/if}
     </div>
     {#if attribution}
-      <p class="mt-3 text-sm text-gray-400">{attribution}</p>
+      <p class="layout-text-attribution mt-3 text-sm text-gray-400">{attribution}</p>
     {/if}
     {#if commentary}
-      <p class="mt-2 text-sm text-gray-600 max-w-lg text-center">{commentary}</p>
+      <p class="layout-text-commentary mt-2 text-sm text-gray-600 max-w-lg text-center">{commentary}</p>
     {/if}
   </div>
 </BaseLayout>
+
+<style>
+  .layout-image-screenshot {
+  }
+  .layout-text-attribution {
+  }
+  .layout-text-commentary {
+  }
+</style>

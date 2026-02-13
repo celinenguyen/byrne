@@ -16,17 +16,28 @@
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full p-8 bg-gray-50">
     <div class="border-2 border-gray-200 bg-white max-w-sm w-full">
-      {#if image}
-        <img src={image} alt="" class="w-full aspect-square object-cover" />
-      {:else}
-        <div class="w-full aspect-square flex items-center justify-center text-gray-300 text-sm">Block image</div>
-      {/if}
+      <div class="layout-image-blockImage">
+        {#if image}
+          <img src={image} alt="" class="w-full aspect-square object-cover" />
+        {:else}
+          <div class="w-full aspect-square flex items-center justify-center text-gray-300 text-sm">Block image</div>
+        {/if}
+      </div>
       <div class="p-3 border-t border-gray-200">
-        <p class="text-sm font-medium text-gray-800 truncate">{title || settings.text.title.placeholder}</p>
+        <p class="layout-text-title text-sm font-medium text-gray-800 truncate">{title || settings.text.title.placeholder}</p>
         {#if channel}
-          <p class="text-xs text-gray-400 mt-1">{channel}</p>
+          <p class="layout-text-channel text-xs text-gray-400 mt-1">{channel}</p>
         {/if}
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .layout-image-blockImage {
+  }
+  .layout-text-title {
+  }
+  .layout-text-channel {
+  }
+</style>
