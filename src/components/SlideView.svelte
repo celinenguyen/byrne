@@ -98,9 +98,9 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="px-3 py-2 rounded-md group relative h-full">
+<div class="p-4 rounded-md group relative h-full">
   <div
-    class="w-full h-full shadow-md rounded-xs overflow-hidden ring-1 ring-border relative"
+    class="w-full h-full shadow-md rounded-xs overflow-hidden relative"
     bind:this={containerEl}
     onmouseover={handleMouseOver}
     onmouseout={handleMouseOut}

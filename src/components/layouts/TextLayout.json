@@ -1,6 +1,6 @@
 {
   "id": "Text",
   "displayName": "Text",
-  "description": "Full-slide text block",
+  "description": "For paragraphs",
   "text": {"body": {"displayName": "body", "isRequired": true}}
 }

@@ -4,6 +4,7 @@
   import Icon from './ui/Icon.svelte';
   import SlideThumbnail from './SlideThumbnail.svelte';
   import SlideListDropSlot from './SlideListDropSlot.svelte';
+  import SidebarStickyHeader from './SidebarStickyHeader.svelte';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
   import { ContextMenu } from 'bits-ui';
   import {
@@ -106,13 +107,15 @@
   }
 </script>
 
-<div class="flex justify-center sticky top-0 z-10 bg-white/40 px-3 py-2 border-b border-border backdrop-blur-sm">
-  <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
-    {#snippet children()}
-      Add slide
-    {/snippet}
-  </Button>
-</div>
+<SidebarStickyHeader>
+  {#snippet children()}
+    <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
+      {#snippet children()}
+        Add slide
+      {/snippet}
+    </Button>
+  {/snippet}
+</SidebarStickyHeader>
 
 <div class="px-3 py-4 flex flex-col gap-6 bg-muted/5 inset-shadow-sm">
   <!-- svelte-ignore a11y_no_static_element_interactions -->

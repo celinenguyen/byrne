@@ -53,9 +53,18 @@
     resizing = null;
   }
 
-  // Scroll-to-advance: IntersectionObserver
+  // Scroll-to-advance: IntersectionObserver (only reacts to real user scrolls)
   let scrollContainer: HTMLDivElement | undefined = $state();
   let suppressObserver = false;
+  let userIsScrolling = false;
+  let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function onContainerScroll() {
+    if (suppressObserver) return;
+    userIsScrolling = true;
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => { userIsScrolling = false; }, 150);
+  }
 
   // Track per-slide visibility ratios so we can pick the most-visible one
   let visibilityMap = new Map<number, number>();
@@ -66,7 +75,7 @@
     visibilityMap.clear();
     const observer = new IntersectionObserver(
       (entries) => {
-        if (suppressObserver) return;
+        if (suppressObserver || !userIsScrolling) return;
         // Update visibility ratios for each reported entry
         for (const entry of entries) {
           const idx = Number((entry.target as HTMLElement).dataset.slideIndex);
@@ -233,7 +242,7 @@
       {/if}
 
       <!-- Center: Scrollable slide list -->
-      <div class="h-full flex-1 min-w-0 overflow-y-auto p-6 space-y-6" bind:this={scrollContainer}>
+      <div class="h-full flex-1 min-w-0 overflow-y-auto p-6 space-y-6" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div

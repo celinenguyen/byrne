@@ -1,7 +1,7 @@
 {
   "id": "Image2Up",
-  "displayName": "2-Up Image",
-  "description": "Two images side by side",
+  "displayName": "Images (2-up)",
+  "description": "Two images with optional captions",
   "images": {
     "left": {"displayName": "left", "isRequired": true},
     "right": {"displayName": "right", "isRequired": true}

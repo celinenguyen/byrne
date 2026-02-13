@@ -2,8 +2,9 @@
   import type { Slide } from '../lib/types';
   import { updateSlide, focusSlot, activeSlot } from '../lib/store';
   import { layouts, layoutList } from './layouts/registry';
-  import AddImagePopover from './AddImagePopover.svelte';
-  import Icon from './ui/Icon.svelte';
+  import ImageSlotThumbnail from './ImageSlotThumbnail.svelte';
+  import SlideDetailsSection from './SlideDetailsSection.svelte';
+  import SlotLabel from './SlotLabel.svelte';
   import * as Item from './ui/item';
 
   interface Props {
@@ -54,7 +55,7 @@
         }))
       : [];
     for (let i = used.length; i < padTo; i++) {
-      used.push({ index: i, isUsed: false, displayName: 'not used', isRequired: false, hasContent: false });
+      used.push({ index: i, isUsed: false, displayName: 'not used', isRequired: false, hasContent: !!dataArray?.[i] });
     }
     return used;
   }
@@ -83,112 +84,55 @@
 </script>
 
 <div class="inset-shadow-sm flex flex-col bg-muted/5">
-  {#if onClose}
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div
-      class="group flex items-center justify-between sticky top-0 z-10 bg-white/40 px-3 py-4 border-b border-border backdrop-blur-sm cursor-pointer hover:bg-muted/50 transition-colors"
-      onclick={onClose}
-      role="button"
-      tabindex="0"
-      title="Collapse panel"
-      onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
-    >
-      <span class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Edit slide</span>
-      <Icon name="chevron-right" size={14} class="text-muted-foreground group-hover:text-foreground transition-colors" />
-    </div>
-  {/if}
   {#if slide}
-  <!-- Data Section -->
-  <div>
-    <button
-      class="w-full px-4 py-3 flex items-center gap-1 font-semibold text-xs uppercase tracking-widest text-muted-foreground w-full cursor-pointer"
-      onclick={() => { dataOpen = !dataOpen; }}
-    >
-      Data
-      <Icon name="chevron-right" size={15} class="transition-transform {dataOpen ? 'rotate-90' : ''}" />
-    </button>
-    {#if dataOpen}
-      <div class="px-4">
+    <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }}>
+      {#snippet children()}
         <!-- Image slots -->
-        <div class="flex flex-col gap-6">
-          <div class="text-sm text-muted-foreground -mb-2">Images</div>
-          <div class="flex flex-row gap-2 w-full mb-6">
+        <div>
+          <div class="flex flex-row flex-wrap gap-4 w-full mb-6">
             {#each imageSlots as slot}
               <div
-                class="flex flex-col grow items-center gap-1 rounded-md p-2 transition-colors
-                  {slot.isUsed ? 'bg-stone-50' : 'border-l-2 border-l-transparent opacity-50'}"
+                class="flex flex-col gap-2 min-w-0 flex-1 max-w-[50%]"
                 data-slot-type="image"
                 data-slot-index={slot.index}
               >
-                <!-- Thumbnail area -->
-                {#if slot.isUsed}
-                  {#if slot.hasContent}
-                    <AddImagePopover slotIndex={slot.index} onimage={updateImage}>
-                      {#snippet trigger()}
-                        <div class="flex-shrink-0 w-[60px] h-[45px] rounded overflow-hidden bg-muted/30 cursor-pointer border border-border hover:border-primary/50 transition-colors" title="Replace image">
-                          <img
-                            src={slide.data.images[slot.index]}
-                            alt=""
-                            class="w-full h-full object-cover"
-                          />
-                        </div>
-                      {/snippet}
-                    </AddImagePopover>
-                  {:else}
-                    <AddImagePopover slotIndex={slot.index} onimage={updateImage} />
-                  {/if}
-                {:else}
-                  <div class="flex-shrink-0 w-[60px] h-[45px] rounded bg-muted/20 border border-dashed border-border/50"></div>
-                {/if}
-
-                <!-- Label area -->
-                <div class="flex-1 min-w-0">
-                  {#if slot.isUsed}
-                    <span class="text-xs font-medium">{slot.displayName}</span>
-                    {#if !slot.isRequired}
-                      <span class="ml-1 text-[9px] rounded px-1 py-0.5 bg-muted text-muted-foreground">optional</span>
-                    {/if}
-                  {:else}
-                    <span class="text-xs text-muted-foreground/60 italic">not used</span>
-                  {/if}
+                <!-- Label -->
+                <div class="text-xs">
+                  <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
                 </div>
-              </div>
+                <!-- Thumbnail area: max 50% container width, max-height 100px, clickable to open AddImagePopover -->
+                <ImageSlotThumbnail slot={slot} slide={slide} onUpdate={updateImage} />
+                </div>
             {/each}
           </div>
         </div>
-
         <!-- Text slots -->
-        <div class="space-y-2">
-          <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Text</div>
+        <div>
           {#each textSlots as slot}
             {@const wrapperClass = slot.isUsed
               ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
               : 'not-used-in-layout'}
             <div
-              class="rounded-md px-1.5 py-1 transition-colors
-                {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
+              class="rounded-md transition-colors"
               data-slot-state={wrapperClass}
             >
               <!-- Header line -->
-              <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center justify-between mb-1.5 gap-1 text-xs">
                 <div>
-                  {#if slot.isUsed}
-                    <span class="text-xs font-medium">{slot.displayName}</span>
-                    {#if !slot.isRequired}
-                      <span class="text-xs text-muted-foreground">(optional)</span>
-                    {/if}
-                  {:else}
-                    <span class="text-xs text-muted-foreground/60 italic">not used</span>
-                  {/if}
+                  <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
                 </div>
               </div>
 
-              <!-- Textarea -->
+              <!-- Textarea: always shows slot data from slide.data.text.
+                  Used slot   + empty    → placeholder "Write with Markdown"
+                  Used slot   + has data → editable
+                  Unused slot + empty    → placeholder "Not used in this layout"
+                              + has data → shows data as read-only -->
               <textarea
-                  class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px] font-mono
+                  class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px]
                     {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
-                  placeholder={slot.isUsed ? 'Markdown supported...' : ''}
-                  value={slot.isUsed ? (slide.data.text?.[slot.index] || '') : ''}
+                  placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
+                  value={slide.data.text?.[slot.index] || ''}
                   disabled={!slot.isUsed}
                   data-slot-type="text"
                   data-slot-index={slot.index}
@@ -199,42 +143,30 @@
             </div>
           {/each}
         </div>
-      </div>
-    {/if}
-  </div>
+      {/snippet}
+    </SlideDetailsSection>
 
-  <hr class="border-border" />
-
-  <!-- Layout Section -->
-  <div>
-    <button
-      class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
-      onclick={() => { layoutOpen = !layoutOpen; }}
-    >
-      <Icon name="chevron-right" size={12} class="transition-transform {layoutOpen ? 'rotate-90' : ''}" />
-      Layout
-    </button>
-    {#if layoutOpen}
-      <div class="mt-2 grid grid-cols-2 gap-2">
-        {#each layoutList as l}
-          <Item.Root
-            variant="outline"
-            size="sm"
-            class="cursor-pointer {slide.layout === l.id ? 'ring-1 ring-primary border-primary bg-primary/5' : 'hover:bg-accent'}"
-            onclick={() => changeLayout(l.id)}
-          >
-            <Item.Content>
-              <Item.Title class="text-xs">{l.displayName}</Item.Title>
-              {#if l.description}
-                <Item.Description class="text-[10px]">{l.description}</Item.Description>
-              {/if}
-            </Item.Content>
-          </Item.Root>
-        {/each}
-      </div>
-    {/if}
-  </div>
-
+    <SlideDetailsSection name="Layout" class="border-t" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }}>
+      {#snippet children()}
+        <div class="mt-2 grid grid-cols-2 gap-4">
+          {#each layoutList as l}
+            <Item.Root
+              variant="outline"
+              size="sm"
+              class="border-border px-4 py-3 cursor-pointer {slide.layout === l.id ? 'border-stone-400 ring-3 ring-stone-200 bg-white' : 'hover:bg-accent opacity-80'}"
+              onclick={() => changeLayout(l.id)}
+            >
+              <Item.Content>
+                <Item.Title class="tracking-wide">{l.displayName}</Item.Title>
+                {#if l.description}
+                  <Item.Description class="text-xs leading-relaxed">{l.description}</Item.Description>
+                {/if}
+              </Item.Content>
+            </Item.Root>
+          {/each}
+        </div>
+      {/snippet}
+    </SlideDetailsSection>
   {:else}
     <div class="px-4 py-6 text-sm text-muted-foreground">No slide selected</div>
   {/if}
