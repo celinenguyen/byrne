@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import Button from './ui/Button.svelte';
   import SlideThumbnail from './SlideThumbnail.svelte';
   import { ContextMenu } from 'bits-ui';
@@ -13,6 +14,18 @@
 
   let allSlides = $derived($slides);
   let idx = $derived($currentSlideIndex);
+
+  let listContainer: HTMLDivElement | undefined = $state();
+
+  // Scroll the active thumbnail into view when currentSlideIndex changes
+  $effect(() => {
+    const i = idx;
+    if (!listContainer) return;
+    tick().then(() => {
+      const el = listContainer?.querySelector(`[data-slide-thumb="${i}"]`);
+      el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  });
 
   function selectSlide(i: number) {
     currentSlideIndex.set(i);
@@ -99,7 +112,7 @@
   </Button>
 
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="space-y-0" data-slide-list ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
+  <div class="space-y-0" data-slide-list bind:this={listContainer} ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
     {#each allSlides as slide, i}
       <!-- Drop indicator before this item -->
       {#if dropSlot === i}
@@ -112,6 +125,7 @@
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div
               {...props}
+              data-slide-thumb={i}
               class="w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors cursor-grab group relative select-none
                 {i === idx ? 'ring-2 ring-primary' : 'hover:bg-accent'}
                 {dragIndex === i ? 'opacity-30' : ''}"
