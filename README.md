@@ -13,19 +13,19 @@ Layouts live in `src/components/layouts/`. Each layout needs two files:
 
 ### 1. Settings file (`YourLayout.json`)
 
-Defines the named slots (images, text, and optionally url) the layout accepts. Each slot has a `displayName`, a `type` (`"required"` or `"optional"`), and an optional `placeholder`.
+Defines the named slots (images, text, and optionally url) the layout accepts. Each slot has a `displayName`, an `isRequired` boolean, and an optional `placeholder`.
 
 ```json
 {
   "url": {
-    "url": { "displayName": "Article URL", "type": "required" }
+    "url": { "displayName": "Article URL", "isRequired": true }
   },
   "images": {
-    "photo": { "displayName": "Photo", "type": "required" }
+    "photo": { "displayName": "Photo", "isRequired": true }
   },
   "text": {
-    "heading": { "displayName": "Heading", "type": "required", "placeholder": "Untitled" },
-    "description": { "displayName": "Description", "type": "optional" }
+    "heading": { "displayName": "Heading", "isRequired": true, "placeholder": "Untitled" },
+    "description": { "displayName": "Description", "isRequired": false }
   }
 }
 ```

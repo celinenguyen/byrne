@@ -38,10 +38,10 @@
     });
   });
 
-  type SlotMeta = { index: number; isUsed: boolean; displayName: string; type: string; hasContent: boolean };
+  type SlotMeta = { index: number; isUsed: boolean; displayName: string; isRequired: boolean; hasContent: boolean };
 
   function buildSlots(
-    schema: Record<string, { displayName: string; type: string }> | undefined,
+    schema: Record<string, { displayName: string; isRequired: boolean }> | undefined,
     dataArray: string[] | undefined,
     padTo: number = 2,
   ): SlotMeta[] {
@@ -50,12 +50,12 @@
           index,
           isUsed: true,
           displayName: def.displayName,
-          type: def.type,
+          isRequired: def.isRequired,
           hasContent: !!dataArray?.[index],
         }))
       : [];
     for (let i = used.length; i < padTo; i++) {
-      used.push({ index: i, isUsed: false, displayName: 'not used', type: 'optional', hasContent: false });
+      used.push({ index: i, isUsed: false, displayName: 'not used', isRequired: false, hasContent: false });
     }
     return used;
   }
@@ -131,7 +131,7 @@
           <div class="flex flex-row gap-2 w-full mb-6">
             {#each imageSlots as slot}
               <div
-                class="flex flex-col items-center gap-1 rounded-md -m-2 p-2 transition-colors
+                class="flex flex-col grow items-center gap-1 rounded-md p-2 transition-colors
                   {slot.isUsed ? 'bg-stone-50' : 'border-l-2 border-l-transparent opacity-50'}"
                 data-slot-type="image"
                 data-slot-index={slot.index}
@@ -161,7 +161,7 @@
                 <div class="flex-1 min-w-0">
                   {#if slot.isUsed}
                     <span class="text-xs font-medium">{slot.displayName}</span>
-                    {#if slot.type === 'optional'}
+                    {#if !slot.isRequired}
                       <span class="ml-1 text-[9px] rounded px-1 py-0.5 bg-muted text-muted-foreground">optional</span>
                     {/if}
                   {:else}
@@ -190,7 +190,7 @@
                 <div>
                   {#if slot.isUsed}
                     <span class="text-xs font-medium">{slot.displayName}</span>
-                    {#if slot.type === 'optional'}
+                    {#if !slot.isRequired}
                       <span class="text-xs text-muted-foreground">(optional)</span>
                     {/if}
                   {:else}

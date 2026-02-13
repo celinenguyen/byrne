@@ -1,10 +1,10 @@
 {
   "images": {
-    "left": { "displayName": "left", "type": "required" },
-    "right": { "displayName": "right", "type": "required" }
+    "left": { "displayName": "left", "isRequired": true },
+    "right": { "displayName": "right", "isRequired": true }
   },
   "text": {
-    "leftCaption": { "displayName": "left caption", "type": "optional" },
-    "rightCaption": { "displayName": "right caption", "type": "optional" }
+    "leftCaption": { "displayName": "left caption", "isRequired": false },
+    "rightCaption": { "displayName": "right caption", "isRequired": false }
   }
 }

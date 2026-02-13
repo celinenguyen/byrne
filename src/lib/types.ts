@@ -25,7 +25,7 @@ export interface Deck {
 
 export interface SlotDefinition {
   displayName: string;
-  type: 'required' | 'optional';
+  isRequired: boolean;
   placeholder?: string;
 }
 
