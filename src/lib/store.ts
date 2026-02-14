@@ -10,7 +10,7 @@ function getInitialParams() {
   const slide = params.get('slide');
   const deckParam = params.get('deck');
   return {
-    view: (view === 'edit' || view === 'present') ? view : 'edit' as const,
+    view: (view === 'edit' || view === 'preview' || view === 'present') ? view as 'edit' | 'preview' | 'present' : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
     deck: deckParam || 'deck',
   };
@@ -20,7 +20,7 @@ const initial = getInitialParams();
 
 export const deck = writable<Deck | null>(null);
 export const currentSlideIndex = writable<number>(initial.slide);
-export const viewMode = writable<'edit' | 'present'>(initial.view);
+export const viewMode = writable<'edit' | 'preview' | 'present'>(initial.view);
 export const currentDeckFile = writable<string>(initial.deck);
 export const deckList = writable<DeckSummary[]>([]);
 export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
@@ -265,6 +265,28 @@ export async function switchDeck(filename: string) {
   currentDeckFile.set(filename);
   currentSlideIndex.set(0);
   await loadDeck();
+}
+
+export async function renameDeck(newTitle: string) {
+  const currentFile = get(currentDeckFile);
+  const res = await fetch('/api/decks', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ currentFilename: currentFile, newTitle }),
+  });
+  if (res.ok) {
+    const { filename } = await res.json();
+    // Update local deck meta
+    deck.update((d) => {
+      if (!d) return d;
+      return { ...d, meta: { ...d.meta, title: newTitle } };
+    });
+    // If the filename changed, update the URL and store
+    if (filename !== currentFile) {
+      currentDeckFile.set(filename);
+    }
+    await loadDeckList();
+  }
 }
 
 export async function createDeck(title: string) {

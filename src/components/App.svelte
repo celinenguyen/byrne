@@ -5,6 +5,7 @@
   import SlideView from './SlideView.svelte';
   import SlideDetails from './SlideDetails.svelte';
   import PresentView from './PresentView.svelte';
+  import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
   import {
     loadDeck,
     loadDeckList,
@@ -33,6 +34,9 @@
 
   // Collapsible details panel
   let isDetailsOpen = $derived($detailsOpen);
+
+  // When both panels are closed, let slides use full viewport width
+  let bothPanelsClosed = $derived(!$slideListOpen && !isDetailsOpen);
 
   // Resizing state
   let resizing = $state<'left' | 'right' | null>(null);
@@ -139,7 +143,7 @@
   let prevIndex = $state(-1);
   $effect(() => {
     const idx = $currentSlideIndex;
-    if (idx !== prevIndex && mode === 'edit') {
+    if (idx !== prevIndex && (mode === 'edit' || mode === 'preview')) {
       prevIndex = idx;
       if (observerDriven) {
         // Observer already scrolled here — don't fight it
@@ -181,6 +185,12 @@
     { key: 'ArrowDown',  mode: 'edit', action: () => navigateSlide('next') },
     { key: 'ArrowLeft',  mode: 'edit', action: () => navigateSlide('prev') },
     { key: 'ArrowUp',    mode: 'edit', action: () => navigateSlide('prev') },
+    // --- Preview mode ---
+    { key: 'ArrowRight', mode: 'preview', action: () => navigateSlide('next') },
+    { key: 'ArrowDown',  mode: 'preview', action: () => navigateSlide('next') },
+    { key: 'ArrowLeft',  mode: 'preview', action: () => navigateSlide('prev') },
+    { key: 'ArrowUp',    mode: 'preview', action: () => navigateSlide('prev') },
+    { key: 'Escape',     mode: 'preview', action: () => { viewMode.set('edit'); return false; } },
     // --- Present mode ---
     { key: 'ArrowRight', mode: 'present', action: () => navigateSlide('next') },
     { key: 'ArrowDown',  mode: 'present', action: () => navigateSlide('next') },
@@ -199,6 +209,7 @@
     matchBinding(e, $viewMode, bindings);
   }
 
+
   onMount(() => {
     loadDeck();
     loadDeckList();
@@ -213,7 +224,7 @@
   {/if}
 
   <div class="flex-1 min-h-0 flex bg-muted/30">
-    {#if mode === 'edit'}
+    {#if mode === 'edit' || mode === 'preview'}
       <!-- left: SlideList panel -->
       {#if $slideListOpen}
         <div class="h-full overflow-y-auto border-r border-border bg-muted/30" style="width: {leftWidth}%">
@@ -229,21 +240,34 @@
       <!-- center: scrollable slide list, collapsible from toolbar button -->
       <div class="h-full flex-1 min-w-0 overflow-y-auto mt-1 p-4" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
-          <div
-            role="button"
-            tabindex="0"
-            data-slide-index={i}
-            class="p-0 w-full max-w-4xl mx-auto block cursor-pointer rounded-md transition-shadow"
-            onclick={() => currentSlideIndex.set(i)}
-            onkeydown={keyboardClick(() => currentSlideIndex.set(i))}
-          >
-            <SlideView slide={s} interactive={i === $currentSlideIndex} />
-          </div>
+          {#if mode === 'preview'}
+            <div
+              data-slide-index={i}
+              class="p-0 w-full {bothPanelsClosed ? 'max-w-full' : 'max-w-4xl'} mx-auto block rounded-md transition-shadow"
+            >
+              <SlideView slide={s} interactive={false} mode="preview" />
+            </div>
+          {:else}
+            <div
+              role="button"
+              tabindex="0"
+              data-slide-index={i}
+              class="p-0 w-full {bothPanelsClosed ? 'max-w-full' : 'max-w-4xl'} mx-auto block cursor-pointer rounded-md transition-shadow"
+              onclick={() => currentSlideIndex.set(i)}
+              onkeydown={keyboardClick(() => currentSlideIndex.set(i))}
+            >
+              <SlideView slide={s} interactive={i === $currentSlideIndex} />
+            </div>
+          {/if}
         {/each}
         {#if allSlides.length === 0}
           <div class="text-muted-foreground text-sm text-center mt-20">No slides yet. Add a slide to get started.</div>
         {/if}
       </div>
+
+      {#if mode === 'preview'}
+        <PreviewPresentToolbar currentIndex={$currentSlideIndex} slideCount={allSlides.length} variant="light" />
+      {/if}
 
       <!-- right: SlideDetails panel, collapsible from toolbar button -->
       {#if isDetailsOpen}

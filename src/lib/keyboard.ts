@@ -16,7 +16,7 @@ export interface KeyBinding {
   key: string;
   meta?: boolean;
   shift?: boolean;
-  mode: 'edit' | 'present';
+  mode: 'edit' | 'preview' | 'present';
   /** Return true to preventDefault. Returning false/undefined skips preventDefault. */
   action: () => boolean | void;
 }

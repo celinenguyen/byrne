@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
   import SlideView from './SlideView.svelte';
-  import * as Kbd from '$lib/components/ui/kbd/index.js';
+  import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
 
   interface Props {
     slide: Slide | null;
@@ -23,12 +23,4 @@
     <div class="text-white/50 text-sm">No slides. Press Escape to exit.</div>
   {/if}
 </div>
-<!-- Minimal nav overlay -->
-<div class="fixed bottom-4 left-1/2 -translate-x-1/2 text-sm flex flex-row gap-4 items-center justify-center text-white/50 tracking-wide">
-  <div class="bg-black/60 px-4 py-2 rounded-full text-white/50">
-    <span class="text-white/80"> {currentIndex + 1}</span><span class="mx-1">/</span>{slideCount}
-  </div>
-  <div class="bg-black/60 px-4 py-2 rounded-full">
-    <Kbd.Root class="px-1 py-0.5 mr-1 bg-white/20 text-white/60 border border-white/20 backdrop-blur-md">Esc</Kbd.Root> to exit
-  </div>
-</div>
+<PreviewPresentToolbar {currentIndex} {slideCount} />

@@ -8,7 +8,7 @@
   interface Props {
     slide: Slide;
     interactive?: boolean;
-    mode?: 'edit' | 'present';
+    mode?: 'edit' | 'preview' | 'present';
     class?: string;
   }
   let { slide, interactive = false, mode = 'edit', class: className }: Props = $props();
