@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
   import SlideView from './SlideView.svelte';
+  import * as Kbd from '$lib/components/ui/kbd/index.js';
 
   interface Props {
     slide: Slide | null;
@@ -28,6 +29,6 @@
     <span class="text-white/80"> {currentIndex + 1}</span><span class="mx-1">/</span>{slideCount}
   </div>
   <div class="bg-black/60 px-4 py-2 rounded-full">
-    <kbd class="kbd text-xs mr-1 rounded-sm px-1 py-1 text-white/80 bg-white/20 border border-white/20 font-sans backdrop-blur-md">Esc</kbd> to exit
+    <Kbd.Root class="px-1 py-0.5 mr-1 bg-white/20 text-white/60 border border-white/20 backdrop-blur-md">Esc</Kbd.Root> to exit
   </div>
 </div>

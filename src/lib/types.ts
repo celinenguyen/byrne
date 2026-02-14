@@ -1,8 +1,15 @@
 export interface DeckMeta {
+  id: string;
   title: string;
   author: string;
   startDate: string;
   endDate: string;
+}
+
+export interface DeckSummary {
+  id: string;
+  title: string;
+  filename: string;
 }
 
 export interface SlideData {

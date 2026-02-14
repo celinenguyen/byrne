@@ -15,6 +15,7 @@
     duplicateSlide,
     reorderSlide,
   } from '../lib';
+  import { keyboardClick } from '../lib/keyboard';
 
   let allSlides = $derived($slides);
   let idx = $derived($currentSlideIndex);
@@ -138,7 +139,7 @@
                 {i === idx ? 'ring-1 ring-border bg-muted' : 'hover:bg-muted'}
                 {dragIndex === i ? 'opacity-30' : ''}"
               onclick={() => selectSlide(i)}
-              onkeydown={(e) => { if (e.key === 'Enter') selectSlide(i); }}
+              onkeydown={keyboardClick(() => selectSlide(i))}
               role="button"
               tabindex="0"
               draggable="true"

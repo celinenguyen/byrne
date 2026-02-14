@@ -7,6 +7,7 @@
   import PresentView from './PresentView.svelte';
   import {
     loadDeck,
+    loadDeckList,
     viewMode,
     currentSlide,
     slides,
@@ -19,6 +20,7 @@
     detailsOpen,
     slideListOpen,
   } from '../lib/store';
+  import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
   let mode = $derived($viewMode);
   let slide = $derived($currentSlide);
@@ -151,75 +153,55 @@
   // Slide clipboard for Cmd+C / Cmd+V
   let copiedSlideIndex: number | null = null;
 
-  function isInsideDetailsPanel(el: EventTarget | null): boolean {
+  // Check whether the focused element is a text input. Used to bail out of
+  // global keyboard shortcuts so that typing in inputs, textareas, and
+  // contenteditable fields (e.g. popover inputs, details panel) doesn't
+  // accidentally trigger slide actions like delete or navigation.
+  function isTextInput(el: EventTarget | null): boolean {
     if (!el || !(el instanceof HTMLElement)) return false;
-    return !!el.closest('[data-details-panel]');
+    const tag = el.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return true;
+    if (el.isContentEditable) return true;
+    return false;
   }
 
+  // Declarative keybinding map — each entry matches a key (+ optional
+  // modifiers) to an action in a specific view mode. The first matching
+  // binding wins. Returning `false` from an action skips preventDefault,
+  // which lets the browser handle the event normally (e.g. Cmd+C still
+  // copies text, Escape doesn't prevent default browser behaviour).
+  const bindings: KeyBinding[] = [
+    // --- Edit mode ---
+    { key: 'Delete',     mode: 'edit', action: () => { const s = $currentSlide; if (s) softDeleteSlide(s.id); } },
+    { key: 'Backspace',  mode: 'edit', action: () => { const s = $currentSlide; if (s) softDeleteSlide(s.id); } },
+    { key: 'z', meta: true, mode: 'edit', action: () => { if (!pending) return false; undoDelete(); } },
+    { key: 'c', meta: true, mode: 'edit', action: () => { copiedSlideIndex = $currentSlideIndex; return false; } },
+    { key: 'v', meta: true, mode: 'edit', action: () => { if (copiedSlideIndex === null) return false; duplicateSlide(copiedSlideIndex); } },
+    { key: 'ArrowRight', mode: 'edit', action: () => navigateSlide('next') },
+    { key: 'ArrowDown',  mode: 'edit', action: () => navigateSlide('next') },
+    { key: 'ArrowLeft',  mode: 'edit', action: () => navigateSlide('prev') },
+    { key: 'ArrowUp',    mode: 'edit', action: () => navigateSlide('prev') },
+    // --- Present mode ---
+    { key: 'ArrowRight', mode: 'present', action: () => navigateSlide('next') },
+    { key: 'ArrowDown',  mode: 'present', action: () => navigateSlide('next') },
+    { key: ' ',          mode: 'present', action: () => navigateSlide('next') },
+    { key: 'ArrowLeft',  mode: 'present', action: () => navigateSlide('prev') },
+    { key: 'ArrowUp',    mode: 'present', action: () => navigateSlide('prev') },
+    { key: 'r',          mode: 'present', action: () => currentSlideIndex.set(0) },
+    { key: 'Escape',     mode: 'present', action: () => { viewMode.set('edit'); return false; } },
+  ];
+
+  // Global keyboard handler attached to <svelte:window>. Skips all
+  // bindings when focus is inside a text input so that normal typing
+  // (including Backspace, arrow keys, etc.) isn't intercepted.
   function onKeyDown(e: KeyboardEvent) {
-    const mode = $viewMode;
-
-    // In edit: arrow keys navigate slides unless in a form field
-    if (mode === 'edit') {
-      if (isInsideDetailsPanel(e.target)) return;
-
-      // Delete / Backspace: soft-delete current slide
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        const s = $currentSlide;
-        if (s) {
-          e.preventDefault();
-          softDeleteSlide(s.id);
-        }
-        return;
-      }
-      // Cmd+Z: undo pending delete (otherwise let browser handle for text undo)
-      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
-        if (pending) {
-          e.preventDefault();
-          undoDelete();
-          return;
-        }
-      }
-      // Cmd+C: copy current slide
-      if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
-        copiedSlideIndex = $currentSlideIndex;
-        return;
-      }
-      // Cmd+V: paste (duplicate) copied slide after current
-      if ((e.metaKey || e.ctrlKey) && e.key === 'v' && copiedSlideIndex !== null) {
-        e.preventDefault();
-        duplicateSlide(copiedSlideIndex);
-        return;
-      }
-
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        navigateSlide('next');
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        navigateSlide('prev');
-      }
-    }
-
-    // In present: always handle nav + escape
-    if (mode === 'present') {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
-        e.preventDefault();
-        navigateSlide('next');
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        navigateSlide('prev');
-      } else if (e.key === 'r') {
-        e.preventDefault();
-        currentSlideIndex.set(0);
-      } else if (e.key === 'Escape') {
-        viewMode.set('edit');
-      }
-    }
+    if ($viewMode === 'edit' && isTextInput(e.target)) return;
+    matchBinding(e, $viewMode, bindings);
   }
 
   onMount(() => {
     loadDeck();
+    loadDeckList();
   });
 </script>
 
@@ -253,7 +235,7 @@
             data-slide-index={i}
             class="p-0 w-full max-w-4xl mx-auto block cursor-pointer rounded-md transition-shadow"
             onclick={() => currentSlideIndex.set(i)}
-            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentSlideIndex.set(i); } }}
+            onkeydown={keyboardClick(() => currentSlideIndex.set(i))}
           >
             <SlideView slide={s} interactive={i === $currentSlideIndex} />
           </div>

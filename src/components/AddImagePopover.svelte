@@ -1,26 +1,25 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { Popover } from 'bits-ui';
+  import * as Popover from '$lib/components/ui/popover/index.js';
   import Icon from './ui/Icon.svelte';
-  import * as InputGroup from '$lib/components/ui/input-group/index.js';
-  import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
   import { Button } from '$lib/components/ui/button/index.js';
+  import InputTypeAndEnter from './InputTypeAndEnter.svelte';
 
   interface Props {
     slotIndex: number;
+    currentUrl?: string;
     onimage: (index: number, url: string) => void;
     trigger?: Snippet;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
   }
-  let { slotIndex, onimage, trigger, open = $bindable(false), onOpenChange }: Props = $props();
+  let { slotIndex, currentUrl, onimage, trigger, open = $bindable(false), onOpenChange }: Props = $props();
   let urlValue = $state('');
   let dragging = $state(false);
 
   function handleOpenChange(v: boolean) {
-    open = v;
     onOpenChange?.(v);
-    if (v) urlValue = '';
+    if (v) urlValue = currentUrl ?? '';
   }
 
   function submitUrl() {
@@ -28,10 +27,6 @@
     if (!trimmed) return;
     onimage(slotIndex, trimmed);
     open = false;
-  }
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') submitUrl();
   }
 
   async function uploadFile(file: File) {
@@ -72,7 +67,7 @@
   let fileInput: HTMLInputElement | undefined = $state();
 </script>
 
-<Popover.Root {open} onOpenChange={handleOpenChange}>
+<Popover.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
     <Popover.Trigger>
       {#snippet child({ props })}
@@ -84,37 +79,25 @@
     </Popover.Trigger>
   {:else}
     <Popover.Trigger
-      class="justify-center text-muted-foreground cursor-pointer"
+      class="flex items-center justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
       <Icon name="plus" class="size-4" />
     </Popover.Trigger>
   {/if}
 
-  <Popover.Portal>
-    <Popover.Content
-      class="z-50 w-68 rounded-lg border border-border bg-popover p-4 flex flex-col gap-4 shadow-xl"
-      sideOffset={0}
-      align="center"
-    >
-      <!-- URL input + Upload -->
-      <div>
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <ButtonGroup.Root class="w-full">
-          <InputGroup.Root class="flex-1">
-            <InputGroup.Input
-              placeholder="Add a URL"
-              bind:value={urlValue}
-              onkeydown={handleKeydown}
-            />
-            <InputGroup.Addon align="inline-end">
-              <InputGroup.Button size="icon-xs" onclick={submitUrl} aria-label="Add image">
-                <Icon name="arrow-right" class="size-4" />
-              </InputGroup.Button>
-            </InputGroup.Addon>
-          </InputGroup.Root>
-        </ButtonGroup.Root>
-      </div>
+  <Popover.Content
+    class="w-72 p-4 flex flex-col gap-4"
+    sideOffset={0}
+    align="center"
+  >
+      <!-- input for URL and then hitting enter -->
+      <InputTypeAndEnter
+        placeholder="Add a URL"
+        bind:value={urlValue}
+        onsubmit={submitUrl}
+        ariaLabel="Add image"
+      />
 
       <!-- Drop zone -->
       <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
@@ -142,6 +125,5 @@
             <Icon name="cloud-upload" class="size-4" />Upload
           </Button>
       </div>
-    </Popover.Content>
-  </Popover.Portal>
+  </Popover.Content>
 </Popover.Root>
