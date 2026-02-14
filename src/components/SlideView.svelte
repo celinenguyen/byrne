@@ -7,14 +7,15 @@
 
   interface Props {
     slide: Slide;
-    interactive?: boolean;
+    current?: boolean;      // visual "current slide" indicator (border + shadow)
+    interactive?: boolean;  // edit-only: slot highlights, delete button, click-to-focus
     mode?: 'edit' | 'preview' | 'present';
     class?: string;
   }
-  let { slide, interactive = false, mode = 'edit', class: className }: Props = $props();
+  let { slide, current = false, interactive = false, mode = 'edit', class: className }: Props = $props();
 
   // Only dim (opacity-50) non-current slides in edit mode; never in present mode
-  let dimmed = $derived(!interactive && mode === 'edit');
+  let dimmed = $derived(!current && mode === 'edit');
 
   let layoutDef = $derived(layouts[slide.layout]);
 
@@ -194,7 +195,7 @@
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
     tabindex={interactive ? 0 : undefined}
-    class="w-full h-full rounded-xs relative border border-border shadow-sm {interactive ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
+    class="w-full h-full rounded-xs relative border border-border shadow-sm {current ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
     bind:this={containerEl}
     onmouseover={handleMouseOver}
     onmouseout={handleMouseOut}

@@ -240,25 +240,21 @@
       <!-- center: scrollable slide list, collapsible from toolbar button -->
       <div class="h-full flex-1 min-w-0 overflow-y-auto mt-1 p-4" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
-          {#if mode === 'preview'}
-            <div
-              data-slide-index={i}
-              class="p-0 w-full {bothPanelsClosed ? 'max-w-full' : 'max-w-4xl'} mx-auto block rounded-md transition-shadow"
-            >
-              <SlideView slide={s} interactive={false} mode="preview" />
-            </div>
-          {:else}
-            <div
-              role="button"
-              tabindex="0"
-              data-slide-index={i}
-              class="p-0 w-full {bothPanelsClosed ? 'max-w-full' : 'max-w-4xl'} mx-auto block cursor-pointer rounded-md transition-shadow"
-              onclick={() => currentSlideIndex.set(i)}
-              onkeydown={keyboardClick(() => currentSlideIndex.set(i))}
-            >
-              <SlideView slide={s} interactive={i === $currentSlideIndex} />
-            </div>
-          {/if}
+          <div
+            role={mode === 'edit' ? 'button' : undefined}
+            tabindex={mode === 'edit' ? 0 : undefined}
+            data-slide-index={i}
+            class="p-0 w-full {bothPanelsClosed ? 'max-w-full' : 'max-w-4xl'} mx-auto block rounded-md transition-shadow {mode === 'edit' ? 'cursor-pointer' : ''}"
+            onclick={mode === 'edit' ? () => currentSlideIndex.set(i) : undefined}
+            onkeydown={mode === 'edit' ? keyboardClick(() => currentSlideIndex.set(i)) : undefined}
+          >
+            <SlideView
+              slide={s}
+              current={i === $currentSlideIndex}
+              interactive={mode === 'edit' && i === $currentSlideIndex}
+              mode={mode === 'preview' ? 'preview' : undefined}
+            />
+          </div>
         {/each}
         {#if allSlides.length === 0}
           <div class="text-muted-foreground text-sm text-center mt-20">No slides yet. Add a slide to get started.</div>
