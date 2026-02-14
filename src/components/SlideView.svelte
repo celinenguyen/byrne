@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import type { Slide } from '../lib/types';
   import { layouts, getSlotInfo } from './layouts/registry';
-  import { focusSlot, activeSlot } from '../lib/store';
+  import { focusSlot, activeSlot, detailsOpen } from '../lib/store';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
 
   interface Props {
@@ -17,12 +18,39 @@
 
   let layoutDef = $derived(layouts[slide.layout]);
 
-  // Hover state
+  // --- Slot highlight overlay ---
+  //
+  // The orange overlay border + label (e.g. "title", "left caption") highlights
+  // whichever layout slot the user is interacting with. Three sources drive it,
+  // checked in priority order:
+  //
+  //   1. hoveredEl/hoveredSlotInfo  – mouse is over a slot in the slide preview
+  //   2. activeSlotResult           – a textarea in SlideDetails has focus (via
+  //                                   the activeSlot store, set on textarea focus)
+  //   3. pinnedEl/pinnedSlotInfo    – bridges the gap when the user clicks a slot
+  //                                   and focus is transitioning to the textarea
+  //
+  // The "pinned" state exists because clicking a slot triggers this sequence:
+  //   click → focusSlot.set() → (microtask) textarea.focus() → focusout on
+  //   SlideView clears hoveredEl → textarea onfocus sets activeSlot
+  // Without pinning, the overlay would briefly disappear in that gap.
+
   let hoveredEl = $state<HTMLElement | null>(null);
   let hoveredSlotInfo = $state<{ type: 'image' | 'text'; index: number; displayName: string } | null>(null);
   let containerEl = $state<HTMLElement | null>(null);
 
-  // Find a slot's DOM element and info by type+index
+  let pinnedEl = $state<HTMLElement | null>(null);
+  let pinnedSlotInfo = $state<{ type: 'image' | 'text'; index: number; displayName: string } | null>(null);
+
+  // Once the textarea is focused and activeSlot takes over, pinned is no longer needed
+  $effect(() => {
+    if ($activeSlot) {
+      pinnedEl = null;
+      pinnedSlotInfo = null;
+    }
+  });
+
+  // Look up a slot's DOM element inside the rendered layout by type and index
   function findSlotByTypeIndex(type: 'image' | 'text', index: number): { el: HTMLElement; info: { type: 'image' | 'text'; index: number; displayName: string } } | null {
     if (!containerEl) return null;
     const prefix = type === 'image' ? 'layout-image-' : 'layout-text-';
@@ -36,21 +64,35 @@
     return { el, info: { type, index, displayName: schema[slotName].displayName } };
   }
 
-  // Active slot from focused input in SlideDetails
+  // Reactively resolve the slot element for whichever textarea is focused in SlideDetails
   let activeSlotResult = $derived.by(() => {
     const slot = $activeSlot;
     if (!slot || !interactive || !containerEl) return null;
     return findSlotByTypeIndex(slot.type, slot.index);
   });
 
-  // Highlight is hover (priority) or active slot
-  let highlightEl = $derived(hoveredEl ?? activeSlotResult?.el ?? null);
-  let highlightInfo = $derived(hoveredSlotInfo ?? activeSlotResult?.info ?? null);
+  let highlightEl = $derived(hoveredEl ?? activeSlotResult?.el ?? pinnedEl ?? null);
+  let highlightInfo = $derived(hoveredSlotInfo ?? activeSlotResult?.info ?? pinnedSlotInfo ?? null);
 
-  // Overlay position (relative to container)
-  // Re-runs when slide data changes (text/images) since that can resize the slot element
+  // Track size changes on the highlighted element (e.g. text reflow as user types)
+  // so the overlay repositions correctly without waiting for slide.data to change
+  let resizeTick = $state(0);
+  let resizeObserver: ResizeObserver | null = null;
+
+  $effect(() => {
+    resizeObserver?.disconnect();
+    if (!highlightEl) return;
+    resizeObserver = new ResizeObserver(() => { resizeTick++; });
+    resizeObserver.observe(highlightEl);
+  });
+
+  onDestroy(() => resizeObserver?.disconnect());
+
+  // Compute overlay position relative to the slide container.
+  // Re-runs when slide data changes, the element resizes, or the highlight target changes.
   let overlayStyle = $derived.by(() => {
     slide.data;
+    resizeTick;
     if (!highlightEl || !containerEl || !highlightInfo) return '';
     const elRect = highlightEl.getBoundingClientRect();
     const cRect = containerEl.getBoundingClientRect();
@@ -59,6 +101,7 @@
     return `top:${top}px;left:${left}px;width:${elRect.width}px;height:${elRect.height}px`;
   });
 
+  // Walk up from an event target to find the nearest layout slot element
   function findSlotElement(target: EventTarget | null): { el: HTMLElement; info: { type: 'image' | 'text'; index: number; displayName: string } } | null {
     if (!target || !(target instanceof HTMLElement)) return null;
     let el: HTMLElement | null = target;
@@ -69,6 +112,9 @@
     }
     return null;
   }
+
+  // --- Mouse/focus event handlers ---
+  // These manage hoveredEl, which is the highest-priority highlight source.
 
   function handleMouseOver(e: MouseEvent) {
     if (!interactive) return;
@@ -82,11 +128,11 @@
   function handleMouseOut(e: MouseEvent) {
     if (!interactive) return;
     const related = e.relatedTarget as HTMLElement | null;
+    // Only clear if the mouse left the container entirely or moved to a different slot
     if (!related || !containerEl?.contains(related)) {
       hoveredEl = null;
       hoveredSlotInfo = null;
     } else {
-      // Check if the related target is still within the same slot
       const result = findSlotElement(related);
       if (!result || result.el !== hoveredEl) {
         hoveredEl = null;
@@ -95,6 +141,7 @@
     }
   }
 
+  // Focus events mirror mouse events so keyboard navigation also highlights slots
   function handleFocusIn(e: FocusEvent) {
     if (!interactive) return;
     const result = findSlotElement(e.target);
@@ -119,10 +166,15 @@
     }
   }
 
+  // Click a slot → open the details panel and focus the corresponding textarea.
+  // Pin the highlight so it doesn't flash off during the async focus transition.
   function handleClick(e: MouseEvent) {
     if (!interactive) return;
     const result = findSlotElement(e.target);
     if (result) {
+      pinnedEl = result.el;
+      pinnedSlotInfo = result.info;
+      detailsOpen.set(true);
       focusSlot.set({ type: result.info.type, index: result.info.index });
     }
   }
@@ -155,7 +207,7 @@
       {@const Component = layoutDef.component}
       <Component data={slide.data} />
     {:else}
-      <div class="aspect-video flex items-center justify-center bg-muted text-muted-foreground text-sm">
+      <div class="aspect-video w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-sm">
         Unknown layout: {slide.layout}
       </div>
     {/if}

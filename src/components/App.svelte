@@ -209,6 +209,9 @@
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         e.preventDefault();
         navigateSlide('prev');
+      } else if (e.key === 'r') {
+        e.preventDefault();
+        currentSlideIndex.set(0);
       } else if (e.key === 'Escape') {
         viewMode.set('edit');
       }
