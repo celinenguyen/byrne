@@ -29,7 +29,7 @@
   <SidebarStickyHeader>
     {#snippet children()}
       <button
-        class="w-full px-2 py-2 flex items-center gap-1 font-semibold text-xs cursor-pointer"
+        class="w-full px-1 py-2 flex items-center gap-1 font-semibold text-xs cursor-pointer"
         onclick={toggle}
       >
         {name}

@@ -19,7 +19,7 @@
 <BaseLayout>
   <div class="grid grid-cols-2 gap-4 h-full p-6">
     <div class="flex flex-col">
-      <div data-slot="image:left" class="flex-1 min-h-0 flex items-center justify-center bg-muted rounded">
+      <div data-slot="image:left" class="flex-1 min-h-0 flex items-center justify-center rounded">
         {#if imgLeft}
           <img src={imgLeft} alt="" class="max-w-full max-h-full object-contain" />
         {:else}
@@ -31,7 +31,7 @@
       {/if}
     </div>
     <div class="flex flex-col">
-      <div data-slot="image:right" class="flex-1 min-h-0 flex items-center justify-center bg-muted rounded">
+      <div data-slot="image:right" class="flex-1 min-h-0 flex items-center justify-center rounded">
         {#if imgRight}
           <img src={imgRight} alt="" class="max-w-full max-h-full object-contain" />
         {:else}

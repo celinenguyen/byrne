@@ -1,6 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import Button from './ui/Button.svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
   import Icon from './ui/Icon.svelte';
   import SlideThumbnail from './SlideThumbnail.svelte';
   import SlideListDropSlot from './SlideListDropSlot.svelte';
@@ -117,7 +117,7 @@
   {/snippet}
 </SidebarStickyHeader>
 
-<div class="px-3 py-4 flex flex-col gap-6 bg-muted/5 inset-shadow-sm">
+<div class="px-3 py-4 flex flex-col gap-6 bg-muted/15 inset-shadow-sm">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="bg-muted/5 space-y-0 flex flex-col gap-2" data-slide-list bind:this={listContainer} ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
     {#each allSlides as slide, i}
@@ -149,7 +149,7 @@
               <!-- to delete the slide -->            
               <div class="relative">
                 <SlideThumbnail {slide} class="rounded-xs {i === idx ? 'shadow-md' : 'shadow-sm'}" />
-                <DeleteSlideButton slideId={slide.id} />
+                <DeleteSlideButton slideId={slide.id} class="-top-1 -right-1" />
               </div>
             </div>
           {/snippet}

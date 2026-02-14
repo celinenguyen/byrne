@@ -83,10 +83,45 @@
   }
 </script>
 
-<div class="inset-shadow-sm flex flex-col bg-muted/5">
+<div class="inset-shadow-sm flex flex-col bg-muted/15">
   {#if slide}
     <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }}>
       {#snippet children()}
+        <!-- Text slots -->
+        {#each textSlots as slot}
+          {@const wrapperClass = slot.isUsed
+            ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
+            : 'not-used-in-layout'}
+          <div
+            class="rounded-md transition-colors"
+            data-slot-state={wrapperClass}
+          >
+            <!-- Header line -->
+            <div class="flex items-center justify-between mb-2 gap-1 text-xs">
+              <div>
+                <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
+              </div>
+            </div>
+
+            <!-- Textarea: always shows slot data from slide.data.text.
+                Used slot   + empty    → placeholder "Write with Markdown"
+                Used slot   + has data → editable
+                Unused slot + empty    → placeholder "Not used in this layout"
+                            + has data → shows data as read-only -->
+            <textarea
+                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-white resize-y min-h-20
+                  {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
+                placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
+                value={slide.data.text?.[slot.index] || ''}
+                disabled={!slot.isUsed}
+                data-slot-type="text"
+                data-slot-index={slot.index}
+                oninput={(e) => updateText(slot.index, e.currentTarget.value)}
+                onfocus={() => activeSlot.set({ type: 'text', index: slot.index })}
+                onblur={() => activeSlot.set(null)}
+              ></textarea>
+          </div>
+        {/each}
         <!-- Image slots -->
         <div class="flex flex-row flex-wrap gap-4 w-full">
           {#each imageSlots as slot}
@@ -104,41 +139,6 @@
               </div>
           {/each}
         </div>
-        <!-- Text slots -->
-        {#each textSlots as slot}
-          {@const wrapperClass = slot.isUsed
-            ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
-            : 'not-used-in-layout'}
-          <div
-            class="rounded-md transition-colors"
-            data-slot-state={wrapperClass}
-          >
-            <!-- Header line -->
-            <div class="flex items-center justify-between mb-1.5 gap-1 text-xs">
-              <div>
-                <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
-              </div>
-            </div>
-
-            <!-- Textarea: always shows slot data from slide.data.text.
-                Used slot   + empty    → placeholder "Write with Markdown"
-                Used slot   + has data → editable
-                Unused slot + empty    → placeholder "Not used in this layout"
-                            + has data → shows data as read-only -->
-            <textarea
-                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px]
-                  {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
-                placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
-                value={slide.data.text?.[slot.index] || ''}
-                disabled={!slot.isUsed}
-                data-slot-type="text"
-                data-slot-index={slot.index}
-                oninput={(e) => updateText(slot.index, e.currentTarget.value)}
-                onfocus={() => activeSlot.set({ type: 'text', index: slot.index })}
-                onblur={() => activeSlot.set(null)}
-              ></textarea>
-          </div>
-        {/each}
       {/snippet}
     </SlideDetailsSection>
 

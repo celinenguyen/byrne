@@ -227,9 +227,9 @@
     <Toolbar />
   {/if}
 
-  <div class="flex-1 min-h-0 flex">
+  <div class="flex-1 min-h-0 flex bg-muted/30">
     {#if mode === 'edit'}
-      <!-- Left: Slide thumbnails -->
+      <!-- left: SlideList panel -->
       {#if $slideListOpen}
         <div class="h-full overflow-y-auto border-r border-border bg-muted/30" style="width: {leftWidth}%">
           <SlideList />
@@ -241,15 +241,14 @@
         ></div>
       {/if}
 
-      <!-- Center: Scrollable slide list -->
-      <div class="h-full flex-1 min-w-0 overflow-y-auto m-4 p-1 space-y-6" bind:this={scrollContainer} onscroll={onContainerScroll}>
+      <!-- center: scrollable slide list, collapsible from toolbar button -->
+      <div class="h-full flex-1 min-w-0 overflow-y-auto mt-1 p-4" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
           <div
             role="button"
             tabindex="0"
             data-slide-index={i}
-            class="w-full max-w-4xl mx-auto block cursor-pointer rounded-md transition-shadow
-              {i === $currentSlideIndex ? 'bg-stone-100' : 'hover:bg-stone-100/50'}"
+            class="p-0 w-full max-w-4xl mx-auto block cursor-pointer rounded-md transition-shadow"
             onclick={() => currentSlideIndex.set(i)}
             onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentSlideIndex.set(i); } }}
           >
@@ -261,7 +260,7 @@
         {/if}
       </div>
 
-      <!-- Right: Collapsible SlideDetails -->
+      <!-- right: SlideDetails panel, collapsible from toolbar button -->
       {#if isDetailsOpen}
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div

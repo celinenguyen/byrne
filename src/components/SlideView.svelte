@@ -7,9 +7,13 @@
   interface Props {
     slide: Slide;
     interactive?: boolean;
+    mode?: 'edit' | 'present';
     class?: string;
   }
-  let { slide, interactive = false, class: className }: Props = $props();
+  let { slide, interactive = false, mode = 'edit', class: className }: Props = $props();
+
+  // Only dim (opacity-50) non-current slides in edit mode; never in present mode
+  let dimmed = $derived(!interactive && mode === 'edit');
 
   let layoutDef = $derived(layouts[slide.layout]);
 
@@ -138,7 +142,7 @@
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
     tabindex={interactive ? 0 : undefined}
-    class="w-full h-full rounded-xs relative border border-border shadow-xs {interactive ? 'ring-4 ring-stone-100 shadow-sm' : ''}"
+    class="w-full h-full rounded-xs relative border border-border shadow-sm {interactive ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
     bind:this={containerEl}
     onmouseover={handleMouseOver}
     onmouseout={handleMouseOut}
@@ -168,6 +172,6 @@
     {/if}
   </div>
   {#if interactive}
-    <DeleteSlideButton slideId={slide.id} />
+    <DeleteSlideButton slideId={slide.id} class="top-1 right-1" />
   {/if}
 </div>

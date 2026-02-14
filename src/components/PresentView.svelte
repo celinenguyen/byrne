@@ -16,7 +16,7 @@
     <div
       style="width: min(100%, calc((100vh - 20px) * 16 / 9)); height: min(100%, calc((100vw - 20px) * 9 / 16));"
     >
-      <SlideView {slide} />
+      <SlideView {slide} mode="present" />
     </div>
   {:else}
     <div class="text-white/50 text-sm">No slides. Press Escape to exit.</div>

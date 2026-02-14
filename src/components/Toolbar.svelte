@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from './ui/Button.svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
   import Icon from './ui/Icon.svelte';
   import {
     viewMode,

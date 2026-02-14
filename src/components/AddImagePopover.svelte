@@ -2,6 +2,9 @@
   import type { Snippet } from 'svelte';
   import { Popover } from 'bits-ui';
   import Icon from './ui/Icon.svelte';
+  import * as InputGroup from '$lib/components/ui/input-group/index.js';
+  import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
+  import { Button } from '$lib/components/ui/button/index.js';
 
   interface Props {
     slotIndex: number;
@@ -80,7 +83,7 @@
     </Popover.Trigger>
   {:else}
     <Popover.Trigger
-      class="w-[60px] h-[45px] rounded border border-dashed border-border bg-muted/30 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+      class="justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
       <Icon name="plus" />
@@ -89,56 +92,54 @@
 
   <Popover.Portal>
     <Popover.Content
-      class="z-50 w-64 rounded-lg border border-border bg-popover p-3 shadow-lg space-y-3"
-      sideOffset={5}
-      align="start"
+      class="z-50 w-68 rounded-lg border border-border bg-popover p-4 flex flex-col gap-4 shadow-xl"
+      sideOffset={0}
+      align="center"
     >
-      <!-- URL input -->
+      <!-- URL input + Upload -->
       <div>
         <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label class="block text-[10px] font-medium text-muted-foreground mb-1">Image URL</label>
-        <div class="flex gap-1">
-          <input
-            type="text"
-            class="flex-1 px-2 py-1 border border-border rounded text-xs bg-background"
-            placeholder="https://..."
-            bind:value={urlValue}
-            onkeydown={handleKeydown}
-          />
-          <button
-            class="px-2 py-1 rounded text-xs bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-            onclick={submitUrl}
-          >Add</button>
-        </div>
-      </div>
-
-      <!-- Upload button -->
-      <div>
-        <input
-          type="file"
-          accept="image/*"
-          class="hidden"
-          bind:this={fileInput}
-          onchange={handleFileInput}
-        />
-        <button
-          class="w-full px-2 py-1.5 rounded text-xs border border-border hover:bg-accent transition-colors cursor-pointer"
-          onclick={() => fileInput?.click()}
-        >
-          Upload from computer
-        </button>
+        <ButtonGroup.Root class="w-full">
+          <InputGroup.Root class="flex-1">
+            <InputGroup.Input
+              placeholder="Add a URL"
+              bind:value={urlValue}
+              onkeydown={handleKeydown}
+            />
+            <InputGroup.Addon align="inline-end">
+              <InputGroup.Button size="icon-xs" onclick={submitUrl} aria-label="Add image">
+                <Icon name="arrow-right" size={14} />
+              </InputGroup.Button>
+            </InputGroup.Addon>
+          </InputGroup.Root>
+        </ButtonGroup.Root>
       </div>
 
       <!-- Drop zone -->
       <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
       <div
-        class="border-2 border-dashed rounded-md p-3 text-center text-xs text-muted-foreground transition-colors
-          {dragging ? 'border-primary bg-primary/5' : 'border-border'}"
+        class="flex flex-row items-center justify-center gap-2 border-1 rounded-md px-2 py-4 text-center text-sm bg-muted/50 text-muted-foreground transition-colors
+          {dragging ? 'border-stone-300 bg-stone-100' : 'border-border'}"
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         ondrop={handleDrop}
       >
-        Drop image here
+        or you can
+          <input
+            type="file"
+            accept="image/*"
+            class="hidden"
+            bind:this={fileInput}
+            onchange={handleFileInput}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={() => fileInput?.click()}
+            aria-label="Upload from computer"
+          >
+            <Icon name="cloud-upload" size={16} />Upload
+          </Button>
       </div>
     </Popover.Content>
   </Popover.Portal>
