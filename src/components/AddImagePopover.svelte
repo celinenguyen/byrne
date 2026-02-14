@@ -10,15 +10,16 @@
     slotIndex: number;
     onimage: (index: number, url: string) => void;
     trigger?: Snippet;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
   }
-  let { slotIndex, onimage, trigger }: Props = $props();
-
-  let open = $state(false);
+  let { slotIndex, onimage, trigger, open = $bindable(false), onOpenChange }: Props = $props();
   let urlValue = $state('');
   let dragging = $state(false);
 
   function handleOpenChange(v: boolean) {
     open = v;
+    onOpenChange?.(v);
     if (v) urlValue = '';
   }
 

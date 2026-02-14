@@ -19,20 +19,29 @@
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
 
-  // Watch focusSlot store to focus the matching field
+  // Track which image slot's popover should be open (set by focusSlot, cleared by popover close)
+  let openImagePopoverIndex = $state<number | null>(null);
+
+  // Watch focusSlot store to focus the matching field or open the image popover
   $effect(() => {
     const slot = $focusSlot;
     if (!slot) return;
-    // Ensure data section is open
     dataOpen = true;
-    // Use tick to wait for DOM update
     queueMicrotask(() => {
-      const el = document.querySelector<HTMLElement>(
-        `[data-slot-type="${slot.type}"][data-slot-index="${slot.index}"]`
-      );
-      if (el) {
-        el.focus();
-        el.scrollIntoView({ block: 'nearest' });
+      if (slot.type === 'text') {
+        const el = document.querySelector<HTMLElement>(
+          `[data-slot-type="${slot.type}"][data-slot-index="${slot.index}"]`
+        );
+        if (el) {
+          el.focus();
+          el.scrollIntoView({ block: 'nearest' });
+        }
+      } else if (slot.type === 'image') {
+        const el = document.querySelector<HTMLElement>(
+          `[data-slot-type="image"][data-slot-index="${slot.index}"]`
+        );
+        if (el) el.scrollIntoView({ block: 'nearest' });
+        openImagePopoverIndex = slot.index;
       }
       focusSlot.set(null);
     });
@@ -135,7 +144,13 @@
                 <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
               </div>
               <!-- Thumbnail area: max 50% container width, max-height 100px, clickable to open AddImagePopover -->
-              <ImageSlotThumbnail slot={slot} slide={slide} onUpdate={updateImage} />
+              <ImageSlotThumbnail
+                slot={slot}
+                slide={slide}
+                onUpdate={updateImage}
+                popoverOpen={openImagePopoverIndex === slot.index}
+                onpopoverOpenChange={(v) => { if (!v) openImagePopoverIndex = null; }}
+              />
               </div>
           {/each}
         </div>
