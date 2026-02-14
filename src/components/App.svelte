@@ -242,14 +242,16 @@
       {/if}
 
       <!-- Center: Scrollable slide list -->
-      <div class="h-full flex-1 min-w-0 overflow-y-auto p-6 space-y-6" bind:this={scrollContainer} onscroll={onContainerScroll}>
+      <div class="h-full flex-1 min-w-0 overflow-y-auto m-4 p-1 space-y-6" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
+            role="button"
+            tabindex="0"
             data-slide-index={i}
-            class="w-full max-w-4xl mx-auto block cursor-pointer rounded-sm transition-shadow
-              {i === $currentSlideIndex ? 'ring-2 ring-primary' : 'ring-1 ring-transparent hover:ring-border'}"
+            class="w-full max-w-4xl mx-auto block cursor-pointer rounded-md transition-shadow
+              {i === $currentSlideIndex ? 'bg-stone-100' : 'hover:bg-stone-100/50'}"
             onclick={() => currentSlideIndex.set(i)}
+            onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); currentSlideIndex.set(i); } }}
           >
             <SlideView slide={s} interactive={i === $currentSlideIndex} />
           </div>

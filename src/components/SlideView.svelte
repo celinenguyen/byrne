@@ -7,8 +7,9 @@
   interface Props {
     slide: Slide;
     interactive?: boolean;
+    class?: string;
   }
-  let { slide, interactive = false }: Props = $props();
+  let { slide, interactive = false, class: className }: Props = $props();
 
   let layoutDef = $derived(layouts[slide.layout]);
 
@@ -43,7 +44,9 @@
   let highlightInfo = $derived(hoveredSlotInfo ?? activeSlotResult?.info ?? null);
 
   // Overlay position (relative to container)
+  // Re-runs when slide data changes (text/images) since that can resize the slot element
   let overlayStyle = $derived.by(() => {
+    slide.data;
     if (!highlightEl || !containerEl || !highlightInfo) return '';
     const elRect = highlightEl.getBoundingClientRect();
     const cRect = containerEl.getBoundingClientRect();
@@ -88,8 +91,41 @@
     }
   }
 
+  function handleFocusIn(e: FocusEvent) {
+    if (!interactive) return;
+    const result = findSlotElement(e.target);
+    if (result) {
+      hoveredEl = result.el;
+      hoveredSlotInfo = result.info;
+    }
+  }
+
+  function handleFocusOut(e: FocusEvent) {
+    if (!interactive) return;
+    const related = e.relatedTarget as HTMLElement | null;
+    if (!related || !containerEl?.contains(related)) {
+      hoveredEl = null;
+      hoveredSlotInfo = null;
+    } else {
+      const result = findSlotElement(related);
+      if (!result || result.el !== hoveredEl) {
+        hoveredEl = null;
+        hoveredSlotInfo = null;
+      }
+    }
+  }
+
   function handleClick(e: MouseEvent) {
     if (!interactive) return;
+    const result = findSlotElement(e.target);
+    if (result) {
+      focusSlot.set({ type: result.info.type, index: result.info.index });
+    }
+  }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (!interactive || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
     const result = findSlotElement(e.target);
     if (result) {
       focusSlot.set({ type: result.info.type, index: result.info.index });
@@ -98,16 +134,22 @@
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="p-4 rounded-md group relative h-full">
+<div class="p-4 rounded-md group relative h-full {className ?? ''}">
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
-    class="w-full h-full shadow-md rounded-xs overflow-hidden relative"
+    tabindex={interactive ? 0 : undefined}
+    class="w-full h-full rounded-xs relative border border-border shadow-xs {interactive ? 'ring-4 ring-stone-100 shadow-sm' : ''}"
     bind:this={containerEl}
     onmouseover={handleMouseOver}
     onmouseout={handleMouseOut}
+    onfocusin={handleFocusIn}
+    onfocusout={handleFocusOut}
     onclick={handleClick}
+    onkeydown={handleKeyDown}
   >
     {#if layoutDef}
-      <svelte:component this={layoutDef.component} data={slide.data} />
+      {@const Component = layoutDef.component}
+      <Component data={slide.data} />
     {:else}
       <div class="aspect-video flex items-center justify-center bg-muted text-muted-foreground text-sm">
         Unknown layout: {slide.layout}
