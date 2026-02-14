@@ -2,7 +2,7 @@
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
   import SlideLayoutImageSlot from './SlideLayoutImageSlot.svelte';
-  import { marked } from 'marked';
+  import MarkdownText from './MarkdownText.svelte';
 
   interface Props {
     data: SlideData;
@@ -13,8 +13,6 @@
   let imgRight = $derived(data.images?.[1] || '');
   let capLeft = $derived(data.text?.[0] || '');
   let capRight = $derived(data.text?.[1] || '');
-  let capLeftHtml = $derived(marked.parse(capLeft, { async: false }) as string);
-  let capRightHtml = $derived(marked.parse(capRight, { async: false }) as string);
 </script>
 
 <BaseLayout>
@@ -22,13 +20,13 @@
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgLeft} slotName="left" class="flex-1 min-h-0 rounded" />
       {#if capLeft}
-        <div data-slot="text:leftCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none">{@html capLeftHtml}</div>
+        <div data-slot="text:leftCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none"><MarkdownText text={capLeft} /></div>
       {/if}
     </div>
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgRight} slotName="right" class="flex-1 min-h-0 rounded" />
       {#if capRight}
-        <div data-slot="text:rightCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none">{@html capRightHtml}</div>
+        <div data-slot="text:rightCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none"><MarkdownText text={capRight} /></div>
       {/if}
     </div>
   </div>

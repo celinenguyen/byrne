@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
+  import MarkdownText from './MarkdownText.svelte';
   import settings from './TitleLayout.json';
 
   interface Props {
@@ -15,10 +16,10 @@
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full px-16 text-center">
     <h1 data-slot="text:title" class="text-5xl font-bold tracking-tight text-foreground leading-tight">
-      {title || settings.text.title.placeholder}
+      <MarkdownText text={title || settings.text.title.placeholder} inline />
     </h1>
     {#if subtitle}
-      <p data-slot="text:subtitle" class="mt-4 text-xl text-muted-foreground">{subtitle}</p>
+      <p data-slot="text:subtitle" class="mt-4 text-xl text-muted-foreground"><MarkdownText text={subtitle} inline /></p>
     {/if}
   </div>
 </BaseLayout>
