@@ -9,9 +9,9 @@
 
 <div>
   {#if isUsed}
-    <span class="font-medium tracking-wide">{displayName}</span>
+    <span class="font-medium tracking-[2.5%]">{displayName}</span>
     {#if !isRequired}
-      <span class="ml-0.5 text-muted-foreground">(optional)</span>
+      <span class="text-muted-foreground tracking-[1.5%]">(optional)</span>
     {/if}
   {:else}
     <span class="text-muted-foreground">not used</span>

@@ -8,6 +8,6 @@
   let { class: className = '', children }: Props = $props();
 </script>
 
-<div class="aspect-video w-full relative overflow-hidden bg-white {className}">
+<div class="aspect-video w-full h-full relative overflow-hidden bg-white {className}">
   {@render children()}
 </div>

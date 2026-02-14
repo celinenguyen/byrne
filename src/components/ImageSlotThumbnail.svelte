@@ -40,7 +40,7 @@
     <AddImagePopover slotIndex={slot.index} onimage={onUpdate}>
       {#snippet trigger()}
         <div class="{defaultClasses} {classesIfUsed} min-h-[100px] flex items-center justify-center">
-          <Icon name="plus" size={20} />
+          <Icon name="plus" class="size-5" />
         </div>
       {/snippet}
     </AddImagePopover>

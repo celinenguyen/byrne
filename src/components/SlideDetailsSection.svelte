@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
   import Icon from './ui/Icon.svelte';
   import SidebarStickyHeader from './SidebarStickyHeader.svelte';
 
@@ -25,16 +26,15 @@
   }
 </script>
 
-<div class={className}>
+<div class=" {className ?? ''}">
   <SidebarStickyHeader>
     {#snippet children()}
-      <button
-        class="w-full px-1 py-2 flex items-center gap-1 font-semibold text-xs cursor-pointer"
-        onclick={toggle}
-      >
-        {name}
-        <Icon name="chevron-right" size={15} class="text-muted-foreground transition-transform {isOpen ? 'rotate-90' : ''}" />
-      </button>
+      <Button class="mx-2 shadow-s text-foreground hover:bg-stone-200/50 transition-colors w-full justify-start" variant="ghost" size="sm" onclick={toggle}>
+        {#snippet children()}
+          {name}
+          <Icon name="chevron-right" class="size-3.5 text-muted-foreground transition-transform {isOpen ? 'rotate-90' : ''}" />
+        {/snippet}
+      </Button>
     {/snippet}
   </SidebarStickyHeader>
   {#if isOpen}

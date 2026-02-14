@@ -86,7 +86,7 @@
       class="justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
-      <Icon name="plus" />
+      <Icon name="plus" class="size-4" />
     </Popover.Trigger>
   {/if}
 
@@ -108,7 +108,7 @@
             />
             <InputGroup.Addon align="inline-end">
               <InputGroup.Button size="icon-xs" onclick={submitUrl} aria-label="Add image">
-                <Icon name="arrow-right" size={14} />
+                <Icon name="arrow-right" class="size-4" />
               </InputGroup.Button>
             </InputGroup.Addon>
           </InputGroup.Root>
@@ -138,7 +138,7 @@
             onclick={() => fileInput?.click()}
             aria-label="Upload from computer"
           >
-            <Icon name="cloud-upload" size={16} />Upload
+            <Icon name="cloud-upload" class="size-4" />Upload
           </Button>
       </div>
     </Popover.Content>

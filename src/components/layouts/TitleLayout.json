@@ -1,7 +1,7 @@
 {
   "id": "Title",
   "displayName": "Title",
-  "description": "With optional subtitle",
+  "description": "Optional subtitle",
   "text": {
     "title": {"displayName": "title", "isRequired": true, "placeholder": "Untitled"},
     "subtitle": {"displayName": "subtitle", "isRequired": false}

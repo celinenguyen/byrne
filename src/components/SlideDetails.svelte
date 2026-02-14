@@ -109,7 +109,7 @@
                 Unused slot + empty    → placeholder "Not used in this layout"
                             + has data → shows data as read-only -->
             <textarea
-                class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-white resize-y min-h-20
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm leading-[1.5] bg-white resize-y min-h-24
                   {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
                 placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
                 value={slide.data.text?.[slot.index] || ''}
@@ -142,7 +142,7 @@
       {/snippet}
     </SlideDetailsSection>
 
-    <SlideDetailsSection name="Layout" class="border-t" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }}>
+    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }}>
       {#snippet children()}
         <div class="mt-2 grid grid-cols-2 gap-4">
           {#each layoutList as l}

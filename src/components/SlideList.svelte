@@ -111,6 +111,7 @@
   {#snippet children()}
     <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
       {#snippet children()}
+        <Icon name="plus" class="size-4" />
         Add slide
       {/snippet}
     </Button>
@@ -160,7 +161,7 @@
               class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent"
               onSelect={() => duplicateSlide(i)}
             >
-              <Icon name="copy" size={14} />
+              <Icon name="copy" class="size-4" />
               Duplicate
             </ContextMenu.Item>
             <ContextMenu.Separator class="my-1 h-px bg-border" />
@@ -168,7 +169,7 @@
               class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
               onSelect={() => softDeleteSlide(slide.id)}
             >
-              <Icon name="trash" size={14} />
+              <Icon name="trash" class="size-4" />
               Delete
             </ContextMenu.Item>
           </ContextMenu.Content>

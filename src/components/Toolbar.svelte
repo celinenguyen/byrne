@@ -33,11 +33,11 @@
     title="{$slideListOpen ? 'Hide' : 'Show'} slide list"
     onclick={() => slideListOpen.update((v) => !v)}
   >
-    <Icon name="panel-left" size={16} />
+    <Icon name="panel-left" class="size-4" />
   </button>
   <Button variant="outline" size="sm" onclick={() => viewMode.set('present')}>
     {#snippet children()}
-      <Icon name="presentation" size={14} />
+      <Icon name="presentation" class="size-4" />
       Present
     {/snippet}
   </Button>
@@ -47,6 +47,6 @@
     title="{$detailsOpen ? 'Hide' : 'Show'} details panel"
     onclick={() => detailsOpen.update((v) => !v)}
   >
-    <Icon name="panel-right" size={16} />
+    <Icon name="panel-right" class="size-4" />
   </button>
 </div>

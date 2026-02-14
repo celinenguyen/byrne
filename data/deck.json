@@ -7,8 +7,8 @@
       "data": {
         "images": [],
         "text": [
-          "what celine is thinking about",
-          "a frivolous slide deck made on valentine's day eve"
+          "",
+          ""
         ],
         "url": ""
       }
@@ -16,19 +16,31 @@
     {
       "id": "YCGdwupJNuOioMXwMrx09",
       "order": 1,
-      "layout": "Image",
+      "layout": "Text",
       "data": {
         "images": [],
         "text": [
-          "some keyboard shortcuts work! like copying and pasting slides!!!!!!",
-          "a frivolous slide deck made on valentine's day eve"
+          "here's a heading for the text and it will continue updating while I'm hovered and I'm going to type more text",
+          "here's text that's not always used"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "b5cbUrHc8scChARfMvrDg",
+      "order": 2,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [
+          "I'm writing a title here"
         ],
         "url": ""
       }
     },
     {
       "id": "i0dvuA-svq5Yl8vqpwVhg",
-      "order": 2,
+      "order": 3,
       "layout": "Image2Up",
       "data": {
         "images": [
@@ -42,8 +54,21 @@
       }
     },
     {
+      "id": "wPtb4FmtBVPzvGJWQHSkh",
+      "order": 4,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [
+          "the end",
+          "thank you for watching <3"
+        ],
+        "url": ""
+      }
+    },
+    {
       "id": "pbcFWp008zH_8jEshbj3s",
-      "order": 3,
+      "order": 5,
       "layout": "Image",
       "data": {
         "images": [
@@ -57,22 +82,8 @@
       }
     },
     {
-      "id": "BsDBDZ713K9o1xEmrkX06",
-      "order": 4,
-      "layout": "Image",
-      "data": {
-        "images": [
-          "https://d2w9rnfcy7mm78.cloudfront.net/43424140/original_e87f36b5ec5d220b451a6a25948f1704.webp?1770566103?bc=0"
-        ],
-        "text": [
-          "let me write a different caption!"
-        ],
-        "url": ""
-      }
-    },
-    {
       "id": "j4G9unKmevKZYynZMtAcN",
-      "order": 5,
+      "order": 6,
       "layout": "Image",
       "data": {
         "images": [
@@ -85,14 +96,15 @@
       }
     },
     {
-      "id": "wPtb4FmtBVPzvGJWQHSkh",
-      "order": 6,
-      "layout": "Title",
+      "id": "BsDBDZ713K9o1xEmrkX06",
+      "order": 7,
+      "layout": "Image",
       "data": {
-        "images": [],
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/43424140/original_e87f36b5ec5d220b451a6a25948f1704.webp?1770566103?bc=0"
+        ],
         "text": [
-          "the end",
-          "thank you for watching <3"
+          "let me write a different caption here! here's something"
         ],
         "url": ""
       }

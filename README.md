@@ -59,7 +59,7 @@ The component receives `data: SlideData` as a prop and reads slot values from `d
     {#if photo}
       <img src={photo} alt="" />
     {:else}
-      <div>No image</div>
+      <div>no image</div>
     {/if}
   </div>
   <h2 class="layout-text-heading ...">{heading || settings.text.heading.placeholder}</h2>
