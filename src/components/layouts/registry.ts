@@ -4,23 +4,11 @@ import TitleLayout from './TitleLayout.svelte';
 import ImageLayout from './ImageLayout.svelte';
 import TextLayout from './TextLayout.svelte';
 import Image2UpLayout from './Image2UpLayout.svelte';
-import Image3UpLayout from './Image3UpLayout.svelte';
-import TweetLayout from './TweetLayout.svelte';
-import SubstackLayout from './SubstackLayout.svelte';
-import QuoteLayout from './QuoteLayout.svelte';
-import ArenaBlockLayout from './ArenaBlockLayout.svelte';
-import ArticleLayout from './ArticleLayout.svelte';
 
-import titleSettings from './TitleLayout.settings.json';
-import imageSettings from './ImageLayout.settings.json';
-import textSettings from './TextLayout.settings.json';
-import image2UpSettings from './Image2UpLayout.settings.json';
-import image3UpSettings from './Image3UpLayout.settings.json';
-import tweetSettings from './TweetLayout.settings.json';
-import substackSettings from './SubstackLayout.settings.json';
-import quoteSettings from './QuoteLayout.settings.json';
-import arenaBlockSettings from './ArenaBlockLayout.settings.json';
-import articleSettings from './ArticleLayout.settings.json';
+import titleSettings from './TitleLayout.json';
+import imageSettings from './ImageLayout.json';
+import textSettings from './TextLayout.json';
+import image2UpSettings from './Image2UpLayout.json';
 
 export interface LayoutDefinition {
   id: string;
@@ -59,78 +47,32 @@ export const layouts: Record<string, LayoutDefinition> = {
     component: Image2UpLayout as unknown as Component,
     schema: image2UpSettings,
   },
-  Image3Up: {
-    id: 'Image3Up',
-    displayName: '3-Up Image',
-    description: 'Three images in a row',
-    component: Image3UpLayout as unknown as Component,
-    schema: image3UpSettings,
-  },
-  Tweet: {
-    id: 'Tweet',
-    displayName: 'Tweet',
-    description: 'Tweet screenshot with attribution',
-    component: TweetLayout as unknown as Component,
-    schema: tweetSettings,
-  },
-  Substack: {
-    id: 'Substack',
-    displayName: 'Substack',
-    description: 'Article preview card',
-    component: SubstackLayout as unknown as Component,
-    schema: substackSettings,
-  },
-  Quote: {
-    id: 'Quote',
-    displayName: 'Quote',
-    description: 'Large pull-quote with attribution',
-    component: QuoteLayout as unknown as Component,
-    schema: quoteSettings,
-  },
-  ArenaBlock: {
-    id: 'ArenaBlock',
-    displayName: 'Are.na Block',
-    description: 'Are.na-style block display',
-    component: ArenaBlockLayout as unknown as Component,
-    schema: arenaBlockSettings,
-  },
-  Article: {
-    id: 'Article',
-    displayName: 'Article',
-    description: 'Article screenshot + commentary',
-    component: ArticleLayout as unknown as Component,
-    schema: articleSettings,
-  },
 };
 
 export const layoutList = Object.values(layouts);
 
-export function formatSlotSummary(schema: LayoutSettings): string {
-  const imgCount = schema.images ? Object.keys(schema.images).length : 0;
-  const imgReq = schema.images
-    ? Object.values(schema.images).filter((s) => s.type === 'required').length
-    : 0;
-  const txtCount = schema.text ? Object.keys(schema.text).length : 0;
-  const txtReq = schema.text
-    ? Object.values(schema.text).filter((s) => s.type === 'required').length
-    : 0;
+export function getSlotInfo(
+  layoutId: string,
+  el: HTMLElement,
+): { type: 'image' | 'text'; index: number; displayName: string } | null {
+  const slotAttr = el.dataset.slot;
+  if (!slotAttr) return null;
+  const [slotType, slotName] = slotAttr.split(':');
+  if ((slotType !== 'text' && slotType !== 'image') || !slotName) return null;
 
-  const imgStr = imgCount === 0
-    ? '0 images'
-    : imgReq === imgCount
-      ? `${imgCount} image${imgCount !== 1 ? 's' : ''}`
-      : `${imgReq}–${imgCount} images`;
-  const txtStr = txtCount === 0
-    ? '0 text'
-    : txtReq === txtCount
-      ? `${txtCount} text`
-      : `${txtReq}–${txtCount} text`;
-  return `${imgStr}, ${txtStr}`;
-}
-
-/** Get the first text slot key for a layout (for preview in slide list) */
-export function getFirstTextKey(layoutId: string): string | undefined {
   const def = layouts[layoutId];
-  if (!def?.schema.text) return undefined;
-  return Object.keys(def.schema.text)[0];
+  if (!def) return null;
+
+  const section = slotType === 'image' ? def.schema.images : def.schema.text;
+  if (!section) return null;
+
+  const keys = Object.keys(section);
+  const index = keys.indexOf(slotName);
+  if (index === -1) return null;
+
+  return {
+    type: slotType,
+    index,
+    displayName: section[slotName].displayName,
+  };
 }

@@ -1,16 +1,36 @@
 <script lang="ts">
-  import Button from './ui/Button.svelte';
+  import { tick } from 'svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import Icon from './ui/Icon.svelte';
+  import SlideThumbnail from './SlideThumbnail.svelte';
+  import SlideListDropSlot from './SlideListDropSlot.svelte';
+  import SidebarStickyHeader from './SidebarStickyHeader.svelte';
+  import DeleteSlideButton from './DeleteSlideButton.svelte';
+  import { ContextMenu } from 'bits-ui';
   import {
     slides,
     currentSlideIndex,
     addSlide,
-    deleteSlide,
+    softDeleteSlide,
+    duplicateSlide,
     reorderSlide,
-  } from '../lib/store';
-  import { getFirstTextKey } from './layouts/registry';
+  } from '../lib';
+  import { keyboardClick } from '../lib/keyboard';
 
   let allSlides = $derived($slides);
   let idx = $derived($currentSlideIndex);
+
+  let listContainer: HTMLDivElement | undefined = $state();
+
+  // Scroll the active thumbnail into view when currentSlideIndex changes
+  $effect(() => {
+    const i = idx;
+    if (!listContainer) return;
+    tick().then(() => {
+      const el = listContainer?.querySelector(`[data-slide-thumb="${i}"]`);
+      el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  });
 
   function selectSlide(i: number) {
     currentSlideIndex.set(i);
@@ -88,60 +108,79 @@
   }
 </script>
 
-<div class="p-3 space-y-2">
-  <Button variant="outline" size="sm" class="w-full" onclick={() => addSlide()}>
-    {#snippet children()}
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-      Add Slide
-    {/snippet}
-  </Button>
+<SidebarStickyHeader>
+  {#snippet children()}
+    <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
+      {#snippet children()}
+        <Icon name="plus" class="size-4" />
+        Add slide
+      {/snippet}
+    </Button>
+  {/snippet}
+</SidebarStickyHeader>
 
+<div class="px-3 py-4 flex flex-col gap-6 bg-muted/15 inset-shadow-sm">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="space-y-0" data-slide-list ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
+  <div class="bg-muted/5 space-y-0 flex flex-col gap-2" data-slide-list bind:this={listContainer} ondrop={handleDrop} ondragover={(e) => e.preventDefault()}>
     {#each allSlides as slide, i}
-      {@const firstTextKey = getFirstTextKey(slide.layout)}
       <!-- Drop indicator before this item -->
       {#if dropSlot === i}
-        <div class="h-8 mx-1 my-1 rounded-md border-2 border-dashed border-primary/40 bg-primary/5 transition-all"></div>
+        <SlideListDropSlot />
       {/if}
 
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div
-        class="w-full text-left px-3 py-2 rounded-md text-sm transition-colors cursor-grab group relative select-none
-          {i === idx ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}
-          {dragIndex === i ? 'opacity-30' : ''}"
-        onclick={() => selectSlide(i)}
-        onkeydown={(e) => { if (e.key === 'Enter') selectSlide(i); }}
-        role="button"
-        tabindex="0"
-        draggable="true"
-        ondragstart={(e) => handleDragStart(e, i)}
-        ondragover={(e) => handleDragOver(e, i)}
-        ondragleave={handleDragLeave}
-        ondragend={handleDragEnd}
-      >
-        <div class="flex items-center gap-2">
-          <span class="text-xs opacity-30 cursor-grab">⠿</span>
-          <span class="text-xs opacity-50 tabular-nums w-4">{i + 1}</span>
-          <span class="font-medium truncate">{slide.layout}</span>
-        </div>
-        {#if firstTextKey && slide.data.text?.[firstTextKey]}
-          <p class="mt-0.5 text-xs truncate opacity-60 ml-10">
-            {slide.data.text[firstTextKey].slice(0, 50)}
-          </p>
-        {/if}
-        <button
-          class="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-destructive/20 cursor-pointer"
-          onclick={(e) => { e.stopPropagation(); deleteSlide(slide.id); }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-      </div>
+      <ContextMenu.Root>
+        <ContextMenu.Trigger>
+          {#snippet child({ props })}
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div
+              {...props}
+              data-slide-thumb={i}
+              class="w-full text-left px-2 py-2 rounded-md text-sm transition-colors cursor-grab group relative select-none
+                {i === idx ? 'ring-1 ring-border bg-muted' : 'hover:bg-muted'}
+                {dragIndex === i ? 'opacity-30' : ''}"
+              onclick={() => selectSlide(i)}
+              onkeydown={keyboardClick(() => selectSlide(i))}
+              role="button"
+              tabindex="0"
+              draggable="true"
+              ondragstart={(e) => handleDragStart(e, i)}
+              ondragover={(e) => handleDragOver(e, i)}
+              ondragleave={handleDragLeave}
+              ondragend={handleDragEnd}
+            >
+              <!-- to delete the slide -->            
+              <div class="relative">
+                <SlideThumbnail {slide} class="rounded-xs {i === idx ? 'shadow-md' : 'shadow-sm'}" />
+                <DeleteSlideButton slideId={slide.id} class="-top-1 -right-1" />
+              </div>
+            </div>
+          {/snippet}
+        </ContextMenu.Trigger>
+        <ContextMenu.Portal>
+          <ContextMenu.Content class="z-50 min-w-[140px] rounded-md border border-border bg-popover p-1 shadow-md">
+            <ContextMenu.Item
+              class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent"
+              onSelect={() => duplicateSlide(i)}
+            >
+              <Icon name="copy" class="size-4" />
+              Duplicate
+            </ContextMenu.Item>
+            <ContextMenu.Separator class="my-1 h-px bg-border" />
+            <ContextMenu.Item
+              class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
+              onSelect={() => softDeleteSlide(slide.id)}
+            >
+              <Icon name="trash" class="size-4" />
+              Delete
+            </ContextMenu.Item>
+          </ContextMenu.Content>
+        </ContextMenu.Portal>
+      </ContextMenu.Root>
     {/each}
 
     <!-- Drop indicator after the last item -->
     {#if dropSlot === allSlides.length}
-      <div class="h-8 mx-1 my-1 rounded-md border-2 border-dashed border-primary/40 bg-primary/5 transition-all"></div>
+      <SlideListDropSlot />
     {/if}
 
     <!-- Trailing drop zone so you can drag to end of list -->

@@ -1,21 +1,20 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
-  import { marked } from 'marked';
+  import MarkdownText from './MarkdownText.svelte';
 
   interface Props {
     data: SlideData;
   }
   let { data }: Props = $props();
 
-  let body = $derived(data.text?.['body'] || '');
-  let bodyHtml = $derived(marked.parse(body, { async: false }) as string);
+  let body = $derived(data.text?.[0] || '');
 </script>
 
 <BaseLayout>
   <div class="flex items-center justify-center h-full px-16 py-12">
-    <div class="prose prose-lg max-w-3xl">
-      {@html bodyHtml}
+    <div data-slot="text:body" class="prose prose-lg max-w-3xl">
+      <MarkdownText text={body} />
     </div>
   </div>
 </BaseLayout>

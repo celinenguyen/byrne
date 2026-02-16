@@ -1,0 +1,7 @@
+{
+  "id": "Image",
+  "displayName": "Image",
+  "description": "With optional caption",
+  "images": {"image": {"displayName": "image", "isRequired": true}},
+  "text": {"caption": {"displayName": "caption", "isRequired": false}}
+}

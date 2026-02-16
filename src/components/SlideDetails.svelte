@@ -1,266 +1,210 @@
 <script lang="ts">
-  import type { Slide, SlideData } from '../lib/types';
-  import { updateSlide } from '../lib/store';
-  import { layouts, layoutList, formatSlotSummary } from './layouts/registry';
-  import { marked } from 'marked';
-  import AddImagePopover from './AddImagePopover.svelte';
+  import type { Slide } from '../lib/types';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck } from '../lib/store';
+  import { layouts, layoutList } from './layouts/registry';
+  import ImageSlotThumbnail from './ImageSlotThumbnail.svelte';
+  import SlideDetailsSection from './SlideDetailsSection.svelte';
+  import InputTypeAndEnter from './InputTypeAndEnter.svelte';
+  import SlotLabel from './SlotLabel.svelte';
+  import * as Item from './ui/item';
 
   interface Props {
-    slide: Slide;
+    slide: Slide | null;
+    onClose?: () => void;
   }
-  let { slide }: Props = $props();
+  let { slide, onClose }: Props = $props();
 
-  let layoutDef = $derived(layouts[slide.layout]);
+  let deckTitle = $state('');
+  let meta = $derived($deck?.meta);
+
+  // Keep the input in sync with the deck title (when deck changes)
+  $effect(() => {
+    deckTitle = meta?.title ?? '';
+  });
+
+  function handleRenameDeck() {
+    const trimmed = deckTitle.trim();
+    if (!trimmed || trimmed === meta?.title) return;
+    renameDeck(trimmed);
+  }
+
+  let layoutDef = $derived(slide ? layouts[slide.layout] : null);
 
   // Collapsible sections
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
-  let notesOpen = $state(true);
 
-  // Derived slot metadata for images
-  let imageSlots = $derived.by(() => {
-    const schema = layoutDef?.schema.images;
-    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
-    if (schema) {
-      for (const [key, def] of Object.entries(schema)) {
-        used.push({
-          key,
-          isUsed: true,
-          displayName: def.displayName,
-          type: def.type,
-          hasContent: !!slide.data.images?.[key],
-        });
+  // Track which image slot's popover should be open (set by focusSlot, cleared by popover close)
+  let openImagePopoverIndex = $state<number | null>(null);
+
+  // Watch focusSlot store to focus the matching field or open the image popover
+  $effect(() => {
+    const slot = $focusSlot;
+    if (!slot) return;
+    dataOpen = true;
+    queueMicrotask(() => {
+      if (slot.type === 'text') {
+        const el = document.querySelector<HTMLElement>(
+          `[data-slot-type="${slot.type}"][data-slot-index="${slot.index}"]`
+        );
+        if (el) {
+          el.focus();
+          el.scrollIntoView({ block: 'nearest' });
+        }
+      } else if (slot.type === 'image') {
+        const el = document.querySelector<HTMLElement>(
+          `[data-slot-type="image"][data-slot-index="${slot.index}"]`
+        );
+        if (el) el.scrollIntoView({ block: 'nearest' });
+        openImagePopoverIndex = slot.index;
       }
-    }
-    // Pad to 3 with "not used" entries
-    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 3; i++) {
-      notUsed.push({
-        key: `_unused_img_${i}`,
-        isUsed: false,
-        displayName: 'not used',
-        type: 'optional',
-        hasContent: false,
-      });
-    }
-    return [...used, ...notUsed];
+      focusSlot.set(null);
+    });
   });
 
-  // Derived slot metadata for text
-  let textSlots = $derived.by(() => {
-    const schema = layoutDef?.schema.text;
-    const used: { key: string; isUsed: true; displayName: string; type: string; hasContent: boolean }[] = [];
-    if (schema) {
-      for (const [key, def] of Object.entries(schema)) {
-        used.push({
-          key,
+  type SlotMeta = { index: number; isUsed: boolean; displayName: string; isRequired: boolean; hasContent: boolean };
+
+  function buildSlots(
+    schema: Record<string, { displayName: string; isRequired: boolean }> | undefined,
+    dataArray: string[] | undefined,
+    padTo: number = 2,
+  ): SlotMeta[] {
+    const used: SlotMeta[] = schema
+      ? Object.values(schema).map((def, index) => ({
+          index,
           isUsed: true,
           displayName: def.displayName,
-          type: def.type,
-          hasContent: !!slide.data.text?.[key],
-        });
-      }
+          isRequired: def.isRequired,
+          hasContent: !!dataArray?.[index],
+        }))
+      : [];
+    for (let i = used.length; i < padTo; i++) {
+      used.push({ index: i, isUsed: false, displayName: 'not used', isRequired: false, hasContent: !!dataArray?.[i] });
     }
-    // Pad to 3 with "not used" entries
-    const notUsed: { key: string; isUsed: false; displayName: string; type: string; hasContent: boolean }[] = [];
-    for (let i = used.length; i < 3; i++) {
-      notUsed.push({
-        key: `_unused_txt_${i}`,
-        isUsed: false,
-        displayName: 'not used',
-        type: 'optional',
-        hasContent: false,
-      });
-    }
-    return [...used, ...notUsed];
-  });
-
-  function updateImage(key: string, value: string) {
-    const newData: SlideData = {
-      ...slide.data,
-      images: { ...slide.data.images, [key]: value },
-    };
-    updateSlide(slide.id, { data: newData });
+    return used;
   }
 
-  function updateText(key: string, value: string) {
-    const newData: SlideData = {
-      ...slide.data,
-      text: { ...slide.data.text, [key]: value },
-    };
-    updateSlide(slide.id, { data: newData });
+  let imageSlots = $derived(buildSlots(layoutDef?.schema.images, slide?.data.images));
+  let textSlots = $derived(buildSlots(layoutDef?.schema.text, slide?.data.text));
+
+  function updateImage(index: number, value: string) {
+    if (!slide) return;
+    const images = [...slide.data.images];
+    images[index] = value;
+    updateSlide(slide.id, { data: { ...slide.data, images } });
   }
 
-  function updateNotes(value: string) {
-    updateSlide(slide.id, { notes: value });
+  function updateText(index: number, value: string) {
+    if (!slide) return;
+    const text = [...slide.data.text];
+    text[index] = value;
+    updateSlide(slide.id, { data: { ...slide.data, text } });
   }
 
   function changeLayout(layoutId: string) {
+    if (!slide) return;
     updateSlide(slide.id, { layout: layoutId });
   }
-
-  // Preview markdown text
-  let previewKey = $state<string | null>(null);
 </script>
 
-<div class="p-3 space-y-3 text-sm">
-  <!-- Data Section -->
-  <div>
-    <button
-      class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
-      onclick={() => { dataOpen = !dataOpen; }}
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {dataOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
-      Data
-    </button>
-    {#if dataOpen}
-      <div class="mt-2 space-y-4">
+<div class="inset-shadow-sm flex flex-col bg-muted/15">
+  {#if slide}
+    <SlideDetailsSection name="Deck">
+      {#snippet children()}
+        <InputTypeAndEnter
+          placeholder="Deck name"
+          bind:value={deckTitle}
+          onsubmit={handleRenameDeck}
+          ariaLabel="Rename deck"
+        />
+      {/snippet}
+    </SlideDetailsSection>
+
+    <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }} class='border-t'>
+      {#snippet children()}
+        <!-- Text slots -->
+        {#each textSlots as slot}
+          {@const wrapperClass = slot.isUsed
+            ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
+            : 'not-used-in-layout'}
+          <div
+            class="rounded-md transition-colors"
+            data-slot-state={wrapperClass}
+          >
+            <!-- Header line -->
+            <div class="flex items-center justify-between mb-2 gap-1 text-xs">
+              <div>
+                <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
+              </div>
+            </div>
+
+            <!-- Textarea: always shows slot data from slide.data.text.
+                Used slot   + empty    → placeholder "Write with Markdown"
+                Used slot   + has data → editable
+                Unused slot + empty    → placeholder "Not used in this layout"
+                            + has data → shows data as read-only -->
+            <textarea
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm leading-[1.5] bg-white resize-y min-h-24
+                  {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
+                placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
+                value={slide.data.text?.[slot.index] || ''}
+                disabled={!slot.isUsed}
+                data-slot-type="text"
+                data-slot-index={slot.index}
+                oninput={(e) => updateText(slot.index, e.currentTarget.value)}
+                onfocus={() => activeSlot.set({ type: 'text', index: slot.index })}
+                onblur={() => activeSlot.set(null)}
+              ></textarea>
+          </div>
+        {/each}
         <!-- Image slots -->
-        <div class="space-y-1.5">
-          <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Images</div>
+        <div class="flex flex-row flex-wrap gap-4 w-full">
           {#each imageSlots as slot}
             <div
-              class="flex items-center gap-2 rounded-md px-1.5 py-1 transition-colors
-                {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
+              class="flex flex-col gap-2 min-w-0 flex-1 max-w-[50%]"
+              data-slot-type="image"
+              data-slot-index={slot.index}
             >
-              <!-- Thumbnail area -->
-              {#if slot.isUsed}
-                {#if slot.hasContent}
-                  <AddImagePopover slotKey={slot.key} onimage={updateImage}>
-                    {#snippet trigger()}
-                      <div class="flex-shrink-0 w-[60px] h-[45px] rounded overflow-hidden bg-muted/30 cursor-pointer border border-border hover:border-primary/50 transition-colors" title="Replace image">
-                        <img
-                          src={slide.data.images[slot.key]}
-                          alt=""
-                          class="w-full h-full object-cover"
-                        />
-                      </div>
-                    {/snippet}
-                  </AddImagePopover>
-                {:else}
-                  <AddImagePopover slotKey={slot.key} onimage={updateImage} />
-                {/if}
-              {:else}
-                <div class="flex-shrink-0 w-[60px] h-[45px] rounded bg-muted/20 border border-dashed border-border/50"></div>
-              {/if}
-
-              <!-- Label area -->
-              <div class="flex-1 min-w-0">
-                {#if slot.isUsed}
-                  <span class="text-xs font-medium">{slot.displayName}</span>
-                  <span class="ml-1 text-[9px] rounded px-1 py-0.5 {slot.type === 'required' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}">{slot.type === 'required' ? 'req' : 'opt'}</span>
-                {:else}
-                  <span class="text-xs text-muted-foreground/60 italic">not used</span>
-                {/if}
+              <!-- Label -->
+              <div class="text-xs">
+                <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
               </div>
-            </div>
+              <!-- Thumbnail area: max 50% container width, max-height 100px, clickable to open AddImagePopover -->
+              <ImageSlotThumbnail
+                slot={slot}
+                slide={slide}
+                onUpdate={updateImage}
+                popoverOpen={openImagePopoverIndex === slot.index}
+                onpopoverOpenChange={(v) => { if (!v) openImagePopoverIndex = null; }}
+              />
+              </div>
           {/each}
         </div>
+      {/snippet}
+    </SlideDetailsSection>
 
-        <!-- Text slots -->
-        <div class="space-y-2">
-          <div class="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Text</div>
-          {#each textSlots as slot}
-            {@const wrapperClass = slot.isUsed
-              ? (slot.hasContent ? 'used-in-layout has-content' : 'used-in-layout no-content-yet')
-              : 'not-used-in-layout'}
-            <div
-              class="rounded-md px-1.5 py-1 transition-colors
-                {slot.isUsed ? 'border-l-2 border-l-primary' : 'border-l-2 border-l-transparent opacity-50'}"
-              data-slot-state={wrapperClass}
+    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }} class="border-t">
+      {#snippet children()}
+        <div class="mt-2 grid grid-cols-2 gap-4">
+          {#each layoutList as l}
+            <Item.Root
+              variant="outline"
+              size="sm"
+              class="border-border px-4 py-3 cursor-pointer {slide.layout === l.id ? 'border-stone-400 ring-3 ring-stone-200 bg-white' : 'hover:bg-accent opacity-80'}"
+              onclick={() => changeLayout(l.id)}
             >
-              <!-- Header line -->
-              <div class="flex items-center justify-between mb-1">
-                <div>
-                  {#if slot.isUsed}
-                    <span class="text-xs font-medium">{slot.displayName}</span>
-                    <span class="ml-1 text-[9px] rounded px-1 py-0.5 {slot.type === 'required' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}">{slot.type === 'required' ? 'req' : 'opt'}</span>
-                  {:else}
-                    <span class="text-xs text-muted-foreground/60 italic">not used</span>
-                  {/if}
-                </div>
-                {#if slot.isUsed}
-                  <button
-                    class="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
-                    onclick={() => { previewKey = previewKey === slot.key ? null : slot.key; }}
-                  >
-                    {previewKey === slot.key ? 'Edit' : 'Preview'}
-                  </button>
+              <Item.Content>
+                <Item.Title class="tracking-wide">{l.displayName}</Item.Title>
+                {#if l.description}
+                  <Item.Description class="text-xs leading-relaxed">{l.description}</Item.Description>
                 {/if}
-              </div>
-
-              <!-- Textarea -->
-              {#if slot.isUsed && previewKey === slot.key}
-                <div class="border border-border rounded-md p-2 prose prose-sm max-w-none min-h-[60px] bg-gray-50/50">
-                  {@html marked.parse(slide.data.text?.[slot.key] || '', { async: false })}
-                </div>
-              {:else}
-                <textarea
-                  class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[60px] font-mono
-                    {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
-                  placeholder={slot.isUsed ? 'Markdown supported...' : ''}
-                  value={slot.isUsed ? (slide.data.text?.[slot.key] || '') : ''}
-                  disabled={!slot.isUsed}
-                  oninput={(e) => updateText(slot.key, e.currentTarget.value)}
-                ></textarea>
-              {/if}
-            </div>
+              </Item.Content>
+            </Item.Root>
           {/each}
         </div>
-      </div>
-    {/if}
-  </div>
-
-  <hr class="border-border" />
-
-  <!-- Layout Section -->
-  <div>
-    <button
-      class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
-      onclick={() => { layoutOpen = !layoutOpen; }}
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {layoutOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
-      Layout
-    </button>
-    {#if layoutOpen}
-      <div class="mt-2 space-y-1">
-        {#each layoutList as l}
-          <button
-            class="w-full px-3 py-2 rounded-md text-left transition-colors cursor-pointer
-              {slide.layout === l.id ? 'bg-primary text-primary-foreground' : 'hover:bg-accent text-foreground'}"
-            onclick={() => changeLayout(l.id)}
-          >
-            <div class="font-medium text-xs">{l.displayName}</div>
-            {#if l.description}
-              <div class="{slide.layout === l.id ? 'opacity-70' : 'text-muted-foreground'} text-[10px] mt-0.5">{l.description}</div>
-            {/if}
-            <div class="{slide.layout === l.id ? 'opacity-60' : 'text-muted-foreground/60'} text-[9px] mt-0.5">{formatSlotSummary(l.schema)}</div>
-          </button>
-        {/each}
-      </div>
-    {/if}
-  </div>
-
-  <hr class="border-border" />
-
-  <!-- Notes Section -->
-  <div>
-    <button
-      class="flex items-center gap-1 font-semibold text-xs uppercase tracking-wider text-muted-foreground w-full cursor-pointer"
-      onclick={() => { notesOpen = !notesOpen; }}
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform {notesOpen ? 'rotate-90' : ''}"><path d="m9 18 6-6-6-6"/></svg>
-      Notes
-    </button>
-    {#if notesOpen}
-      <div class="mt-2">
-        <textarea
-          class="w-full px-2 py-1.5 border border-border rounded-md text-xs bg-background resize-y min-h-[80px]"
-          placeholder="Internal notes (not rendered in slides)..."
-          value={slide.notes || ''}
-          oninput={(e) => updateNotes(e.currentTarget.value)}
-        ></textarea>
-      </div>
-    {/if}
-  </div>
+      {/snippet}
+    </SlideDetailsSection>
+  {:else}
+    <div class="px-4 py-6 text-sm text-muted-foreground">No slide selected</div>
+  {/if}
 </div>

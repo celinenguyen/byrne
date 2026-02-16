@@ -1,38 +1,32 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import * as Popover from '$lib/components/ui/popover/index.js';
+  import Icon from './ui/Icon.svelte';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import InputTypeAndEnter from './InputTypeAndEnter.svelte';
 
   interface Props {
-    slotKey: string;
-    onimage: (key: string, url: string) => void;
+    slotIndex: number;
+    currentUrl?: string;
+    onimage: (index: number, url: string) => void;
     trigger?: Snippet;
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
   }
-  let { slotKey, onimage, trigger }: Props = $props();
-
-  let open = $state(false);
+  let { slotIndex, currentUrl, onimage, trigger, open = $bindable(false), onOpenChange }: Props = $props();
   let urlValue = $state('');
   let dragging = $state(false);
-  let popoverEl: HTMLDivElement | undefined = $state();
 
-  function toggle() {
-    open = !open;
-    if (open) urlValue = '';
-  }
-
-  function handleWindowClick(e: MouseEvent) {
-    if (open && popoverEl && !popoverEl.contains(e.target as Node)) {
-      open = false;
-    }
+  function handleOpenChange(v: boolean) {
+    onOpenChange?.(v);
+    if (v) urlValue = currentUrl ?? '';
   }
 
   function submitUrl() {
     const trimmed = urlValue.trim();
     if (!trimmed) return;
-    onimage(slotKey, trimmed);
+    onimage(slotIndex, trimmed);
     open = false;
-  }
-
-  function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') submitUrl();
   }
 
   async function uploadFile(file: File) {
@@ -42,7 +36,7 @@
     const res = await fetch('/api/upload', { method: 'POST', body: formData });
     if (res.ok) {
       const { path } = await res.json();
-      onimage(slotKey, path);
+      onimage(slotIndex, path);
       open = false;
     }
   }
@@ -73,73 +67,63 @@
   let fileInput: HTMLInputElement | undefined = $state();
 </script>
 
-<svelte:window onclick={handleWindowClick} />
-
-<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-<div class="relative inline-block" bind:this={popoverEl} onclick={toggle}>
+<Popover.Root bind:open onOpenChange={handleOpenChange}>
   {#if trigger}
-    {@render trigger()}
+    <Popover.Trigger>
+      {#snippet child({ props })}
+        <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+        <div {...props}>
+          {@render trigger()}
+        </div>
+      {/snippet}
+    </Popover.Trigger>
   {:else}
-    <button
-      class="w-[60px] h-[45px] rounded border border-dashed border-border bg-muted/30 flex items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors cursor-pointer"
+    <Popover.Trigger
+      class="flex items-center justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-    </button>
+      <Icon name="plus" class="size-4" />
+    </Popover.Trigger>
   {/if}
 
-  {#if open}
-    <div class="absolute left-0 top-[50px] z-50 w-64 rounded-lg border border-border bg-popover p-3 shadow-lg space-y-3">
-      <!-- URL input -->
-      <div>
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label class="block text-[10px] font-medium text-muted-foreground mb-1">Image URL</label>
-        <div class="flex gap-1">
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <input
-            type="text"
-            class="flex-1 px-2 py-1 border border-border rounded text-xs bg-background"
-            placeholder="https://..."
-            bind:value={urlValue}
-            onkeydown={handleKeydown}
-            onclick={(e) => e.stopPropagation()}
-          />
-          <button
-            class="px-2 py-1 rounded text-xs bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-            onclick={(e) => { e.stopPropagation(); submitUrl(); }}
-          >Add</button>
-        </div>
-      </div>
-
-      <!-- Upload button -->
-      <div>
-        <input
-          type="file"
-          accept="image/*"
-          class="hidden"
-          bind:this={fileInput}
-          onchange={handleFileInput}
-        />
-        <button
-          class="w-full px-2 py-1.5 rounded text-xs border border-border hover:bg-accent transition-colors cursor-pointer"
-          onclick={(e) => { e.stopPropagation(); fileInput?.click(); }}
-        >
-          Upload from computer
-        </button>
-      </div>
+  <Popover.Content
+    class="w-72 p-4 flex flex-col gap-4"
+    sideOffset={0}
+    align="center"
+  >
+      <!-- input for URL and then hitting enter -->
+      <InputTypeAndEnter
+        placeholder="Add a URL"
+        bind:value={urlValue}
+        onsubmit={submitUrl}
+        ariaLabel="Add image"
+      />
 
       <!-- Drop zone -->
       <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
       <div
-        class="border-2 border-dashed rounded-md p-3 text-center text-xs text-muted-foreground transition-colors
-          {dragging ? 'border-primary bg-primary/5' : 'border-border'}"
+        class="flex flex-row items-center justify-center gap-2 border-1 rounded-md px-2 py-4 text-center text-sm bg-muted/50 text-muted-foreground transition-colors
+          {dragging ? 'border-stone-300 bg-stone-100' : 'border-border'}"
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         ondrop={handleDrop}
-        onclick={(e) => e.stopPropagation()}
       >
-        Drop image here
+        or you can
+          <input
+            type="file"
+            accept="image/*"
+            class="hidden"
+            bind:this={fileInput}
+            onchange={handleFileInput}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={() => fileInput?.click()}
+            aria-label="Upload from computer"
+          >
+            <Icon name="cloud-upload" class="size-4" />Upload
+          </Button>
       </div>
-    </div>
-  {/if}
-</div>
+  </Popover.Content>
+</Popover.Root>

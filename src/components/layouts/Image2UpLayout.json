@@ -1,0 +1,13 @@
+{
+  "id": "Image2Up",
+  "displayName": "Two images",
+  "description": "Two images, optional captions",
+  "images": {
+    "left": {"displayName": "left", "isRequired": true},
+    "right": {"displayName": "right", "isRequired": true}
+  },
+  "text": {
+    "leftCaption": {"displayName": "left caption", "isRequired": false},
+    "rightCaption": {"displayName": "right caption", "isRequired": false}
+  }
+}

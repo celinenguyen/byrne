@@ -1,13 +1,24 @@
 export interface DeckMeta {
+  id: string;
   title: string;
   author: string;
   startDate: string;
   endDate: string;
+  updatedAt: string;
+}
+
+export interface DeckSummary {
+  id: string;
+  title: string;
+  filename: string;
+  updatedAt: string;
+  slideCount: number;
 }
 
 export interface SlideData {
-  images: Record<string, string>;
-  text: Record<string, string>;
+  images: string[];
+  text: string[];
+  url?: string;
 }
 
 export interface Slide {
@@ -15,7 +26,6 @@ export interface Slide {
   order: number;
   layout: string;
   data: SlideData;
-  notes: string;
 }
 
 export interface Deck {
@@ -25,11 +35,12 @@ export interface Deck {
 
 export interface SlotDefinition {
   displayName: string;
-  type: 'required' | 'optional';
+  isRequired: boolean;
   placeholder?: string;
 }
 
 export interface LayoutSettings {
   images?: Record<string, SlotDefinition>;
   text?: Record<string, SlotDefinition>;
+  url?: Record<string, SlotDefinition>;
 }

@@ -1,24 +1,25 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
-  import settings from './TitleLayout.settings.json';
+  import MarkdownText from './MarkdownText.svelte';
+  import settings from './TitleLayout.json';
 
   interface Props {
     data: SlideData;
   }
   let { data }: Props = $props();
 
-  let title = $derived(data.text?.['title'] || '');
-  let subtitle = $derived(data.text?.['subtitle'] || '');
+  let title = $derived(data.text?.[0] || '');
+  let subtitle = $derived(data.text?.[1] || '');
 </script>
 
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full px-16 text-center">
-    <h1 class="text-5xl font-bold tracking-tight text-gray-900 leading-tight">
-      {title || settings.text.title.placeholder}
+    <h1 data-slot="text:title" class="text-5xl font-bold tracking-tight text-foreground leading-tight">
+      <MarkdownText text={title || settings.text.title.placeholder} inline />
     </h1>
     {#if subtitle}
-      <p class="mt-4 text-xl text-gray-500">{subtitle}</p>
+      <p data-slot="text:subtitle" class="mt-4 text-xl text-muted-foreground"><MarkdownText text={subtitle} inline /></p>
     {/if}
   </div>
 </BaseLayout>

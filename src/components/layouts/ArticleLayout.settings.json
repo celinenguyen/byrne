@@ -1,8 +1,0 @@
-{
-  "images": {
-    "screenshot": { "displayName": "Screenshot", "type": "required" }
-  },
-  "text": {
-    "commentary": { "displayName": "Commentary", "type": "optional" }
-  }
-}

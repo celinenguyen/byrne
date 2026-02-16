@@ -1,30 +1,25 @@
 <script lang="ts">
   import type { SlideData } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
-  import { marked } from 'marked';
+  import SlideLayoutImageSlot from './SlideLayoutImageSlot.svelte';
+  import MarkdownText from './MarkdownText.svelte';
 
   interface Props {
     data: SlideData;
   }
   let { data }: Props = $props();
 
-  let imageSrc = $derived(data.images?.['image'] || '');
-  let caption = $derived(data.text?.['caption'] || '');
-  let captionHtml = $derived(marked.parse(caption, { async: false }) as string);
+  let imageSrc = $derived(data.images?.[0] || '');
+  let caption = $derived(data.text?.[0] || '');
+
 </script>
 
 <BaseLayout>
   <div class="flex flex-col h-full">
-    <div class="flex-1 min-h-0 flex items-center justify-center bg-gray-50 p-4">
-      {#if imageSrc}
-        <img src={imageSrc} alt="" class="max-w-full max-h-full object-contain" />
-      {:else}
-        <div class="text-gray-300 text-sm">No image</div>
-      {/if}
-    </div>
+    <SlideLayoutImageSlot src={imageSrc} slotName="image" class="flex-1 min-h-0" />
     {#if caption}
-      <div class="px-6 py-3 text-sm text-gray-600 prose prose-sm max-w-none">
-        {@html captionHtml}
+      <div data-slot="text:caption" class="px-6 py-3 text-sm text-muted-foreground prose prose-sm max-w-none text-center">
+        <MarkdownText text={caption} />
       </div>
     {/if}
   </div>

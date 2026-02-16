@@ -1,0 +1,6 @@
+{
+  "id": "Text",
+  "displayName": "Text",
+  "description": "For paragraphs",
+  "text": {"body": {"displayName": "body", "isRequired": true}}
+}

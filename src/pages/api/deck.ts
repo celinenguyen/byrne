@@ -2,11 +2,28 @@ import type { APIRoute } from 'astro';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const DECK_PATH = join(process.cwd(), 'data', 'deck.json');
+const DATA_DIR = join(process.cwd(), 'data');
 
-export const GET: APIRoute = async () => {
+function resolveDeckPath(url: URL): string | null {
+  const slug = url.searchParams.get('file') || 'deck';
+  // Reject path traversal
+  if (slug.includes('..') || slug.includes('/') || slug.includes('\\')) {
+    return null;
+  }
+  return join(DATA_DIR, slug + '.json');
+}
+
+export const GET: APIRoute = async ({ url }) => {
+  const deckPath = resolveDeckPath(url);
+  if (!deckPath) {
+    return new Response(JSON.stringify({ error: 'Invalid file parameter' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
-    const raw = await readFile(DECK_PATH, 'utf-8');
+    const raw = await readFile(deckPath, 'utf-8');
     return new Response(raw, {
       headers: { 'Content-Type': 'application/json' },
     });
@@ -14,7 +31,8 @@ export const GET: APIRoute = async () => {
     return new Response(
       JSON.stringify({
         meta: {
-          title: 'Year in Review 2026',
+          id: 'default',
+          title: 'New Deck',
           author: '',
           startDate: '',
           endDate: '',
@@ -26,10 +44,20 @@ export const GET: APIRoute = async () => {
   }
 };
 
-export const PUT: APIRoute = async ({ request }) => {
+export const PUT: APIRoute = async ({ request, url }) => {
+  const deckPath = resolveDeckPath(url);
+  if (!deckPath) {
+    return new Response(JSON.stringify({ error: 'Invalid file parameter' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const body = await request.json();
-    await writeFile(DECK_PATH, JSON.stringify(body, null, 2), 'utf-8');
+    // Stamp updatedAt on every save
+    if (body.meta) body.meta.updatedAt = new Date().toISOString();
+    await writeFile(deckPath, JSON.stringify(body, null, 2), 'utf-8');
     return new Response(JSON.stringify({ ok: true }), {
       headers: { 'Content-Type': 'application/json' },
     });
