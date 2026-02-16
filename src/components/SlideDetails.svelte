@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot, deck, renameDeck } from '../lib/store';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme } from '../lib/store';
   import { layouts, layoutList } from './layouts/registry';
+  import { fontOptions, primaryColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
   import ImageSlotThumbnail from './ImageSlotThumbnail.svelte';
   import SlideDetailsSection from './SlideDetailsSection.svelte';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
@@ -33,6 +34,9 @@
   // Collapsible sections
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
+  let themeOpen = $state(true);
+
+  let currentTheme = $derived({ ...defaultTheme, ...($deck?.meta?.theme ?? {}) });
 
   // Track which image slot's popover should be open (set by focusSlot, cleared by popover close)
   let openImagePopoverIndex = $state<number | null>(null);
@@ -201,6 +205,75 @@
               </Item.Content>
             </Item.Root>
           {/each}
+        </div>
+      {/snippet}
+    </SlideDetailsSection>
+
+    <SlideDetailsSection name="Theme" open={themeOpen} onToggle={() => { themeOpen = !themeOpen; }} class="border-t">
+      {#snippet children()}
+        <div class="flex flex-col gap-3">
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">Heading font</span>
+            <select
+              class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              value={currentTheme.headingFont}
+              onchange={(e) => updateTheme({ headingFont: e.currentTarget.value })}
+            >
+              {#each fontOptions as opt}
+                <option value={opt.id}>{opt.label}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">Body font</span>
+            <select
+              class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              value={currentTheme.bodyFont}
+              onchange={(e) => updateTheme({ bodyFont: e.currentTarget.value })}
+            >
+              {#each fontOptions as opt}
+                <option value={opt.id}>{opt.label}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">Caption font</span>
+            <select
+              class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              value={currentTheme.captionFont}
+              onchange={(e) => updateTheme({ captionFont: e.currentTarget.value })}
+            >
+              {#each fontOptions as opt}
+                <option value={opt.id}>{opt.label}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">Primary color</span>
+            <div class="flex flex-wrap gap-2">
+              {#each primaryColorOptions as opt}
+                <button
+                  class="size-6 rounded-full border-2 transition-shadow {currentTheme.primaryColor === opt.id ? 'ring-2 ring-stone-400 ring-offset-1' : 'border-border hover:ring-1 hover:ring-stone-300'}"
+                  style="background-color: {opt.value}"
+                  title={opt.label}
+                  onclick={() => updateTheme({ primaryColor: opt.id })}
+                ></button>
+              {/each}
+            </div>
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-muted-foreground">Accent color</span>
+            <div class="flex flex-wrap gap-2">
+              {#each accentColorOptions as opt}
+                <button
+                  class="size-6 rounded-full border-2 transition-shadow {currentTheme.accentColor === opt.id ? 'ring-2 ring-stone-400 ring-offset-1' : 'border-border hover:ring-1 hover:ring-stone-300'}"
+                  style="background-color: {opt.value}"
+                  title={opt.label}
+                  onclick={() => updateTheme({ accentColor: opt.id })}
+                ></button>
+              {/each}
+            </div>
+          </label>
         </div>
       {/snippet}
     </SlideDetailsSection>

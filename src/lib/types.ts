@@ -1,10 +1,11 @@
+import type { DeckTheme } from './theme';
+
 export interface DeckMeta {
   id: string;
   title: string;
   author: string;
-  startDate: string;
-  endDate: string;
   updatedAt: string;
+  theme?: Partial<DeckTheme>;
 }
 
 export interface DeckSummary {

@@ -20,13 +20,13 @@
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgLeft} slotName="left" class="flex-1 min-h-0 rounded" />
       {#if capLeft}
-        <div data-slot="text:leftCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none"><MarkdownText text={capLeft} /></div>
+        <div data-slot="text:leftCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none" style="font-family: var(--slide-font-caption)"><MarkdownText text={capLeft} /></div>
       {/if}
     </div>
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgRight} slotName="right" class="flex-1 min-h-0 rounded" />
       {#if capRight}
-        <div data-slot="text:rightCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none"><MarkdownText text={capRight} /></div>
+        <div data-slot="text:rightCaption" class="mt-2 text-xs text-muted-foreground prose prose-sm max-w-none" style="font-family: var(--slide-font-caption)"><MarkdownText text={capRight} /></div>
       {/if}
     </div>
   </div>

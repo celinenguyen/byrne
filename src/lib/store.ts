@@ -1,18 +1,23 @@
 import { writable, derived, get } from 'svelte/store';
 import type { Deck, DeckSummary, Slide, SlideData } from './types';
+import type { DeckTheme } from './theme';
+import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
+
+const LAST_DECK_KEY = 'diana:lastDeck';
 
 // Read initial state from URL params
 function getInitialParams() {
-  if (typeof window === 'undefined') return { view: 'edit' as const, slide: 0, deck: 'deck' };
+  if (typeof window === 'undefined') return { view: 'edit' as const, slide: 0, deck: '' };
   const params = new URLSearchParams(window.location.search);
   const view = params.get('view');
   const slide = params.get('slide');
   const deckParam = params.get('deck');
+  const lastDeck = localStorage.getItem(LAST_DECK_KEY) ?? '';
   return {
     view: (view === 'edit' || view === 'preview' || view === 'present') ? view as 'edit' | 'preview' | 'present' : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
-    deck: deckParam || 'deck',
+    deck: deckParam || lastDeck,
   };
 }
 
@@ -38,7 +43,7 @@ function syncURL() {
   if (typeof window === 'undefined') return;
   const params = new URLSearchParams();
   const deckFile = get(currentDeckFile);
-  if (deckFile && deckFile !== 'deck') {
+  if (deckFile) {
     params.set('deck', deckFile);
   }
   params.set('view', get(viewMode));
@@ -49,7 +54,17 @@ function syncURL() {
 
 viewMode.subscribe(() => syncURL());
 currentSlideIndex.subscribe(() => syncURL());
-currentDeckFile.subscribe(() => syncURL());
+currentDeckFile.subscribe((file) => {
+  syncURL();
+  if (typeof window !== 'undefined' && file) {
+    localStorage.setItem(LAST_DECK_KEY, file);
+  }
+});
+
+export const resolvedTheme = derived(deck, ($deck) => {
+  const merged: DeckTheme = { ...defaultTheme, ...($deck?.meta?.theme ?? {}) };
+  return resolveTheme(merged);
+});
 
 export const slides = derived(deck, ($deck) => $deck?.slides ?? []);
 export const currentSlide = derived(
@@ -60,11 +75,29 @@ export const slideCount = derived(slides, ($slides) => $slides.length);
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
-export async function loadDeckList() {
+export async function loadDeckList(): Promise<DeckSummary[]> {
   const res = await fetch('/api/decks');
   if (res.ok) {
     const data: DeckSummary[] = await res.json();
     deckList.set(data);
+    return data;
+  }
+  return [];
+}
+
+/** Bootstrap: pick a deck if none specified in URL or localStorage */
+export async function initializeDeck() {
+  const list = await loadDeckList();
+  const current = get(currentDeckFile);
+  if (!current && list.length > 0) {
+    // Pick the most recently modified deck
+    const sorted = [...list].sort((a, b) =>
+      (b.updatedAt || '').localeCompare(a.updatedAt || '')
+    );
+    currentDeckFile.set(sorted[0].filename);
+  }
+  if (get(currentDeckFile)) {
+    await loadDeck();
   }
 }
 
@@ -287,6 +320,15 @@ export async function renameDeck(newTitle: string) {
     }
     await loadDeckList();
   }
+}
+
+export function updateTheme(updates: Partial<DeckTheme>) {
+  deck.update((d) => {
+    if (!d) return d;
+    const current = d.meta.theme ?? {};
+    return { ...d, meta: { ...d.meta, theme: { ...current, ...updates } } };
+  });
+  debouncedSave();
 }
 
 export async function createDeck(title: string) {
