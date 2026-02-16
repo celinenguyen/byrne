@@ -20,7 +20,7 @@
 
 <!-- svelte-ignore a11y_label_has_associated_control -->
 <ButtonGroup.Root class="w-full {className}">
-  <InputGroup.Root class="flex-1">
+  <InputGroup.Root class="group flex-1">
     <InputGroup.Input
       {placeholder}
       bind:value
@@ -28,7 +28,7 @@
       {autofocus}
     />
     <InputGroup.Addon align="inline-end">
-      <InputGroup.Button size="icon-xs" onclick={onsubmit} aria-label={ariaLabel}>
+      <InputGroup.Button size="icon-xs" onclick={onsubmit} aria-label={ariaLabel} class="opacity-0 transition-opacity group-focus-within:opacity-100">
         <Icon name="arrow-right" class="size-4" />
       </InputGroup.Button>
     </InputGroup.Addon>

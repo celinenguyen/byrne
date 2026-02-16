@@ -12,6 +12,7 @@
     createDeck,
   } from '../lib/store';
   import type { DeckSummary } from '../lib/types';
+  import { formatRelativeDate } from '../lib/format-date';
 
   let decks = $derived($deckList);
   let activeDeckFile = $derived($currentDeckFile);
@@ -27,10 +28,8 @@
 
   // Reset to list view whenever the popover opens or closes
   function handleOpenChange(v: boolean) {
-    if (v || !v) {
-      view = 'list';
-      newDeckTitle = '';
-    }
+    view = 'list';
+    newDeckTitle = '';
   }
 
   function selectDeck(filename: string) {
@@ -62,28 +61,31 @@
   </Popover.Trigger>
 
   <Popover.Content
-    class="w-[260px] p-0"
+    class="w-[280px] p-0"
     sideOffset={4}
     align="center"
   >
     {#if view === 'list'}
       <!-- Deck list -->
-      <div class="max-h-[240px] overflow-y-auto p-1">
+      <div class="max-h-[300px] overflow-y-auto p-1">
         {#each decks as d}
           <button
-            class="flex items-center gap-2 w-full rounded-sm px-2 py-1.5 text-sm cursor-pointer
+            class="flex flex-col gap-0.5 w-full rounded-sm px-2 py-1.5 cursor-pointer
               text-left transition-colors outline-none
               {d.filename === activeDeckFile
                 ? 'bg-accent text-accent-foreground'
                 : 'hover:bg-accent hover:text-accent-foreground'}"
             onclick={() => selectDeck(d.filename)}
           >
-            {#if d.filename === activeDeckFile}
-              <Icon name="check" class="size-3.5 shrink-0" />
-            {:else}
-              <span class="size-3.5 shrink-0"></span>
-            {/if}
-            <span class="truncate">{d.title}</span>
+            <span class="text-sm truncate w-full">{d.title}</span>
+            <span class="text-xs text-muted-foreground flex items-center gap-1">
+              <span>
+                {formatRelativeDate(d.updatedAt)}
+              </span>
+              ✴︎
+              <span>
+                {d.slideCount} {d.slideCount === 1 ? 'slide' : 'slides'}
+              </span>
           </button>
         {/each}
       </div>

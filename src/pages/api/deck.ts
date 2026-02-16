@@ -55,6 +55,8 @@ export const PUT: APIRoute = async ({ request, url }) => {
 
   try {
     const body = await request.json();
+    // Stamp updatedAt on every save
+    if (body.meta) body.meta.updatedAt = new Date().toISOString();
     await writeFile(deckPath, JSON.stringify(body, null, 2), 'utf-8');
     return new Response(JSON.stringify({ ok: true }), {
       headers: { 'Content-Type': 'application/json' },

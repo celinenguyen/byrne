@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot } from '../lib/store';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck } from '../lib/store';
   import { layouts, layoutList } from './layouts/registry';
   import ImageSlotThumbnail from './ImageSlotThumbnail.svelte';
   import SlideDetailsSection from './SlideDetailsSection.svelte';
+  import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import SlotLabel from './SlotLabel.svelte';
   import * as Item from './ui/item';
 
@@ -12,6 +13,20 @@
     onClose?: () => void;
   }
   let { slide, onClose }: Props = $props();
+
+  let deckTitle = $state('');
+  let meta = $derived($deck?.meta);
+
+  // Keep the input in sync with the deck title (when deck changes)
+  $effect(() => {
+    deckTitle = meta?.title ?? '';
+  });
+
+  function handleRenameDeck() {
+    const trimmed = deckTitle.trim();
+    if (!trimmed || trimmed === meta?.title) return;
+    renameDeck(trimmed);
+  }
 
   let layoutDef = $derived(slide ? layouts[slide.layout] : null);
 
@@ -94,7 +109,18 @@
 
 <div class="inset-shadow-sm flex flex-col bg-muted/15">
   {#if slide}
-    <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }}>
+    <SlideDetailsSection name="Deck">
+      {#snippet children()}
+        <InputTypeAndEnter
+          placeholder="Deck name"
+          bind:value={deckTitle}
+          onsubmit={handleRenameDeck}
+          ariaLabel="Rename deck"
+        />
+      {/snippet}
+    </SlideDetailsSection>
+
+    <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }} class='border-t'>
       {#snippet children()}
         <!-- Text slots -->
         {#each textSlots as slot}
@@ -157,7 +183,7 @@
       {/snippet}
     </SlideDetailsSection>
 
-    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }}>
+    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }} class="border-t">
       {#snippet children()}
         <div class="mt-2 grid grid-cols-2 gap-4">
           {#each layoutList as l}

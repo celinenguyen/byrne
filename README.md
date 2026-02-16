@@ -1,5 +1,3 @@
-# Year in Review 2026
-
 a frivolous little app for me to make presentations/decks/reports like
 - https://squad.metalabel.com/acf2026
 - https://khole.net/

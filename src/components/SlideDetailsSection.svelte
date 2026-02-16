@@ -38,7 +38,7 @@
     {/snippet}
   </SidebarStickyHeader>
   {#if isOpen}
-    <div class="p-4.5 flex flex-col gap-4">
+    <div class="p-4.5 pt-1 flex flex-col gap-4">
       {@render children()}
     </div>
   {/if}
