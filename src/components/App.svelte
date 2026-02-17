@@ -6,6 +6,8 @@
   import SlideDetails from './SlideDetails.svelte';
   import PresentView from './PresentView.svelte';
   import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
+  import SplashPage from './SplashPage.svelte';
+  import EphemeralBanner from './EphemeralBanner.svelte';
   import {
     initializeDeck,
     viewMode,
@@ -19,6 +21,8 @@
     pendingDelete,
     detailsOpen,
     slideListOpen,
+    showSplash,
+    staticMode,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
@@ -26,6 +30,7 @@
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
   let pending = $derived($pendingDelete);
+  let splash = $derived($showSplash);
 
   // Pane widths (percentages)
   let leftWidth = $state(15);
@@ -216,9 +221,15 @@
 
 <svelte:window onkeydown={onKeyDown} onmousemove={onMouseMove} onmouseup={onMouseUp} />
 
+{#if splash}
+  <SplashPage />
+{:else}
 <div class="h-screen flex flex-col">
   {#if mode !== 'present'}
     <Toolbar />
+    {#if staticMode}
+      <EphemeralBanner />
+    {/if}
   {/if}
 
   <div class="flex-1 min-h-0 flex bg-muted/30">
@@ -284,3 +295,4 @@
     {/if}
   </div>
 </div>
+{/if}

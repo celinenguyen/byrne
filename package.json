@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:pages": "node scripts/prepare-static.mjs && BUILD_TARGET=pages astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

@@ -6,6 +6,8 @@ export interface DeckMeta {
   author: string;
   updatedAt: string;
   theme?: Partial<DeckTheme>;
+  status?: 'draft' | 'published';
+  publishedAt?: string;
 }
 
 export interface DeckSummary {
@@ -14,6 +16,8 @@ export interface DeckSummary {
   filename: string;
   updatedAt: string;
   slideCount: number;
+  status?: 'draft' | 'published';
+  publishedAt?: string;
 }
 
 export interface SlideData {

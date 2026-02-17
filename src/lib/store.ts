@@ -5,6 +5,8 @@ import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
 
 const LAST_DECK_KEY = 'diana:lastDeck';
+const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
+const BASE_URL: string = import.meta.env.BASE_URL;
 
 // Read initial state from URL params
 function getInitialParams() {
@@ -17,7 +19,7 @@ function getInitialParams() {
   return {
     view: (view === 'edit' || view === 'preview' || view === 'present') ? view as 'edit' | 'preview' | 'present' : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
-    deck: deckParam || lastDeck,
+    deck: deckParam || (staticMode ? '' : lastDeck),
   };
 }
 
@@ -37,15 +39,20 @@ export const pendingDelete = writable<{
   index: number;
   timer: ReturnType<typeof setTimeout>;
 } | null>(null);
+export const showSplash = writable<boolean>(!initial.deck);
+export { staticMode };
 
 // Sync stores -> URL
 function syncURL() {
   if (typeof window === 'undefined') return;
-  const params = new URLSearchParams();
   const deckFile = get(currentDeckFile);
-  if (deckFile) {
-    params.set('deck', deckFile);
+  if (!deckFile) {
+    // On splash page — clean URL
+    window.history.replaceState(null, '', window.location.pathname);
+    return;
   }
+  const params = new URLSearchParams();
+  params.set('deck', deckFile);
   params.set('view', get(viewMode));
   params.set('slide', String(get(currentSlideIndex) + 1));
   const newURL = `${window.location.pathname}?${params.toString()}`;
@@ -75,7 +82,18 @@ export const slideCount = derived(slides, ($slides) => $slides.length);
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
+// --- I/O functions: branched on staticMode ---
+
 export async function loadDeckList(): Promise<DeckSummary[]> {
+  if (staticMode) {
+    const res = await fetch(`${BASE_URL}decks/manifest.json`);
+    if (res.ok) {
+      const data: DeckSummary[] = await res.json();
+      deckList.set(data);
+      return data;
+    }
+    return [];
+  }
   const res = await fetch('/api/decks');
   if (res.ok) {
     const data: DeckSummary[] = await res.json();
@@ -89,20 +107,43 @@ export async function loadDeckList(): Promise<DeckSummary[]> {
 export async function initializeDeck() {
   const list = await loadDeckList();
   const current = get(currentDeckFile);
-  if (!current && list.length > 0) {
-    // Pick the most recently modified deck
+  if (!current && !staticMode && list.length > 0) {
+    // Pick the most recently modified deck (SSR only — static shows splash)
     const sorted = [...list].sort((a, b) =>
       (b.updatedAt || '').localeCompare(a.updatedAt || '')
     );
     currentDeckFile.set(sorted[0].filename);
+    showSplash.set(false);
   }
   if (get(currentDeckFile)) {
+    showSplash.set(false);
     await loadDeck();
   }
 }
 
 export async function loadDeck() {
   const file = get(currentDeckFile);
+  if (!file) return;
+
+  if (staticMode) {
+    // Check sessionStorage first
+    const stored = sessionStorage.getItem(`deck:${file}`);
+    if (stored) {
+      const data: Deck = JSON.parse(stored);
+      data.slides.sort((a, b) => a.order - b.order);
+      deck.set(data);
+      return;
+    }
+    // Fetch from pre-built static JSON
+    const res = await fetch(`${BASE_URL}decks/${encodeURIComponent(file)}.json`);
+    if (res.ok) {
+      const data: Deck = await res.json();
+      data.slides.sort((a, b) => a.order - b.order);
+      deck.set(data);
+    }
+    return;
+  }
+
   const res = await fetch(`/api/deck?file=${encodeURIComponent(file)}`);
   if (res.ok) {
     const data: Deck = await res.json();
@@ -121,6 +162,12 @@ export async function saveDeck() {
   const d = get(deck);
   if (!d) return;
   const file = get(currentDeckFile);
+
+  if (staticMode) {
+    sessionStorage.setItem(`deck:${file}`, JSON.stringify(d));
+    return;
+  }
+
   await fetch(`/api/deck?file=${encodeURIComponent(file)}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -297,10 +344,29 @@ export async function switchDeck(filename: string) {
   }
   currentDeckFile.set(filename);
   currentSlideIndex.set(0);
+  showSplash.set(false);
   await loadDeck();
 }
 
 export async function renameDeck(newTitle: string) {
+  if (staticMode) {
+    // In static mode, just update in-memory + sessionStorage
+    deck.update((d) => {
+      if (!d) return d;
+      return { ...d, meta: { ...d.meta, title: newTitle } };
+    });
+    const file = get(currentDeckFile);
+    const d = get(deck);
+    if (d) sessionStorage.setItem(`deck:${file}`, JSON.stringify(d));
+    // Update deck list in-memory
+    deckList.update((list) =>
+      list.map((item) =>
+        item.filename === file ? { ...item, title: newTitle } : item
+      )
+    );
+    return;
+  }
+
   const currentFile = get(currentDeckFile);
   const res = await fetch('/api/decks', {
     method: 'PATCH',
@@ -332,6 +398,36 @@ export function updateTheme(updates: Partial<DeckTheme>) {
 }
 
 export async function createDeck(title: string) {
+  if (staticMode) {
+    const id = nanoid();
+    const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const newDeck: Deck = {
+      meta: {
+        id,
+        title,
+        author: '',
+        updatedAt: new Date().toISOString(),
+      },
+      slides: [{
+        id: nanoid(),
+        order: 0,
+        layout: 'Title',
+        data: { images: [], text: [], url: '' },
+      }],
+    };
+    sessionStorage.setItem(`deck:${filename}`, JSON.stringify(newDeck));
+    const summary: DeckSummary = {
+      id,
+      title,
+      filename,
+      updatedAt: newDeck.meta.updatedAt,
+      slideCount: 1,
+    };
+    deckList.update((list) => [summary, ...list]);
+    await switchDeck(filename);
+    return;
+  }
+
   const res = await fetch('/api/decks', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
