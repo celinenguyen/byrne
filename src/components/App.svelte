@@ -6,7 +6,7 @@
   import SlideDetails from './SlideDetails.svelte';
   import PresentView from './PresentView.svelte';
   import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
-  import SplashPage from './SplashPage.svelte';
+  import AppIntroPage from './AppIntroPage.svelte';
   import EphemeralBanner from './EphemeralBanner.svelte';
   import {
     initializeDeck,
@@ -21,7 +21,7 @@
     pendingDelete,
     detailsOpen,
     slideListOpen,
-    showSplash,
+    showIntro,
     staticMode,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
@@ -30,7 +30,7 @@
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
   let pending = $derived($pendingDelete);
-  let splash = $derived($showSplash);
+  let splash = $derived($showIntro);
 
   // Pane widths (percentages)
   let leftWidth = $state(15);
@@ -222,7 +222,7 @@
 <svelte:window onkeydown={onKeyDown} onmousemove={onMouseMove} onmouseup={onMouseUp} />
 
 {#if splash}
-  <SplashPage />
+  <AppIntroPage />
 {:else}
 <div class="h-screen flex flex-col">
   {#if mode !== 'present'}
@@ -249,6 +249,7 @@
       <!-- center: scrollable slide list, collapsible from toolbar button -->
       <div class="h-full flex-1 min-w-0 overflow-y-auto mt-1 p-4" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
+          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
           <div
             role={mode === 'edit' ? 'button' : undefined}
             tabindex={mode === 'edit' ? 0 : undefined}

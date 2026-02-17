@@ -25,11 +25,12 @@
   bind:clientWidth={containerWidth}
 >
   {#if scale > 0 && layoutDef}
+    {@const LayoutComponent = layoutDef.component}
     <div
       class="origin-top-left pointer-events-none"
       style="width:{REF_WIDTH}px;height:{REF_HEIGHT}px;transform:scale({scale})"
     >
-      <svelte:component this={layoutDef.component} data={slide.data} />
+      <LayoutComponent data={slide.data} />
     </div>
   {:else if !layoutDef}
     <div class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-[8px]">

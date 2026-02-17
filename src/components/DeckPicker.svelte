@@ -87,6 +87,7 @@
               <span>
                 {d.slideCount} {d.slideCount === 1 ? 'slide' : 'slides'}
               </span>
+            </span>
           </button>
         {/each}
       </div>

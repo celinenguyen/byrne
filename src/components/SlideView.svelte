@@ -193,6 +193,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="p-4 rounded-md group relative h-full {className ?? ''}">
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
     tabindex={interactive ? 0 : undefined}
     class="w-full h-full rounded-xs relative border border-border shadow-sm {current ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"

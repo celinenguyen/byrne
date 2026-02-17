@@ -37,7 +37,7 @@ export const pendingDelete = writable<{
   index: number;
   timer: ReturnType<typeof setTimeout>;
 } | null>(null);
-export const showSplash = writable<boolean>(!initial.deck);
+export const showIntro = writable<boolean>(!initial.deck);
 export { staticMode };
 
 // Sync stores -> URL
@@ -101,7 +101,7 @@ export async function initializeDeck() {
   const list = await loadDeckList();
   const current = get(currentDeckFile);
   if (get(currentDeckFile)) {
-    showSplash.set(false);
+    showIntro.set(false);
     await loadDeck();
   }
 }
@@ -329,7 +329,7 @@ export async function switchDeck(filename: string) {
   }
   currentDeckFile.set(filename);
   currentSlideIndex.set(0);
-  showSplash.set(false);
+  showIntro.set(false);
   await loadDeck();
 }
 
