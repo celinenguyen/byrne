@@ -3,7 +3,13 @@
     "id": "8oov03l3eZahHuj7iH-VQ",
     "title": "celine's february moodboard",
     "author": "",
-    "updatedAt": "2026-02-16T15:20:51.703Z"
+    "updatedAt": "2026-02-17T10:12:05.630Z",
+    "theme": {
+      "headingFont": "newsreader",
+      "bodyFont": "newsreader",
+      "primaryColor": "copper",
+      "accentColor": "brat"
+    }
   },
   "slides": [
     {
@@ -13,15 +19,25 @@
       "data": {
         "images": [],
         "text": [
-          "visual themes i'm drawn to",
+          "celine's collection of visual themes & ideas",
           "february 2026"
         ],
         "url": ""
       }
     },
     {
-      "id": "NmHSoFWCssV0ht0OqUm3n",
+      "id": "iVM_S-NBNzgP2n9C3vJkp",
       "order": 1,
+      "layout": "Image2Up",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    },
+    {
+      "id": "NmHSoFWCssV0ht0OqUm3n",
+      "order": 2,
       "layout": "Image",
       "data": {
         "images": [

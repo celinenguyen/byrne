@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "id": "D218hIF1TP0mg2FO9iXKG",
+    "title": "another deck to test",
+    "author": "",
+    "updatedAt": "2026-02-16T16:47:52.589Z"
+  },
+  "slides": [
+    {
+      "id": "qmZHF8BEzuwbnq0Fl3PBS",
+      "order": 0,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [
+          "another deck to test"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "aCnCWGdoojkfzMpNKSSk8",
+      "order": 1,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    },
+    {
+      "id": "r-p-su4RYTecOGd58VLB-",
+      "order": 2,
+      "layout": "Title",
+      "data": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    }
+  ]
+}
