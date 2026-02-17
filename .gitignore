@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# generated static deck files (created by prepare-static.mjs)
+public/decks/
 # generated types
 .astro/
 

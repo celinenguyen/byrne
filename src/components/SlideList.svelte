@@ -1,11 +1,16 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { Button } from '$lib/components/ui/button/index.js';
-  import Icon from './ui/Icon.svelte';
+  import Plus from '@lucide/svelte/icons/plus';
+  import Copy from '@lucide/svelte/icons/copy';
+  import ArrowRight from '@lucide/svelte/icons/arrow-right';
+  import Trash from '@lucide/svelte/icons/trash';
   import SlideThumbnail from './SlideThumbnail.svelte';
   import SlideListDropSlot from './SlideListDropSlot.svelte';
   import SidebarStickyHeader from './SidebarStickyHeader.svelte';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
+  import DeckItemContent from './DeckItemContent.svelte';
+  import DeckList from './DeckList.svelte';
   import { ContextMenu } from 'bits-ui';
   import {
     slides,
@@ -14,8 +19,19 @@
     softDeleteSlide,
     duplicateSlide,
     reorderSlide,
+    moveSlideToDeck,
+    deckList,
+    currentDeckFile,
   } from '../lib';
   import { keyboardClick } from '../lib/keyboard';
+
+  const cmContent = 'z-50 min-w-[140px] rounded-md border border-border bg-popover shadow-md';
+  const cmItem = 'flex items-center gap-2 rounded-sm m-1 px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent';
+  const cmSeparator = 'my-1 h-px bg-border';
+
+  let hasOtherDecks = $derived(
+    $deckList.some((d) => d.filename !== $currentDeckFile)
+  );
 
   let allSlides = $derived($slides);
   let idx = $derived($currentSlideIndex);
@@ -112,7 +128,7 @@
   {#snippet children()}
     <Button class="mx-2 shadow-s text-foreground border-border hover:bg-muted transition-colors w-full" variant="ghost" size="sm" onclick={() => addSlide()}>
       {#snippet children()}
-        <Icon name="plus" class="size-4" />
+        <Plus class="size-4" />
         Add slide
       {/snippet}
     </Button>
@@ -157,20 +173,44 @@
           {/snippet}
         </ContextMenu.Trigger>
         <ContextMenu.Portal>
-          <ContextMenu.Content class="z-50 min-w-[140px] rounded-md border border-border bg-popover p-1 shadow-md">
+          <ContextMenu.Content class={cmContent}>
             <ContextMenu.Item
-              class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent"
+              class={cmItem}
               onSelect={() => duplicateSlide(i)}
             >
-              <Icon name="copy" class="size-4" />
+              <Copy class="size-4 text-muted-foreground" />
               Duplicate
             </ContextMenu.Item>
-            <ContextMenu.Separator class="my-1 h-px bg-border" />
+            {#if hasOtherDecks}
+              <ContextMenu.Sub>
+                <ContextMenu.SubTrigger class={cmItem}>
+                  <ArrowRight class="size-4 text-muted-foreground" />
+                  Move to…
+                </ContextMenu.SubTrigger>
+                <ContextMenu.SubContent class={cmContent}>
+                  <DeckList
+                    decks={$deckList}
+                    includeCurrentDeck={false}
+                    currentDeckFile={$currentDeckFile}
+                  >
+                    {#snippet children({ deck })}
+                      <ContextMenu.Item
+                        class="{cmItem} flex flex-col items-stretch gap-0.5"
+                        onSelect={() => moveSlideToDeck(slide.id, deck.filename)}
+                      >
+                        <DeckItemContent deck={deck} />
+                      </ContextMenu.Item>
+                    {/snippet}
+                  </DeckList>
+                </ContextMenu.SubContent>
+              </ContextMenu.Sub>
+            {/if}
+            <ContextMenu.Separator class={cmSeparator} />
             <ContextMenu.Item
-              class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer outline-none text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
+              class="{cmItem} group hover:text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
               onSelect={() => softDeleteSlide(slide.id)}
             >
-              <Icon name="trash" class="size-4" />
+              <Trash class="size-4 text-muted-foreground group-hover:text-destructive" />
               Delete
             </ContextMenu.Item>
           </ContextMenu.Content>

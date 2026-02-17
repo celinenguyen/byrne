@@ -1,22 +1,25 @@
 {
   "meta": {
     "id": "8oov03l3eZahHuj7iH-VQ",
-    "title": "celine's february moodboard",
+    "title": "Celine's February moodboard",
     "author": "",
-    "updatedAt": "2026-02-17T10:12:05.630Z",
+    "updatedAt": "2026-02-17T21:51:25.909Z",
     "theme": {
       "headingFont": "newsreader",
-      "bodyFont": "newsreader",
-      "primaryColor": "copper",
-      "accentColor": "brat"
-    }
+      "bodyFont": "inter",
+      "primaryColor": "rust",
+      "accentColor": "persimmon",
+      "backgroundColor": "soy-milk"
+    },
+    "status": "published",
+    "publishedAt": "2026-02-17T00:00:00.000Z"
   },
   "slides": [
     {
       "id": "pKANdiRRxayi8Nla4t-md",
       "order": 0,
       "layout": "Title",
-      "data": {
+      "content": {
         "images": [],
         "text": [
           "celine's collection of visual themes & ideas",
@@ -26,25 +29,29 @@
       }
     },
     {
-      "id": "iVM_S-NBNzgP2n9C3vJkp",
-      "order": 1,
-      "layout": "Image2Up",
-      "data": {
-        "images": [],
-        "text": [],
-        "url": ""
-      }
-    },
-    {
       "id": "NmHSoFWCssV0ht0OqUm3n",
-      "order": 2,
+      "order": 1,
       "layout": "Image",
-      "data": {
+      "content": {
         "images": [
           "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
         ],
         "text": [
           "artwork by [Studio Airport](https://www.instagram.com/studio.airport/?hl=en) to accompany Robin Wall Kimmerer's essay '[The Serviceberry](https://emergencemagazine.org/essay/the-serviceberry/),' in *Emergence Magazine* (via [are.na](https://www.are.na/block/22169275))"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "hczVAf2qFTdPhEiWXKHzt",
+      "order": 2,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/43652671/original_fb949c260952cf25c26a6301c6fd7842.jpg?1771257668?bc=0"
+        ],
+        "text": [
+          "here's a caption for the image here's more text"
         ],
         "url": ""
       }

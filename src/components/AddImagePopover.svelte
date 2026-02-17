@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import * as Popover from '$lib/components/ui/popover/index.js';
-  import Icon from './ui/Icon.svelte';
+  import Plus from '@lucide/svelte/icons/plus';
+  import CloudUpload from '@lucide/svelte/icons/cloud-upload';
   import { Button } from '$lib/components/ui/button/index.js';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
+  import { staticMode } from '../lib/store';
 
   interface Props {
     slotIndex: number;
@@ -19,8 +21,14 @@
 
   function handleOpenChange(v: boolean) {
     onOpenChange?.(v);
-    if (v) urlValue = currentUrl ?? '';
   }
+
+  // Sync urlValue whenever the popover is open and currentUrl changes.
+  // This handles the async timing when opened via SlideView click where
+  // currentUrl prop updates after the popover open event fires.
+  $effect(() => {
+    if (open) urlValue = currentUrl ?? '';
+  });
 
   function submitUrl() {
     const trimmed = urlValue.trim();
@@ -82,7 +90,7 @@
       class="flex items-center justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
-      <Icon name="plus" class="size-4" />
+      <Plus class="size-4" />
     </Popover.Trigger>
   {/if}
 
@@ -99,31 +107,33 @@
         ariaLabel="Add image"
       />
 
-      <!-- Drop zone -->
-      <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-      <div
-        class="flex flex-row items-center justify-center gap-2 border-1 rounded-md px-2 py-4 text-center text-sm bg-muted/50 text-muted-foreground transition-colors
-          {dragging ? 'border-stone-300 bg-stone-100' : 'border-border'}"
-        ondragover={handleDragOver}
-        ondragleave={handleDragLeave}
-        ondrop={handleDrop}
-      >
-        or you can
-          <input
-            type="file"
-            accept="image/*"
-            class="hidden"
-            bind:this={fileInput}
-            onchange={handleFileInput}
-          />
-          <Button
-            variant="outline"
-            size="sm"
-            onclick={() => fileInput?.click()}
-            aria-label="Upload from computer"
-          >
-            <Icon name="cloud-upload" class="size-4" />Upload
-          </Button>
-      </div>
+      {#if !staticMode}
+        <!-- Drop zone -->
+        <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+        <div
+          class="flex flex-row items-center justify-center gap-2 border-1 rounded-md px-2 py-4 text-center text-sm bg-muted/50 text-muted-foreground transition-colors
+            {dragging ? 'border-stone-300 bg-stone-100' : 'border-border'}"
+          ondragover={handleDragOver}
+          ondragleave={handleDragLeave}
+          ondrop={handleDrop}
+        >
+          or you can
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              bind:this={fileInput}
+              onchange={handleFileInput}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onclick={() => fileInput?.click()}
+              aria-label="Upload from computer"
+            >
+              <CloudUpload class="size-4" />Upload
+            </Button>
+        </div>
+      {/if}
   </Popover.Content>
 </Popover.Root>

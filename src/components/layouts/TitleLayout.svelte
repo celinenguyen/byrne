@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { SlideData } from '../../lib/types';
+  import type { SlideContent } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
   import MarkdownText from './MarkdownText.svelte';
   import settings from './TitleLayout.json';
 
   interface Props {
-    data: SlideData;
+    content: SlideContent;
   }
-  let { data }: Props = $props();
+  let { content }: Props = $props();
 
-  let title = $derived(data.text?.[0] || '');
-  let subtitle = $derived(data.text?.[1] || '');
+  let title = $derived(content.text?.[0] || '');
+  let subtitle = $derived(content.text?.[1] || '');
 </script>
 
 <BaseLayout>

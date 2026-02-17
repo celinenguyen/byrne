@@ -1,19 +1,20 @@
 ---
 import App from '../components/App.svelte';
 import '../styles/globals.css';
+import { faviconDataUrl } from '@celinenguyen/software-as-leisure-activity/favicon';
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href={faviconDataUrl} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
     <title>Slide decks as social activity</title>
   </head>
-  <body class="h-screen overflow-hidden">
+  <body class="h-screen overflow-hidden flex flex-col">
     <App client:only="svelte" />
   </body>
 </html>

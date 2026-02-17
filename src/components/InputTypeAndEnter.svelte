@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from './ui/Icon.svelte';
+  import ArrowRight from '@lucide/svelte/icons/arrow-right';
   import * as InputGroup from '$lib/components/ui/input-group/index.js';
   import * as ButtonGroup from '$lib/components/ui/button-group/index.js';
 
@@ -29,7 +29,7 @@
     />
     <InputGroup.Addon align="inline-end">
       <InputGroup.Button size="icon-xs" onclick={onsubmit} aria-label={ariaLabel} class="opacity-0 transition-opacity group-focus-within:opacity-100">
-        <Icon name="arrow-right" class="size-4" />
+        <ArrowRight class="size-4" />
       </InputGroup.Button>
     </InputGroup.Addon>
   </InputGroup.Root>

@@ -15,7 +15,7 @@
   );
 </script>
 
-<div class="aspect-video w-full h-full relative overflow-hidden bg-white {className}" style={styleString}>
+<div class="aspect-video w-full h-full relative overflow-hidden {className}" style="{styleString}; background-color: var(--slide-color-bg, white)">
   {@render children()}
 </div>
 

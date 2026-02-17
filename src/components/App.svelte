@@ -6,9 +6,14 @@
   import SlideDetails from './SlideDetails.svelte';
   import PresentView from './PresentView.svelte';
   import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
+  import AppIntroPage from './AppIntroPage.svelte';
+  import LayoutGrid from './LayoutGrid.svelte';
+  import EphemeralBanner from './EphemeralBanner.svelte';
   import {
     initializeDeck,
     viewMode,
+    exitPresent,
+    deck,
     currentSlide,
     slides,
     currentSlideIndex,
@@ -19,6 +24,9 @@
     pendingDelete,
     detailsOpen,
     slideListOpen,
+    showIntro,
+    staticMode,
+    addSlide,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
@@ -26,6 +34,17 @@
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
   let pending = $derived($pendingDelete);
+  let splash = $derived($showIntro);
+
+  // Reactive document title
+  $effect(() => {
+    if (splash) {
+      document.title = 'byrne ✴︎ an idiosyncratic slide deck app';
+    } else {
+      const deckTitle = $deck?.meta?.title ?? 'Untitled';
+      document.title = `${deckTitle} ✴︎ ${mode}`;
+    }
+  });
 
   // Pane widths (percentages)
   let leftWidth = $state(15);
@@ -197,7 +216,7 @@
     { key: 'ArrowLeft',  mode: 'present', action: () => navigateSlide('prev') },
     { key: 'ArrowUp',    mode: 'present', action: () => navigateSlide('prev') },
     { key: 'r',          mode: 'present', action: () => currentSlideIndex.set(0) },
-    { key: 'Escape',     mode: 'present', action: () => { viewMode.set('edit'); return false; } },
+    { key: 'Escape',     mode: 'present', action: () => { exitPresent(); return false; } },
   ];
 
   // Global keyboard handler attached to <svelte:window>. Skips all
@@ -216,9 +235,15 @@
 
 <svelte:window onkeydown={onKeyDown} onmousemove={onMouseMove} onmouseup={onMouseUp} />
 
+{#if splash}
+  <AppIntroPage />
+{:else}
 <div class="h-screen flex flex-col">
   {#if mode !== 'present'}
     <Toolbar />
+    {#if staticMode}
+      <EphemeralBanner />
+    {/if}
   {/if}
 
   <div class="flex-1 min-h-0 flex bg-muted/30">
@@ -238,6 +263,7 @@
       <!-- center: scrollable slide list, collapsible from toolbar button -->
       <div class="h-full flex-1 min-w-0 overflow-y-auto mt-1 p-4" bind:this={scrollContainer} onscroll={onContainerScroll}>
         {#each allSlides as s, i}
+          <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
           <div
             role={mode === 'edit' ? 'button' : undefined}
             tabindex={mode === 'edit' ? 0 : undefined}
@@ -255,7 +281,10 @@
           </div>
         {/each}
         {#if allSlides.length === 0}
-          <div class="text-muted-foreground text-sm text-center mt-20">No slides yet. Add a slide to get started.</div>
+          <div class="flex flex-col items-center justify-center h-full pb-20 max-w-2xl mx-auto px-4md:px-8">
+            <p class="text-md font-medium text-center mb-6">Add a slide</p>
+            <LayoutGrid cols={2} onSelect={(layoutId) => addSlide(layoutId)} />
+          </div>
         {/if}
       </div>
 
@@ -284,3 +313,4 @@
     {/if}
   </div>
 </div>
+{/if}

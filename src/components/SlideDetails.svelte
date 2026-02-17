@@ -1,15 +1,23 @@
 <script lang="ts">
   import type { Slide, SlotMeta } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme } from '../lib/store';
-  import { layouts, layoutList } from './layouts/registry';
-  import { fontOptions, primaryColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile } from '../lib/store';
+  import { layouts } from './layouts/registry';
+  import LayoutGrid from './LayoutGrid.svelte';
+  import { fontOptions, primaryColorOptions, backgroundColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
   import SlideDetailsSection from './SlideDetailsSection.svelte';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import SlotLabel from './SlotLabel.svelte';
   import ColorPicker from './ColorPicker.svelte';
   import ImagePicker from './ImagePicker.svelte';
+  import Ellipsis from '@lucide/svelte/icons/ellipsis';
+  import Trash from '@lucide/svelte/icons/trash';
+  import { Button } from '$lib/components/ui/button/index.js';
   import * as Field from '$lib/components/ui/field';
-  import * as Item from './ui/item';
+  import { DropdownMenu } from 'bits-ui';
+  import * as Select from '$lib/components/ui/select/index.js';
+
+  const dmContent = 'z-50 min-w-[140px] rounded-md border border-border bg-popover shadow-md';
+  const dmItem = 'flex items-center gap-2 rounded-sm m-1 px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent';
 
   interface Props {
     slide: Slide | null;
@@ -89,26 +97,32 @@
     return used;
   }
 
-  let imageSlots = $derived(buildSlots(layoutDef?.schema.images, slide?.data.images));
-  let textSlots = $derived(buildSlots(layoutDef?.schema.text, slide?.data.text));
+  let imageSlots = $derived(buildSlots(layoutDef?.schema.images, slide?.content.images));
+  let textSlots = $derived(buildSlots(layoutDef?.schema.text, slide?.content.text));
 
   function updateImage(index: number, value: string) {
     if (!slide) return;
-    const images = [...slide.data.images];
+    const images = [...slide.content.images];
     images[index] = value;
-    updateSlide(slide.id, { data: { ...slide.data, images } });
+    updateSlide(slide.id, { content: { ...slide.content, images } });
   }
 
   function updateText(index: number, value: string) {
     if (!slide) return;
-    const text = [...slide.data.text];
+    const text = [...slide.content.text];
     text[index] = value;
-    updateSlide(slide.id, { data: { ...slide.data, text } });
+    updateSlide(slide.id, { content: { ...slide.content, text } });
   }
 
   function changeLayout(layoutId: string) {
     if (!slide) return;
     updateSlide(slide.id, { layout: layoutId });
+  }
+
+  async function handleDeleteDeck() {
+    const file = $currentDeckFile;
+    if (!file) return;
+    await deleteDeck(file);
   }
 </script>
 
@@ -116,53 +130,92 @@
   {#if slide}
     <SlideDetailsSection name="Deck">
       {#snippet children()}
-        <InputTypeAndEnter
-          placeholder="Deck name"
-          bind:value={deckTitle}
-          onsubmit={handleRenameDeck}
-          ariaLabel="Rename deck"
-        />
+        <div class="flex items-center gap-2">
+          <div class="flex-1 min-w-0">
+            <InputTypeAndEnter
+              placeholder="Deck name"
+              bind:value={deckTitle}
+              onsubmit={handleRenameDeck}
+              ariaLabel="Rename deck"
+            />
+          </div>
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+              {#snippet child({ props })}
+                <Button variant="outline" size="icon" class="shrink-0" {...props} aria-label="Deck options">
+                  <Ellipsis class="size-4 text-muted-foreground" />
+                </Button>
+              {/snippet}
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content class={dmContent}>
+                <DropdownMenu.Item
+                  class="{dmItem} group hover:text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
+                  onSelect={handleDeleteDeck}
+                >
+                  <Trash class="size-4 text-muted-foreground group-hover:text-destructive" />
+                  Delete deck
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
+        </div>
         <div class="flex flex-col gap-3">
           <Field.Root>
             <Field.Label class="lowercase">Headings</Field.Label>
             <Field.Content>
-              <select
-                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              <Select.Root
+                type="single"
                 value={currentTheme.headingFont}
-                onchange={(e) => updateTheme({ headingFont: e.currentTarget.value })}
+                onValueChange={(v) => updateTheme({ headingFont: v })}
               >
-                {#each fontOptions as opt}
-                  <option value={opt.id}>{opt.label}</option>
-                {/each}
-              </select>
+                <Select.Trigger class="w-full">
+                  {fontOptions.find((o) => o.id === currentTheme.headingFont)?.label ?? currentTheme.headingFont}
+                </Select.Trigger>
+                <Select.Content>
+                  {#each fontOptions as opt}
+                    <Select.Item value={opt.id} label={opt.label} />
+                  {/each}
+                </Select.Content>
+              </Select.Root>
             </Field.Content>
           </Field.Root>
           <Field.Root>
             <Field.Label class="lowercase">Body</Field.Label>
             <Field.Content>
-              <select
-                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              <Select.Root
+                type="single"
                 value={currentTheme.bodyFont}
-                onchange={(e) => updateTheme({ bodyFont: e.currentTarget.value })}
+                onValueChange={(v) => updateTheme({ bodyFont: v })}
               >
-                {#each fontOptions as opt}
-                  <option value={opt.id}>{opt.label}</option>
-                {/each}
-              </select>
+                <Select.Trigger class="w-full">
+                  {fontOptions.find((o) => o.id === currentTheme.bodyFont)?.label ?? currentTheme.bodyFont}
+                </Select.Trigger>
+                <Select.Content>
+                  {#each fontOptions as opt}
+                    <Select.Item value={opt.id} label={opt.label} />
+                  {/each}
+                </Select.Content>
+              </Select.Root>
             </Field.Content>
           </Field.Root>
           <Field.Root>
             <Field.Label class="lowercase">Captions</Field.Label>
             <Field.Content>
-              <select
-                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+              <Select.Root
+                type="single"
                 value={currentTheme.captionFont}
-                onchange={(e) => updateTheme({ captionFont: e.currentTarget.value })}
+                onValueChange={(v) => updateTheme({ captionFont: v })}
               >
-                {#each fontOptions as opt}
-                  <option value={opt.id}>{opt.label}</option>
-                {/each}
-              </select>
+                <Select.Trigger class="w-full">
+                  {fontOptions.find((o) => o.id === currentTheme.captionFont)?.label ?? currentTheme.captionFont}
+                </Select.Trigger>
+                <Select.Content>
+                  {#each fontOptions as opt}
+                    <Select.Item value={opt.id} label={opt.label} />
+                  {/each}
+                </Select.Content>
+              </Select.Root>
             </Field.Content>
           </Field.Root>
           <Field.Root>
@@ -172,6 +225,16 @@
                 options={primaryColorOptions}
                 value={currentTheme.primaryColor}
                 onchange={(id) => updateTheme({ primaryColor: id })}
+              />
+            </Field.Content>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label class="lowercase">Background</Field.Label>
+            <Field.Content>
+              <ColorPicker
+                options={backgroundColorOptions}
+                value={currentTheme.backgroundColor}
+                onchange={(id) => updateTheme({ backgroundColor: id })}
               />
             </Field.Content>
           </Field.Root>
@@ -207,16 +270,16 @@
               </div>
             </div>
 
-            <!-- Textarea: always shows slot data from slide.data.text.
-                Used slot   + empty    → placeholder "Write with Markdown"
-                Used slot   + has data → editable
-                Unused slot + empty    → placeholder "Not used in this layout"
-                            + has data → shows data as read-only -->
+            <!-- Textarea: always shows slot content from slide.content.text.
+                Used slot   + empty      → placeholder "Write with Markdown"
+                Used slot   + has content → editable
+                Unused slot + empty      → placeholder "Not used in this layout"
+                            + has content → shows content as read-only -->
             <textarea
-                class="w-full px-2 py-1.5 border border-border rounded-md text-sm leading-[1.5] bg-white resize-y min-h-24
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm leading-[1.5] bg-transparent focus:bg-white transition-colors resize-y min-h-24
                   {slot.isUsed ? '' : 'opacity-50 bg-muted cursor-not-allowed'}"
                 placeholder={slot.isUsed ? 'Write with Markdown' : slot.hasContent ? 'Not used in this layout' : ''}
-                value={slide.data.text?.[slot.index] || ''}
+                value={slide.content.text?.[slot.index] || ''}
                 disabled={!slot.isUsed}
                 data-slot-type="text"
                 data-slot-index={slot.index}
@@ -239,26 +302,13 @@
 
     <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }} class="border-t">
       {#snippet children()}
-        <div class="mt-2 grid grid-cols-2 gap-4">
-          {#each layoutList as l}
-            <Item.Root
-              variant="outline"
-              size="sm"
-              class="border-border px-4 py-3 cursor-pointer {slide.layout === l.id ? 'border-stone-400 ring-3 ring-stone-200 bg-white' : 'hover:bg-accent opacity-80'}"
-              onclick={() => changeLayout(l.id)}
-            >
-              <Item.Content>
-                <Item.Title class="tracking-wide">{l.displayName}</Item.Title>
-                {#if l.description}
-                  <Item.Description class="text-xs leading-relaxed">{l.description}</Item.Description>
-                {/if}
-              </Item.Content>
-            </Item.Root>
-          {/each}
+        <div class="mt-2">
+          <LayoutGrid selectedLayout={slide.layout} onSelect={changeLayout} cols={2} />
         </div>
       {/snippet}
     </SlideDetailsSection>
   {:else}
-    <div class="px-4 py-6 text-sm text-muted-foreground">No slide selected</div>
+    <!-- no slide selected; leave sidebar blank -->
   {/if}
 </div>
+
