@@ -2,6 +2,7 @@
   import { tick } from 'svelte';
   import * as Popover from '$lib/components/ui/popover/index.js';
   import * as Kbd from '$lib/components/ui/kbd/index.js';
+  import * as Field from '$lib/components/ui/field';
   import { Separator } from '$lib/components/ui/separator/index.js';
   import Icon from './ui/Icon.svelte';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
@@ -104,16 +105,20 @@
       </div>
     {:else}
       <!-- New deck form -->
-      <div class="p-3 flex flex-col gap-2">
-        <!-- svelte-ignore a11y_autofocus -->
-        <InputTypeAndEnter
-          placeholder="Deck name"
-          bind:value={newDeckTitle}
-          onsubmit={handleCreate}
-          ariaLabel="Create deck"
-          autofocus
-        />
-        <p class="text-xs text-muted-foreground"><Kbd.Root>Enter</Kbd.Root> to create</p>
+      <div class="p-3">
+        <Field.Root class="gap-2">
+          <Field.Content>
+            <!-- svelte-ignore a11y_autofocus -->
+            <InputTypeAndEnter
+              placeholder="Deck name"
+              bind:value={newDeckTitle}
+              onsubmit={handleCreate}
+              ariaLabel="Create deck"
+              autofocus
+            />
+          </Field.Content>
+          <Field.Hint><Kbd.Root>Enter</Kbd.Root> to create</Field.Hint>
+        </Field.Root>
       </div>
     {/if}
   </Popover.Content>

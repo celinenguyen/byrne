@@ -13,7 +13,7 @@
 
 <BaseLayout>
   <div class="flex items-center justify-center h-full px-16 py-12">
-    <div data-slot="text:body" class="prose prose-lg max-w-3xl">
+    <div data-slot="text:body" class="prose prose-lg max-w-3xl" style="font-family: var(--slide-font-body); color: var(--slide-color-primary)">
       <MarkdownText text={body} />
     </div>
   </div>

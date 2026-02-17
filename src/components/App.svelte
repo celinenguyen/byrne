@@ -7,8 +7,7 @@
   import PresentView from './PresentView.svelte';
   import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
   import {
-    loadDeck,
-    loadDeckList,
+    initializeDeck,
     viewMode,
     currentSlide,
     slides,
@@ -211,8 +210,7 @@
 
 
   onMount(() => {
-    loadDeck();
-    loadDeckList();
+    initializeDeck();
   });
 </script>
 
