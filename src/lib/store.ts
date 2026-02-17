@@ -4,7 +4,6 @@ import type { DeckTheme } from './theme';
 import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
 
-const LAST_DECK_KEY = 'byrne:lastDeck';
 const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
 const BASE_URL: string = import.meta.env.BASE_URL;
 
@@ -14,12 +13,11 @@ function getInitialParams() {
   const params = new URLSearchParams(window.location.search);
   const view = params.get('view');
   const slide = params.get('slide');
-  const deckParam = params.get('deck');
-  const lastDeck = localStorage.getItem(LAST_DECK_KEY) ?? '';
+  const deckParam = params.get('deck') ?? '';
   return {
     view: (view === 'edit' || view === 'preview' || view === 'present') ? view as 'edit' | 'preview' | 'present' : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
-    deck: deckParam || (staticMode ? '' : lastDeck),
+    deck: deckParam,
   };
 }
 
@@ -61,12 +59,7 @@ function syncURL() {
 
 viewMode.subscribe(() => syncURL());
 currentSlideIndex.subscribe(() => syncURL());
-currentDeckFile.subscribe((file) => {
-  syncURL();
-  if (typeof window !== 'undefined' && file) {
-    localStorage.setItem(LAST_DECK_KEY, file);
-  }
-});
+currentDeckFile.subscribe(() => syncURL());
 
 export const resolvedTheme = derived(deck, ($deck) => {
   const merged: DeckTheme = { ...defaultTheme, ...($deck?.meta?.theme ?? {}) };
@@ -103,18 +96,10 @@ export async function loadDeckList(): Promise<DeckSummary[]> {
   return [];
 }
 
-/** Bootstrap: pick a deck if none specified in URL or localStorage */
+/** Bootstrap: load deck list; open a deck if one is specified in the URL */
 export async function initializeDeck() {
   const list = await loadDeckList();
   const current = get(currentDeckFile);
-  if (!current && !staticMode && list.length > 0) {
-    // Pick the most recently modified deck (SSR only — static shows splash)
-    const sorted = [...list].sort((a, b) =>
-      (b.updatedAt || '').localeCompare(a.updatedAt || '')
-    );
-    currentDeckFile.set(sorted[0].filename);
-    showSplash.set(false);
-  }
   if (get(currentDeckFile)) {
     showSplash.set(false);
     await loadDeck();

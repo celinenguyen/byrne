@@ -1,164 +1,125 @@
-a frivolous little app for me to make presentations/decks/reports like
+# What am I looking at?
 
-- https://squad.metalabel.com/acf2026
-- https://khole.net/
-- https://x.com/mattstasoff/status/1995531653083517071
+A frivolous little app made by [Celine Nguyen](https://celinenguyen.com/), who initially wanted to make little trend-report-style slide decks, like—
 
-# How to use (and edit!) this app
+- Metalabel's [Anonymous Creative Futures](https://squad.metalabel.com/acf2026) (2026)
+- Matthew Stassoff's [social signals 2025_v5](https://x.com/mattstasoff/status/1995531653083517071) (2025)
+- K-HOLE's [reports #1–5](https://khole.net/) (2011–2015)
 
-## How to use it
+—but ended up making an idiosyncratic app for making slide decks, instead of the slide deck itself.
 
-### What this app is for
+# What makes slide decks strange, fascinating, alluring…or boring?
 
-This is an intentionally simple slide deck editor. The goal is to make it easy to create consistent, good-looking decks without any of the fiddly layout tweaking that apps like PowerPoint or Google Slides encourage. In those tools, you *can* customise the position, colour, font, and placement of every single element on every single slide...but the downside is that it's really hard to keep things consistent across a whole deck. You end up spending more time nudging text boxes around than thinking about what you actually want to say.
+## Against slide decks
 
-This app takes a different approach: **less is more.** By paring away most of those fussy, per-element customisation options, you're free to focus on the *content and ideas* instead. Constraint leads to consistency and clarity.
+Edward Tufte (political scientist and statistician, but most famous as an information design theorist after the publication of *The Visual Display of Quantitative Information*) wrote an article titled ‘[PowerPoint Is Evil](https://archive.ph/QuOtN)’ for *Wired*'s Sep 2003 issue. 
 
-This app is best for:
-- The creator (celine!) -- but also anyone who wants very simple, text-and-image-focused slide decks for sharing moodboards, visual references, quotes, links, and the like.
-- People who love storing information in plaintext formats (Markdown! JSON!) as much as possible.
-- People who believe that constraint is a feature, not a limitation.
+> Imagine a widely used and expensive prescription drug that promised to make us beautiful but didn't. Instead the drug had frequent, serious side effects: It induced stupidity, turned everyone into bores, wasted time, and degraded the quality and credibility of communication…
+> Slideware—computer programs for presentations—is everywhere: in corporate America, in government bureaucracies, even in our schools. Several hundred million copies of Microsoft PowerPoint are churning out trillions of slides each year. Slideware may help speakers outline their talks, but convenience for the speaker can be punishing to both content and audience. The standard PowerPoint presentation elevates format over content, betraying an attitude of commercialism that turns everything into a sales pitch.
 
-### Key concepts
+## In defense of slide decks
 
-**Decks** are the top-level object. A deck is simply a list of slides, plus some basic info:
-- A **deck name**.
-- Optional **style preferences** (fonts and colours) that apply to every slide in the deck.
+In the same issue, David Byrne (artist, singer/guitarist/songwriter of Talking Heads, and Brian Eno collaborator) wrote ‘[Learning to Love PowerPoint](https://archive.ph/QeBLY)’:
 
-**Slides** are what make up a deck. Each slide has two things:
-1. **Data** -- the actual content. Right now the app supports two types of content:
-   - **Text** (written in Markdown)
-   - **Images** (pasted as URLs)
-   - To keep things simple and presentable -- clarity and concision over excessive content! -- each slide can have at most 2 text slots and 2 image slots.
-2. **Layout** -- *how* that content gets displayed. You pick a layout for each slide, and the layout determines what goes where.
+> Having never used the program before, I found it limiting, inflexible, and biased, like most software. On top of that, PowerPoint makes hilariously bad-looking visuals. But that's a small price to pay for ease and utility. We live in a world where convenience beats quality every time. It was, for my purposes, perfect…
+> I began to see PowerPoint as a metaprogram, one that organizes and presents stuff created in other applications. Initially, I made presentations about presentations; they were almost completely without content. The content, I learned, was in the medium itself…
+> Although I began by making fun of the medium, I soon realized I could actually create things that were beautiful. I could bend the program to my own whim and use it as an artistic agent. The pieces became like short films: Some were sweet, some were scary, and some were *mysterioso*. I discovered that even without text, I could make works that were "about" something, something beyond themselves, and that they could even have emotional resonance. 
 
-**Layouts** available right now:
+In Byrne's book *Envisioning Emotional Epistemological Information* (2003), he proposed:
+
+> If business is poetry, then numbers are words and sales presentations, marketing meetings and conferences are the salons and literary collaborations of our time.
+
+# How to use this app
+
+*(If you want to customize it for your own needs, see the next section.)*
+
+## This is not PowerPoint (and that's a good thing!)
+
+I made this app because I *didn't* want all the flexibility of apps like PowerPoint, Keynote, and Google Slides. In those apps, you *can* customize the color, font, and placement of every single element, on every single slide…but it's hard to keep slides consistent across a whole deck! I find myself spending too much time nudging text boxes around, and this gets in the way of focusing on my content.
+
+**byrne** is different. I've intentionally pared away most of those per-element customizations. Instead:
+
+- **Decks** are defined by a **name**, optional **style preferences** (which apply to every slide), and a list of slides. Each deck is represented by a `.json` file.
+- Each **slide** has:
+  - A **layout** (is it a `Title` slide with a large heading and optional subheading? an `Image` slide with just 1 image and an optional caption?).
+  - Some **data**, which is used by different layouts in different ways. The data can be:
+    - Text: Each slide can have up to 2 blocks of text. You can use Markdown formatting to bold, italicize, and add links to text.
+    - Images: Each slide can have up to 2 images.
+- Each **layout** uses the slide's **data** in different ways. The `Title` layout takes the 1st text block and displays it as a large heading. The `Image` layout takes the 1st text block and displays it as the image caption.
+
+## What layouts are available?
+
+Each layout is represented by a `.svelte` file. If a layout uses any text or images in it, those will be given useful names (for example, `left image` and `right image`)
 
 | Layout | What it shows |
 |--------|---------------|
-| **Title** | Large heading with optional subtitle |
-| **Text** | Full-slide text block (supports Markdown) |
-| **Image** | Full-width image with a caption |
-| **2-Up Image** | Two images side by side, each with a caption |
+| `Title` | Large heading with optional subtitle |
+| `Text` | Full-slide text block |
+| `Image` | Full-width image with an optional caption |
+| `2-Up Image` | Two images, side by side, with optional captions for each |
 
-The nice thing about separating data from layout is that **you can switch layouts freely.** Say you make a new slide, choose the "Image" layout, and add an image with a caption. Then you realise you actually want two images side by side -- just switch to "2-Up Image." Your existing image and caption become the left column, and you can now add a right image and caption. The content carries over; only the presentation changes.
+**byrne** makes it easy to add new layouts and customize them—as long as you're willing to write a little bit of HTML, CSS, and JS. (Because I made this app for myself, and I ❤️ writing CSS, this is a feature, not a bug.)
 
-### Previewing and presenting
+### How do I edit, preview, and present my deck?
 
-When you're ready to share your deck with others, the app has three view modes (switchable from the toolbar):
+**byrne** has 3 modes:
 
-- **Edit** -- the default. You see all your slides in a scrollable list, with the sidebar open for editing content, switching layouts, and adjusting theme settings.
-- **Preview** -- hides the sidebar and shows your slides cleanly, one after another. Good for reviewing how things look before presenting. You can navigate with arrow keys or click/scroll.
-- **Present** -- full-screen presentation mode. One slide at a time, just like a traditional slideshow. Arrow keys and spacebar to advance, `Escape` to exit.
+- **Edit** mode has a collapsible left sidebar for viewing all slides, a middle pane for viewing your deck, and a collapsible right sidebar for changing your deck's name and style preferences, as well as editing the data and layout for each slide. the default. You see all your slides in a scrollable list, with the sidebar open for editing content, switching layouts, and adjusting theme settings.
+- **Preview** mode hides both sidebars and shows a scrollable list of all your slides. You can use keyboard shortcuts to go forward/back as well.
+- **Present** mode opens a full-screen mode where you can see one slide at a time. You can use keyboard shortcuts Arrow keys to go forward (`→` and `↓`) or back (`←` and `↑`), and `Escape` to edit.
 
-### A note on customisability
+# How to edit this app
 
-Because every deck uses the same small set of layouts and the same structured data model (just text, images, and a layout choice), any HTML/CSS customisation you make to a layout will automatically apply to every slide that uses it, across all your decks. This is a feature of the constrained design: you can tweak the look and feel of the whole app by editing a handful of files, and the changes propagate everywhere. More on that below.
+**byrne** is built with [Astro](https://astro.build/) and [Svelte](https://svelte.dev/). If you're familiar with HTML and CSS but haven't used a JavaScript framework before, here's a quick explanation:
 
-## How to edit it
+- Astro is a **static site generator**, or SSG. SSGs are great for building simple websites (like personal webpages, portfolios, and blogs) because they have the following features:
+  - They're easy to work with if you're a more experienced software engineer or web programmer, because they make use of new frontend technologies (including JavaScript frameworks like Svelte or React, which can be used to build complex apps—React is used by companies like Meta and Notion)
+  - But they're also easy to work with if you're less experienced, since they're often more regular-HTML-and-CSS-shaped in how they function.
+  - And they're *really* cheap (often free!) to publish online. Most complex apps require a backend to do things like letting users create accounts, log in, add content…but if you're building a simple website just for yourself, you don't need all of that! And running a backend is more complicated and typically costs more. When you're building something with an SSG on your own laptop, you get something that _feels_ dynamic, as if there's a backend. But the SSG will *em*generate* static files (aka regular `.html` and `.css` and `.js`) that you can upload somewhere to make your website available to others.
 
-This app is built with [Svelte](https://svelte.dev/) (a JavaScript framework) and [Tailwind CSS](https://tailwindcss.com/). If you're comfortable with HTML and CSS but haven't used a framework like Svelte or React before, here's the short version:
+So what does it look like to build a website with Astro? I've chosen to set this up using Svelte, so most of the app pages are created using `.svelte` files. I'm not super familiar with JavaScript frameworks, but Svelte is quite easy to understand and work with.
 
-A `.svelte` file is like an HTML file with superpowers. It has three sections:
-- A `<script>` block at the top (the logic -- variables, imports, etc.)
-- HTML markup in the middle (the template -- what gets rendered)
-- A `<style>` block at the bottom (CSS, scoped to this component by default)
+A `.svelte` file is like a more powerful HTML file. It has three sections:
 
-You can mostly ignore the `<script>` block and focus on the HTML and `<style>` sections when making visual changes. The HTML uses a few Svelte-specific things like `{#if ...}` for conditionals and `{variable}` for inserting values, but these read pretty naturally.
+- A `<script>` block at the top (for more complex logic, importing reusable components, &c)
+- HTML markup in the middle, which is what shows on the page. The nice thing about using an SSG like Astro is that you can incorporate some more dynamic features (like `{#if ...}` for conditional display logic, or displaying `{variable}` results on a page).
+- A `<style>` block at the bottom (CSS, which just applies to the specific Svelte page). If you want to make visual changes, you can mostly focus on this.
 
-### Creating a new layout
+**byrne** also uses [Tailwind](https://tailwindcss.com/docs/styling-with-utility-classes) (a popular CSS framework) and [shadcn-svelte(https://shadcn-svelte.com/) (for certain UI components, like form elements). Both have really legible and clear documentation for how to use them.
 
-Layouts live in `src/components/layouts/`. Each layout needs two files:
+## A very easy way to customize this app is to change the fonts and colors available 
 
-#### 1. A settings file (`YourLayout.json`)
+I've chosen some default fonts and colors, which you can find in `src/lib/theme.ts`. This is the *only* file you need to edit if you want to add more fonts and colors.
 
-This defines the named slots (images, text, and optionally a URL) that the layout accepts. Each slot has a `displayName`, an `isRequired` boolean, and an optional `placeholder`.
+### Different fonts!
 
-```json
-{
-  "images": {
-    "photo": { "displayName": "Photo", "isRequired": true }
-  },
-  "text": {
-    "heading": { "displayName": "Heading", "isRequired": true, "placeholder": "Untitled" },
-    "description": { "displayName": "Description", "isRequired": false }
-  }
-}
-```
-
-Omit the `"images"`, `"text"`, or `"url"` key entirely if the layout doesn't use that type of content.
-
-#### 2. A Svelte component (`YourLayout.svelte`)
-
-The component receives `data: SlideData` as a prop and reads slot values by index from `data.images` and `data.text` (the order matches the order of keys in your JSON file).
-
-```svelte
-<script lang="ts">
-  import type { SlideData } from '../../lib/types';
-  import BaseLayout from './BaseLayout.svelte';
-  import MarkdownText from './MarkdownText.svelte';
-  import settings from './YourLayout.json';
-
-  interface Props {
-    data: SlideData;
-  }
-  let { data }: Props = $props();
-
-  let photo = $derived(data.images?.[0] || '');
-  let heading = $derived(data.text?.[0] || '');
-  let description = $derived(data.text?.[1] || '');
-</script>
-
-<BaseLayout>
-  {#if photo}
-    <img src={photo} alt="" />
-  {/if}
-  <h2 style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
-    <MarkdownText text={heading || settings.text.heading.placeholder} inline />
-  </h2>
-  {#if description}
-    <p style="font-family: var(--slide-font-body)">
-      <MarkdownText text={description} />
-    </p>
-  {/if}
-</BaseLayout>
-```
-
-A few things to note:
-- Always wrap your layout in `<BaseLayout>` -- it provides the standard slide aspect ratio, background, and theme CSS variables.
-- Use `<MarkdownText>` to render text content (it handles Markdown parsing). Pass `inline` for single-line content like headings.
-- Use the `var(--slide-font-heading)`, `var(--slide-font-body)`, `var(--slide-font-caption)`, `var(--slide-color-primary)`, and `var(--slide-color-accent)` CSS variables to pick up the deck's theme settings. Apply these as inline `style` attributes on the relevant elements.
-- Add Tailwind classes or a `<style>` block for any additional styling.
-
-#### 3. Register the layout
-
-In `src/components/layouts/registry.ts`, import your component and settings, then add an entry to the `layouts` object:
+Add your new font to the `fontOptions` array. The `value` is the CSS `font-family` string. You'll also need to load the font using a `<link>` tag in `src/pages/index.astro`.
 
 ```ts
-import YourLayout from './YourLayout.svelte';
-import yourSettings from './YourLayout.json';
-
-// Inside the layouts object:
-YourLayoutId: {
-  id: 'YourLayoutId',
-  displayName: 'Your Layout',
-  description: 'Brief description of the layout',
-  component: YourLayout as unknown as Component,
-  schema: yourSettings,
-},
+export const fontOptions = [
+  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif' },
+  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif' },
+  // Add your new font here!
+] as const;
 ```
 
-That's it -- the new layout will show up in the Layout section of the sidebar.
+### Different colors!
 
-### Customising the theme
+Add your new colors to the `primaryColorOptions` (for headings and body text) or `accentColorOptions` (for links) arrays. You can define colors using [any values that are supported in CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Colors), like hex codes, RGB, and `oklch()`. YColours are defined using the `oklch()` format, but any valid CSS colour value will work.
 
-Theme presets (fonts and colours) are defined in `src/lib/theme.ts`. This is the single file to edit if you want to change the defaults or add new options.
+```ts
+export const primaryColorOptions = [
+  { id: 'black', label: 'Black', value: 'oklch(0% 0 0)' },
+  { id: 'forest', label: 'Forest', value: 'oklch(0.35 0.10 150)' },
+] as const;
 
-**To change the default theme** (what new decks start with), edit the `defaultTheme` object:
+### A different default!
+
+You can also change the default theme used for all new decks, and existing decks without any custom style preferences. To do so, edit the `defaultTheme`:
 
 ```ts
 export const defaultTheme: DeckTheme = {
-  headingFont: 'inter',      // must match an id in fontOptions
+  headingFont: 'newsreader',      // must match an id in fontOptions
   bodyFont: 'inter',
   captionFont: 'inter',
   primaryColor: 'black',     // must match an id in primaryColorOptions
@@ -166,38 +127,91 @@ export const defaultTheme: DeckTheme = {
 };
 ```
 
-**To add a new font option**, add an entry to the `fontOptions` array. The `value` is the CSS `font-family` string. You'll also need to load the font -- add a `<link>` tag in `src/pages/index.astro` (Google Fonts is the easiest option).
+## A slightly harder customization is to add new slide layouts
+
+Layouts are stored in `src/components/layouts/`. Each layout has 2 files:
+
+- `yournewlayout.json`, which defines how many text blocks and images will be used in the layout. Let's call these ‘slots.’
+  - Each slot has a `displayName` that tells you what the slot is used for (is it text for a heading? a blockquote? caption?), an `isRequired` boolean, and an optional `placeholder` to display if the slide doesn't have data to fill the slot yet.
+  - Here's an example of a layout that uses 2 text blocks (1 required, 1 optional) and 1 image.
+    ```json
+    {
+      "images": {
+        "photo": { "displayName": "Photo", "isRequired": true }
+      },
+      "text": {
+        "heading": { "displayName": "Heading", "isRequired": true, "placeholder": "Untitled" },
+        "description": { "displayName": "Description", "isRequired": false }
+      }
+    }
+    ```
+
+- `YourNewLayout.svelte`, which  efines what the slide actually looks like.
+  - It takes in a `data: SlideData` prop
+  - It consults the associated `.json` file, and specifically the `data.images` and `data.text` information, to display it in the layout.
+  - Here's an example of a layout corresponding to the `.json` example above:
+    ```svelte
+    <script lang="ts">
+      import type { SlideData } from '../../lib/types';
+      import BaseLayout from './BaseLayout.svelte';
+      import MarkdownText from './MarkdownText.svelte';
+      import settings from './YourLayout.json';
+
+      interface Props {
+        data: SlideData;
+      }
+      let { data }: Props = $props();
+
+      let photo = $derived(data.images?.[0] || '');
+      let heading = $derived(data.text?.[0] || '');
+      let description = $derived(data.text?.[1] || '');
+    </script>
+
+    <BaseLayout>
+      {#if photo}
+        <img src={photo} alt="" />
+      {/if}
+      <h2 style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
+        <MarkdownText text={heading || settings.text.heading.placeholder} inline />
+      </h2>
+      {#if description}
+        <p style="font-family: var(--slide-font-body)">
+          <MarkdownText text={description} />
+        </p>
+      {/if}
+    </BaseLayout>
+    ```
+
+While creating your layout:
+
+- Always wrap your layout in `<BaseLayout>`, which handles the standard slide aspect ratio, background, and theme CSS variables.
+- Use `<MarkdownText>` to render text content (it handles Markdown parsing). 
+  - Pass `inline` for single-line content like headings.
+- To use the deck's theme, use the following as inline `style` attributes on the relevant elements
+  - `var(--slide-font-heading)` to use the heading font
+  - `var(--slide-font-body)` to use the body font
+  - `var(--slide-font-caption)` to use the caption font
+  - `var(--slide-color-primary)` to use the primary color
+- You can use Tailwind classes or the `<style>` block (at the bottom of each `.svelte` file) for additional styling.
+
+When you're ready to use your layout:
+
+- Open `src/components/layouts/registry.ts`
+- Import your layout files
+- Add an entry to the `layouts` object with the name and optional description of your layout
 
 ```ts
-export const fontOptions = [
-  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif' },
-  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif' },
-  // Add your new font here:
-  { id: 'jetbrains', label: 'JetBrains Mono', value: '"JetBrains Mono", monospace' },
-] as const;
+import YourNewLayout from './yournewlayout.svelte';
+import yourNewSettings from './yournewlayout.json';
+
+// Inside the layouts object:
+YourNewLayoutId: {
+  id: 'yournewlayout',
+  displayName: 'Your new layout',
+  description: 'Brief description of the layout',
+  component: YourNewLayout as unknown as Component,
+  schema: yourNewSettings,
+},
 ```
 
-**To add or change colour options**, edit the `primaryColorOptions` or `accentColorOptions` arrays. Colours are defined using the `oklch()` format, but any valid CSS colour value will work.
-
-```ts
-export const primaryColorOptions = [
-  { id: 'black', label: 'Black', value: 'oklch(0% 0 0)' },
-  // ...
-  { id: 'forest', label: 'Forest', value: 'oklch(0.35 0.10 150)' },
-] as const;
-```
-
-Primary colours are used for heading and body text. Accent colours are used for links and other highlight elements.
-
-### Existing layouts and their slots
-
-| Layout | Image slots | Text slots |
-|--------|------------|------------|
-| **Title** | -- | `title`, `subtitle` |
-| **Text** | -- | `body` |
-| **Image** | `image` | `caption` |
-| **2-Up Image** | `left`, `right` | `leftCaption`, `rightCaption` |
-
-## Potential future work
-
-- **Thumbnail image optimization**: If thumbnail image loading in the slide list becomes a performance bottleneck (many slides with large images), a server-side image resizing approach using a sharp-based `/api/thumbnail` endpoint could be layered on to serve pre-scaled images to the SlideThumbnail component.
+Once you've done all that, your layout will appear in the app!

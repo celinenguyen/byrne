@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
+import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
 
@@ -11,7 +12,7 @@ export default defineConfig({
   output: isPages ? 'static' : 'server',
   adapter: isPages ? undefined : node({ mode: 'standalone' }),
   base: isPages ? '/byrne/' : '/',
-  integrations: [svelte()],
+  integrations: [svelte(), react()],
   vite: {
     plugins: [tailwindcss()],
     define: {

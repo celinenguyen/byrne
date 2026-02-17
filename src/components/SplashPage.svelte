@@ -2,11 +2,26 @@
   import { deckList, createDeck, switchDeck, staticMode } from '../lib/store';
   import { formatRelativeDate } from '../lib/format-date';
   import type { DeckSummary } from '../lib/types';
+  import AppHeader from '@celinenguyen/software-as-leisure-activity/svelte/AppHeader.svelte';
+  import AppFooter from '@celinenguyen/software-as-leisure-activity/svelte/AppFooter.svelte';
 
   let decks = $derived($deckList);
 
   let creating = $state(false);
   let newTitle = $state('');
+
+  // ─── Header quote ─────────────────────────────────────────────────
+  const headerQuote = "If business is poetry…presentations…are the salons and literary collaborations of our time.";
+  const headerAttribution = "David Byrne";
+  const headerUrl = "https://www.jstor.org/stable/27092893";
+  // ───────────────────────────────────────────────────────────────────
+
+  // ─── Footer epigrams ──────────────────────────────────────────────
+  const epigrams = [
+    { text: "Software as leisure activity", url: "https://github.com/celinenguyen/byrne"},
+    { text: "Slide decks as social activity", url: "https://www.washingtonpost.com/style/of-interest/2024/07/28/powerpoint-night-parties/" }
+  ];
+  // ───────────────────────────────────────────────────────────────────
 
   function openDeck(filename: string) {
     switchDeck(filename);
@@ -26,7 +41,9 @@
   }
 </script>
 
-<div class="h-screen flex flex-col items-center justify-center bg-background px-4">
+<AppHeader quote={headerQuote} attribution={headerAttribution} url={headerUrl || undefined} />
+
+<div class="flex-1 flex flex-col items-center justify-center bg-background px-4">
   <div class="w-full max-w-md">
     <div class="mb-8">
       <h1 class="text-lg font-medium text-foreground">byrne</h1>
@@ -77,9 +94,7 @@
         </button>
       {/if}
     </div>
-
-    <div class="mt-12 text-xs text-muted-foreground flex items-center gap-3">
-      <a href="https://github.com/celinenguyen/byrne" class="underline hover:text-foreground transition-colors">GitHub</a>
-    </div>
   </div>
 </div>
+
+<AppFooter epigrams={epigrams} />
