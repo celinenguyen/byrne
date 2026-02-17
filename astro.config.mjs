@@ -10,7 +10,7 @@ const isPages = process.env.BUILD_TARGET === 'pages';
 export default defineConfig({
   output: isPages ? 'static' : 'server',
   adapter: isPages ? undefined : node({ mode: 'standalone' }),
-  base: isPages ? '/diana/' : '/',
+  base: isPages ? '/byrne/' : '/',
   integrations: [svelte()],
   vite: {
     plugins: [tailwindcss()],

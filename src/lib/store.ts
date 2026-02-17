@@ -4,7 +4,7 @@ import type { DeckTheme } from './theme';
 import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
 
-const LAST_DECK_KEY = 'diana:lastDeck';
+const LAST_DECK_KEY = 'byrne:lastDeck';
 const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
 const BASE_URL: string = import.meta.env.BASE_URL;
 

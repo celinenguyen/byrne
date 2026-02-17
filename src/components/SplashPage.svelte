@@ -29,7 +29,7 @@
 <div class="h-screen flex flex-col items-center justify-center bg-background px-4">
   <div class="w-full max-w-md">
     <div class="mb-8">
-      <h1 class="text-lg font-medium text-foreground">diana</h1>
+      <h1 class="text-lg font-medium text-foreground">byrne</h1>
       <p class="text-sm text-muted-foreground mt-1">
         a slide deck tool by <a href="https://www.celinenguyen.com" class="underline hover:text-foreground transition-colors">Celine Nguyen</a>
       </p>
@@ -79,7 +79,7 @@
     </div>
 
     <div class="mt-12 text-xs text-muted-foreground flex items-center gap-3">
-      <a href="https://github.com/celinenguyen/diana" class="underline hover:text-foreground transition-colors">GitHub</a>
+      <a href="https://github.com/celinenguyen/byrne" class="underline hover:text-foreground transition-colors">GitHub</a>
     </div>
   </div>
 </div>
