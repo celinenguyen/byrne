@@ -34,6 +34,14 @@ export interface Deck {
   slides: Slide[];
 }
 
+export interface SlotMeta {
+  index: number;
+  isUsed: boolean;
+  displayName: string;
+  isRequired: boolean;
+  hasContent: boolean;
+}
+
 export interface SlotDefinition {
   displayName: string;
   isRequired: boolean;
