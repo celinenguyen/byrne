@@ -18,7 +18,7 @@
   <div class="flex flex-col h-full">
     <SlideLayoutImageSlot src={imageSrc} slotName="image" class="flex-1 min-h-0" />
     {#if caption}
-      <div data-slot="text:caption" class="px-6 py-3 text-sm text-muted-foreground prose prose-sm max-w-none text-center">
+      <div data-slot="text:caption" class="px-6 py-3 text-sm text-muted-foreground prose prose-sm max-w-none text-center" style="font-family: var(--slide-font-caption)">
         <MarkdownText text={caption} />
       </div>
     {/if}

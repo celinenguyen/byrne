@@ -34,8 +34,6 @@ export const GET: APIRoute = async ({ url }) => {
           id: 'default',
           title: 'New Deck',
           author: '',
-          startDate: '',
-          endDate: '',
         },
         slides: [],
       }),

@@ -1,11 +1,14 @@
 <script lang="ts">
-  import type { Slide } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot, deck, renameDeck } from '../lib/store';
+  import type { Slide, SlotMeta } from '../lib/types';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme } from '../lib/store';
   import { layouts, layoutList } from './layouts/registry';
-  import ImageSlotThumbnail from './ImageSlotThumbnail.svelte';
+  import { fontOptions, primaryColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
   import SlideDetailsSection from './SlideDetailsSection.svelte';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import SlotLabel from './SlotLabel.svelte';
+  import ColorPicker from './ColorPicker.svelte';
+  import ImagePicker from './ImagePicker.svelte';
+  import * as Field from '$lib/components/ui/field';
   import * as Item from './ui/item';
 
   interface Props {
@@ -33,6 +36,9 @@
   // Collapsible sections
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
+  let themeOpen = $state(true);
+
+  let currentTheme = $derived({ ...defaultTheme, ...($deck?.meta?.theme ?? {}) });
 
   // Track which image slot's popover should be open (set by focusSlot, cleared by popover close)
   let openImagePopoverIndex = $state<number | null>(null);
@@ -62,7 +68,6 @@
     });
   });
 
-  type SlotMeta = { index: number; isUsed: boolean; displayName: string; isRequired: boolean; hasContent: boolean };
 
   function buildSlots(
     schema: Record<string, { displayName: string; isRequired: boolean }> | undefined,
@@ -117,10 +122,74 @@
           onsubmit={handleRenameDeck}
           ariaLabel="Rename deck"
         />
+        <div class="flex flex-col gap-3">
+          <Field.Root>
+            <Field.Label class="lowercase">Headings</Field.Label>
+            <Field.Content>
+              <select
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+                value={currentTheme.headingFont}
+                onchange={(e) => updateTheme({ headingFont: e.currentTarget.value })}
+              >
+                {#each fontOptions as opt}
+                  <option value={opt.id}>{opt.label}</option>
+                {/each}
+              </select>
+            </Field.Content>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label class="lowercase">Body</Field.Label>
+            <Field.Content>
+              <select
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+                value={currentTheme.bodyFont}
+                onchange={(e) => updateTheme({ bodyFont: e.currentTarget.value })}
+              >
+                {#each fontOptions as opt}
+                  <option value={opt.id}>{opt.label}</option>
+                {/each}
+              </select>
+            </Field.Content>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label class="lowercase">Captions</Field.Label>
+            <Field.Content>
+              <select
+                class="w-full px-2 py-1.5 border border-border rounded-md text-sm bg-white"
+                value={currentTheme.captionFont}
+                onchange={(e) => updateTheme({ captionFont: e.currentTarget.value })}
+              >
+                {#each fontOptions as opt}
+                  <option value={opt.id}>{opt.label}</option>
+                {/each}
+              </select>
+            </Field.Content>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label class="lowercase">Primary color</Field.Label>
+            <Field.Content>
+              <ColorPicker
+                options={primaryColorOptions}
+                value={currentTheme.primaryColor}
+                onchange={(id) => updateTheme({ primaryColor: id })}
+              />
+            </Field.Content>
+          </Field.Root>
+          <Field.Root>
+            <Field.Label class="lowercase">Accent color</Field.Label>
+            <Field.Content>
+              <ColorPicker
+                options={accentColorOptions}
+                value={currentTheme.accentColor}
+                onchange={(id) => updateTheme({ accentColor: id })}
+              />
+            </Field.Content>
+          </Field.Root>
+        </div>
       {/snippet}
     </SlideDetailsSection>
 
-    <SlideDetailsSection name="Data" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }} class='border-t'>
+    <SlideDetailsSection name="Content" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }} class='border-t'>
       {#snippet children()}
         <!-- Text slots -->
         {#each textSlots as slot}
@@ -158,28 +227,13 @@
           </div>
         {/each}
         <!-- Image slots -->
-        <div class="flex flex-row flex-wrap gap-4 w-full">
-          {#each imageSlots as slot}
-            <div
-              class="flex flex-col gap-2 min-w-0 flex-1 max-w-[50%]"
-              data-slot-type="image"
-              data-slot-index={slot.index}
-            >
-              <!-- Label -->
-              <div class="text-xs">
-                <SlotLabel displayName={slot.displayName} isRequired={slot.isRequired} isUsed={slot.isUsed} />
-              </div>
-              <!-- Thumbnail area: max 50% container width, max-height 100px, clickable to open AddImagePopover -->
-              <ImageSlotThumbnail
-                slot={slot}
-                slide={slide}
-                onUpdate={updateImage}
-                popoverOpen={openImagePopoverIndex === slot.index}
-                onpopoverOpenChange={(v) => { if (!v) openImagePopoverIndex = null; }}
-              />
-              </div>
-          {/each}
-        </div>
+        <ImagePicker
+          slots={imageSlots}
+          {slide}
+          onUpdate={updateImage}
+          openPopoverIndex={openImagePopoverIndex}
+          onPopoverClose={() => { openImagePopoverIndex = null; }}
+        />
       {/snippet}
     </SlideDetailsSection>
 

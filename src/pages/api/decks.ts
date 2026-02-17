@@ -67,8 +67,6 @@ export const POST: APIRoute = async ({ request }) => {
         id,
         title,
         author: '',
-        startDate: '',
-        endDate: '',
         updatedAt: now,
       },
       slides: [
