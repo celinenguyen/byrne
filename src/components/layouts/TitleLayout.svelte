@@ -15,7 +15,7 @@
 
 <BaseLayout>
   <div class="flex flex-col items-center justify-center h-full px-16 text-center">
-    <h1 data-slot="text:title" class="text-5xl font-bold tracking-tight leading-tight" style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
+    <h1 data-slot="text:title" class="text-5xl leading-tight" style="font-family: var(--slide-font-heading); font-weight: var(--slide-heading-weight); letter-spacing: var(--slide-heading-tracking); color: var(--slide-color-primary)">
       <MarkdownText text={title || settings.text.title.placeholder} inline />
     </h1>
     {#if subtitle}

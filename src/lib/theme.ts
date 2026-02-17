@@ -9,8 +9,8 @@ export interface DeckTheme {
 
 // -- Font presets --
 export const fontOptions = [
-  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif' },
-  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif' },
+  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.03em' },
+  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif', headingWeight: '500', headingTracking: '0.01em' },
 ] as const;
 
 // -- Primary color presets --
@@ -42,14 +42,18 @@ export const defaultTheme: DeckTheme = {
 
 // -- Resolver: theme keys → CSS values --
 export function resolveTheme(theme: DeckTheme) {
-  const font = (id: string) => fontOptions.find((f) => f.id === id)?.value ?? fontOptions[0].value;
+  const font = (id: string) => fontOptions.find((f) => f.id === id) ?? fontOptions[0];
   const primary = (id: string) => primaryColorOptions.find((c) => c.id === id)?.value ?? primaryColorOptions[0].value;
   const accent = (id: string) => accentColorOptions.find((c) => c.id === id)?.value ?? accentColorOptions[0].value;
 
+  const headingFont = font(theme.headingFont);
+
   return {
-    '--slide-font-heading': font(theme.headingFont),
-    '--slide-font-body': font(theme.bodyFont),
-    '--slide-font-caption': font(theme.captionFont),
+    '--slide-font-heading': headingFont.value,
+    '--slide-heading-weight': headingFont.headingWeight,
+    '--slide-heading-tracking': headingFont.headingTracking,
+    '--slide-font-body': font(theme.bodyFont).value,
+    '--slide-font-caption': font(theme.captionFont).value,
     '--slide-color-primary': primary(theme.primaryColor),
     '--slide-color-accent': accent(theme.accentColor),
   };
