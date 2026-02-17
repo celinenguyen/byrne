@@ -42,10 +42,10 @@ I made this app because I *didn't* want all the flexibility of apps like PowerPo
 - **Decks** are defined by a **name**, optional **style preferences** (which apply to every slide), and a list of slides. Each deck is represented by a `.json` file.
 - Each **slide** has:
   - A **layout** (is it a `Title` slide with a large heading and optional subheading? an `Image` slide with just 1 image and an optional caption?).
-  - Some **data**, which is used by different layouts in different ways. The data can be:
+  - Some **content**, which is used by different layouts in different ways. The content can be:
     - Text: Each slide can have up to 2 blocks of text. You can use Markdown formatting to bold, italicize, and add links to text.
     - Images: Each slide can have up to 2 images.
-- Each **layout** uses the slide's **data** in different ways. The `Title` layout takes the 1st text block and displays it as a large heading. The `Image` layout takes the 1st text block and displays it as the image caption.
+- Each **layout** uses the slide's **content** in different ways. The `Title` layout takes the 1st text block and displays it as a large heading. The `Image` layout takes the 1st text block and displays it as the image caption.
 
 ## What layouts are available?
 
@@ -64,7 +64,7 @@ Each layout is represented by a `.svelte` file. If a layout uses any text or ima
 
 **byrne** has 3 modes:
 
-- **Edit** mode has a collapsible left sidebar for viewing all slides, a middle pane for viewing your deck, and a collapsible right sidebar for changing your deck's name and style preferences, as well as editing the data and layout for each slide. the default. You see all your slides in a scrollable list, with the sidebar open for editing content, switching layouts, and adjusting theme settings.
+- **Edit** mode has a collapsible left sidebar for viewing all slides, a middle pane for viewing your deck, and a collapsible right sidebar for changing your deck's name and style preferences, as well as editing the content and layout for each slide. the default. You see all your slides in a scrollable list, with the sidebar open for editing content, switching layouts, and adjusting theme settings.
 - **Preview** mode hides both sidebars and shows a scrollable list of all your slides. You can use keyboard shortcuts to go forward/back as well.
 - **Present** mode opens a full-screen mode where you can see one slide at a time. You can use keyboard shortcuts Arrow keys to go forward (`→` and `↓`) or back (`←` and `↑`), and `Escape` to edit.
 
@@ -132,7 +132,7 @@ export const defaultTheme: DeckTheme = {
 Layouts are stored in `src/components/layouts/`. Each layout has 2 files:
 
 - `yournewlayout.json`, which defines how many text blocks and images will be used in the layout. Let's call these ‘slots.’
-  - Each slot has a `displayName` that tells you what the slot is used for (is it text for a heading? a blockquote? caption?), an `isRequired` boolean, and an optional `placeholder` to display if the slide doesn't have data to fill the slot yet.
+  - Each slot has a `displayName` that tells you what the slot is used for (is it text for a heading? a blockquote? caption?), an `isRequired` boolean, and an optional `placeholder` to display if the slide doesn't have content to fill the slot yet.
   - Here's an example of a layout that uses 2 text blocks (1 required, 1 optional) and 1 image.
     ```json
     {
@@ -147,24 +147,24 @@ Layouts are stored in `src/components/layouts/`. Each layout has 2 files:
     ```
 
 - `YourNewLayout.svelte`, which  efines what the slide actually looks like.
-  - It takes in a `data: SlideData` prop
-  - It consults the associated `.json` file, and specifically the `data.images` and `data.text` information, to display it in the layout.
+  - It takes in a `content: SlideContent` prop
+  - It consults the associated `.json` file, and specifically the `content.images` and `content.text` information, to display it in the layout.
   - Here's an example of a layout corresponding to the `.json` example above:
     ```svelte
     <script lang="ts">
-      import type { SlideData } from '../../lib/types';
+      import type { SlideContent } from '../../lib/types';
       import BaseLayout from './BaseLayout.svelte';
       import MarkdownText from './MarkdownText.svelte';
       import settings from './YourLayout.json';
 
       interface Props {
-        data: SlideData;
+        content: SlideContent;
       }
-      let { data }: Props = $props();
+      let { content }: Props = $props();
 
-      let photo = $derived(data.images?.[0] || '');
-      let heading = $derived(data.text?.[0] || '');
-      let description = $derived(data.text?.[1] || '');
+      let photo = $derived(content.images?.[0] || '');
+      let heading = $derived(content.text?.[0] || '');
+      let description = $derived(content.text?.[1] || '');
     </script>
 
     <BaseLayout>

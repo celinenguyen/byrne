@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import * as Popover from '$lib/components/ui/popover/index.js';
-  import Icon from './ui/Icon.svelte';
+  import Plus from '@lucide/svelte/icons/plus';
+  import CloudUpload from '@lucide/svelte/icons/cloud-upload';
   import { Button } from '$lib/components/ui/button/index.js';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import { staticMode } from '../lib/store';
@@ -20,8 +21,14 @@
 
   function handleOpenChange(v: boolean) {
     onOpenChange?.(v);
-    if (v) urlValue = currentUrl ?? '';
   }
+
+  // Sync urlValue whenever the popover is open and currentUrl changes.
+  // This handles the async timing when opened via SlideView click where
+  // currentUrl prop updates after the popover open event fires.
+  $effect(() => {
+    if (open) urlValue = currentUrl ?? '';
+  });
 
   function submitUrl() {
     const trimmed = urlValue.trim();
@@ -83,7 +90,7 @@
       class="flex items-center justify-center text-muted-foreground cursor-pointer"
       title="Add image"
     >
-      <Icon name="plus" class="size-4" />
+      <Plus class="size-4" />
     </Popover.Trigger>
   {/if}
 
@@ -124,7 +131,7 @@
               onclick={() => fileInput?.click()}
               aria-label="Upload from computer"
             >
-              <Icon name="cloud-upload" class="size-4" />Upload
+              <CloudUpload class="size-4" />Upload
             </Button>
         </div>
       {/if}

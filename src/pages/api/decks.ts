@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { readFile, readdir, writeFile, rename } from 'node:fs/promises';
+import { readFile, readdir, writeFile, rename, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { nanoid } from 'nanoid';
 import { slugify } from '../../lib/slugify';
@@ -74,7 +74,7 @@ export const POST: APIRoute = async ({ request }) => {
           id: nanoid(),
           order: 0,
           layout: 'Title',
-          data: { images: [], text: [title], url: '' },
+          content: { images: [], text: [title], url: '' },
         },
       ],
     };
@@ -147,6 +147,45 @@ export const PATCH: APIRoute = async ({ request }) => {
       { headers: { 'Content-Type': 'application/json' } }
     );
   } catch (err) {
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+};
+
+/** DELETE — delete a deck by filename */
+export const DELETE: APIRoute = async ({ request }) => {
+  try {
+    const { filename } = await request.json();
+    if (!filename || typeof filename !== 'string') {
+      return new Response(JSON.stringify({ error: 'filename is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+      return new Response(JSON.stringify({ error: 'Invalid filename' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const filePath = join(DATA_DIR, filename + '.json');
+    await unlink(filePath);
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.includes('ENOENT')) {
+      return new Response(JSON.stringify({ error: 'Deck not found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     return new Response(JSON.stringify({ error: String(err) }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

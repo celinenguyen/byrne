@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { SlideData } from '../../lib/types';
+  import type { SlideContent } from '../../lib/types';
   import BaseLayout from './BaseLayout.svelte';
   import MarkdownText from './MarkdownText.svelte';
 
   interface Props {
-    data: SlideData;
+    content: SlideContent;
   }
-  let { data }: Props = $props();
+  let { content }: Props = $props();
 
-  let body = $derived(data.text?.[0] || '');
+  let body = $derived(content.text?.[0] || '');
 </script>
 
 <BaseLayout>

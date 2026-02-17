@@ -42,6 +42,7 @@
   }
 </script>
 
+<div class="h-screen flex flex-col bg-slate-50/50">
 <AppHeader quote={headerQuote} attribution={headerAttribution} url={headerUrl || undefined} />
 
 <div class="overflow-y-auto md:flex md:flex-col md:gap-4 md:flex-row md:min-h-0 md:h-full md:px-2 md:justify-center">
@@ -73,7 +74,7 @@
                 hover:bg-accent hover:text-accent-foreground"
               onclick={() => openDeck(d.filename)}
             >
-              <span class="text-md font-medium mb-0.5">{d.title}</span>
+              <span class="text-md font-medium mb-0.5 tracking-[1%]">{d.title}</span>
               <span class="text-sm text-muted-foreground flex items-center gap-1">
                 <span>{formatRelativeDate(d.updatedAt)}</span>
                 <span class="px-0.5">✴︎</span>
@@ -104,6 +105,7 @@
 </div>
 
 <AppFooter epigrams={epigrams} />
+</div>
 
 <style>
   .app-name {

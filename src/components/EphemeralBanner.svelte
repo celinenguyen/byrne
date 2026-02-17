@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from './ui/Icon.svelte';
+  import X from '@lucide/svelte/icons/x';
 
   let dismissed = $state(false);
 </script>
@@ -12,7 +12,7 @@
       onclick={() => { dismissed = true; }}
       title="Dismiss"
     >
-      <Icon name="x" class="size-3.5" />
+      <X class="size-3.5" />
     </button>
   </div>
 {/if}

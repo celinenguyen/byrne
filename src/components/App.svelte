@@ -7,10 +7,13 @@
   import PresentView from './PresentView.svelte';
   import PreviewPresentToolbar from './PreviewPresentToolbar.svelte';
   import AppIntroPage from './AppIntroPage.svelte';
+  import LayoutGrid from './LayoutGrid.svelte';
   import EphemeralBanner from './EphemeralBanner.svelte';
   import {
     initializeDeck,
     viewMode,
+    exitPresent,
+    deck,
     currentSlide,
     slides,
     currentSlideIndex,
@@ -23,6 +26,7 @@
     slideListOpen,
     showIntro,
     staticMode,
+    addSlide,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
@@ -31,6 +35,16 @@
   let allSlides = $derived($slides);
   let pending = $derived($pendingDelete);
   let splash = $derived($showIntro);
+
+  // Reactive document title
+  $effect(() => {
+    if (splash) {
+      document.title = 'byrne ✴︎ an idiosyncratic slide deck app';
+    } else {
+      const deckTitle = $deck?.meta?.title ?? 'Untitled';
+      document.title = `${deckTitle} ✴︎ ${mode}`;
+    }
+  });
 
   // Pane widths (percentages)
   let leftWidth = $state(15);
@@ -202,7 +216,7 @@
     { key: 'ArrowLeft',  mode: 'present', action: () => navigateSlide('prev') },
     { key: 'ArrowUp',    mode: 'present', action: () => navigateSlide('prev') },
     { key: 'r',          mode: 'present', action: () => currentSlideIndex.set(0) },
-    { key: 'Escape',     mode: 'present', action: () => { viewMode.set('edit'); return false; } },
+    { key: 'Escape',     mode: 'present', action: () => { exitPresent(); return false; } },
   ];
 
   // Global keyboard handler attached to <svelte:window>. Skips all
@@ -267,7 +281,10 @@
           </div>
         {/each}
         {#if allSlides.length === 0}
-          <div class="text-muted-foreground text-sm text-center mt-20">No slides yet. Add a slide to get started.</div>
+          <div class="flex flex-col items-center justify-center h-full pb-20 max-w-2xl mx-auto px-4md:px-8">
+            <p class="text-md font-medium text-center mb-6">Add a slide</p>
+            <LayoutGrid cols={2} onSelect={(layoutId) => addSlide(layoutId)} />
+          </div>
         {/if}
       </div>
 

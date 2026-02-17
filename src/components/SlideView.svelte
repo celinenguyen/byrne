@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import type { Slide } from '../lib/types';
   import { layouts, getSlotInfo } from './layouts/registry';
-  import { focusSlot, activeSlot, detailsOpen } from '../lib/store';
+  import { focusSlot, activeSlot, detailsOpen, resolvedTheme } from '../lib/store';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
 
   interface Props {
@@ -18,6 +18,12 @@
   let dimmed = $derived(!current && mode === 'edit');
 
   let layoutDef = $derived(layouts[slide.layout]);
+
+  let themeStyle = $derived(
+    Object.entries($resolvedTheme)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('; ')
+  );
 
   // --- Slot highlight overlay ---
   //
@@ -76,7 +82,7 @@
   let highlightInfo = $derived(hoveredSlotInfo ?? activeSlotResult?.info ?? pinnedSlotInfo ?? null);
 
   // Track size changes on the highlighted element (e.g. text reflow as user types)
-  // so the overlay repositions correctly without waiting for slide.data to change
+  // so the overlay repositions correctly without waiting for slide.content to change
   let resizeTick = $state(0);
   let resizeObserver: ResizeObserver | null = null;
 
@@ -90,9 +96,9 @@
   onDestroy(() => resizeObserver?.disconnect());
 
   // Compute overlay position relative to the slide container.
-  // Re-runs when slide data changes, the element resizes, or the highlight target changes.
+  // Re-runs when slide content changes, the element resizes, or the highlight target changes.
   let overlayStyle = $derived.by(() => {
-    slide.data;
+    slide.content;
     resizeTick;
     if (!highlightEl || !containerEl || !highlightInfo) return '';
     const elRect = highlightEl.getBoundingClientRect();
@@ -197,6 +203,7 @@
   <div
     tabindex={interactive ? 0 : undefined}
     class="w-full h-full rounded-xs relative border border-border shadow-sm {current ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
+    style={themeStyle}
     bind:this={containerEl}
     onmouseover={handleMouseOver}
     onmouseout={handleMouseOut}
@@ -207,7 +214,7 @@
   >
     {#if layoutDef}
       {@const Component = layoutDef.component}
-      <Component data={slide.data} />
+      <Component content={slide.content} />
     {:else}
       <div class="aspect-video w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-sm">
         Unknown layout: {slide.layout}
@@ -216,10 +223,10 @@
 
     {#if interactive && highlightEl && highlightInfo && overlayStyle}
       <div
-        class="absolute pointer-events-none rounded-xs outline-1 outline-orange-500/50 -outline-offset-1 z-10"
-        style="{overlayStyle}"
+        class="absolute pointer-events-none rounded-xs outline-1 -outline-offset-1 z-10"
+        style="{overlayStyle}; outline-color: color-mix(in oklch, var(--slide-color-accent), transparent 50%)"
       >
-        <div class="absolute -top-[0.6rem] -right-[0.4rem] rounded-[0.8rem] bg-orange-600 text-white text-xs px-2 py-1 leading-tight">
+        <div class="absolute -top-[0.6rem] -right-[0.4rem] rounded-[0.8rem] text-white text-xs px-2 py-1 leading-tight" style="background-color: var(--slide-color-accent)">
           {highlightInfo.displayName}
         </div>
       </div>

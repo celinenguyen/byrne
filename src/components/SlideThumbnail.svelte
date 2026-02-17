@@ -30,7 +30,7 @@
       class="origin-top-left pointer-events-none"
       style="width:{REF_WIDTH}px;height:{REF_HEIGHT}px;transform:scale({scale})"
     >
-      <LayoutComponent data={slide.data} />
+      <LayoutComponent content={slide.content} />
     </div>
   {:else if !layoutDef}
     <div class="w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-[8px]">

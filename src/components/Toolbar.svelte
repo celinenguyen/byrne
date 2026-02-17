@@ -1,7 +1,10 @@
 <script lang="ts">
   import { get } from 'svelte/store';
   import { Button } from '$lib/components/ui/button/index.js';
-  import Icon from './ui/Icon.svelte';
+  import PanelLeft from '@lucide/svelte/icons/panel-left';
+  import PanelRight from '@lucide/svelte/icons/panel-right';
+  import Eye from '@lucide/svelte/icons/eye';
+  import Presentation from '@lucide/svelte/icons/presentation';
   import DeckPicker from './DeckPicker.svelte';
   import {
     viewMode,
@@ -49,7 +52,7 @@
     title="{$slideListOpen ? 'Hide' : 'Show'} slide list"
     onclick={() => slideListOpen.update((v) => !v)}
   >
-    <Icon name="panel-left" class="size-4" />
+    <PanelLeft class="size-4" />
   </button>
 
   <!-- Deck picker + preview/present buttons -->
@@ -60,11 +63,11 @@
       title="{$viewMode === 'preview' ? 'Exit preview' : 'Preview'}"
       onclick={togglePreview}
     >
-      <Icon name="eye" class="size-4" />
+      <Eye class="size-4" />
     </button>
     <Button variant="ghost" size="icon" onclick={() => viewMode.set('present')}>
       {#snippet children()}
-        <Icon name="presentation" class="size-4" />
+        <Presentation class="size-4" />
       {/snippet}
     </Button>
   </div>
@@ -75,6 +78,6 @@
     title="{$detailsOpen ? 'Hide' : 'Show'} details panel"
     onclick={() => detailsOpen.update((v) => !v)}
   >
-    <Icon name="panel-right" class="size-4" />
+    <PanelRight class="size-4" />
   </button>
 </div>

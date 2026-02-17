@@ -4,7 +4,8 @@
   import * as Kbd from '$lib/components/ui/kbd/index.js';
   import * as Field from '$lib/components/ui/field';
   import { Separator } from '$lib/components/ui/separator/index.js';
-  import Icon from './ui/Icon.svelte';
+  import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
+  import Plus from '@lucide/svelte/icons/plus';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import {
     deckList,
@@ -12,8 +13,8 @@
     switchDeck,
     createDeck,
   } from '../lib/store';
-  import type { DeckSummary } from '../lib/types';
-  import { formatRelativeDate } from '../lib/format-date';
+  import DeckItemContent from './DeckItemContent.svelte';
+  import DeckList from './DeckList.svelte';
 
   let decks = $derived($deckList);
   let activeDeckFile = $derived($currentDeckFile);
@@ -58,7 +59,7 @@
       hover:bg-muted transition-colors cursor-pointer min-w-[200px] max-w-[360px]"
   >
     <span class="truncate flex-1 text-left">{activeTitle}</span>
-    <Icon name="chevrons-up-down" class="size-3.5 text-muted-foreground shrink-0" />
+    <ChevronsUpDown class="size-3.5 text-muted-foreground shrink-0" />
   </Popover.Trigger>
 
   <Popover.Content
@@ -69,27 +70,20 @@
     {#if view === 'list'}
       <!-- Deck list -->
       <div class="max-h-[300px] overflow-y-auto p-1">
-        {#each decks as d}
-          <button
-            class="flex flex-col gap-0.5 w-full rounded-sm px-2 py-1.5 cursor-pointer
-              text-left transition-colors outline-none
-              {d.filename === activeDeckFile
-                ? 'bg-accent text-accent-foreground'
-                : 'hover:bg-accent hover:text-accent-foreground'}"
-            onclick={() => selectDeck(d.filename)}
-          >
-            <span class="text-sm truncate w-full">{d.title}</span>
-            <span class="text-xs text-muted-foreground flex items-center gap-1">
-              <span>
-                {formatRelativeDate(d.updatedAt)}
-              </span>
-              ✴︎
-              <span>
-                {d.slideCount} {d.slideCount === 1 ? 'slide' : 'slides'}
-              </span>
-            </span>
-          </button>
-        {/each}
+        <DeckList decks={decks} includeCurrentDeck={true} currentDeckFile={activeDeckFile}>
+          {#snippet children({ deck })}
+            <button
+              class="flex flex-col gap-0.5 w-full rounded-sm px-2 py-1.5 cursor-pointer
+                text-left transition-colors outline-none
+                {deck.filename === activeDeckFile
+                  ? 'bg-accent text-accent-foreground'
+                  : 'hover:bg-accent hover:text-accent-foreground'}"
+              onclick={() => selectDeck(deck.filename)}
+            >
+              <DeckItemContent deck={deck} />
+            </button>
+          {/snippet}
+        </DeckList>
       </div>
       <Separator />
       <!-- "New deck" action button — not a selectable item -->
@@ -100,7 +94,7 @@
             hover:bg-accent hover:text-accent-foreground"
           onclick={showCreateForm}
         >
-          <Icon name="plus" class="size-3.5 shrink-0" />
+          <Plus class="size-3.5 shrink-0" />
           <span>New deck</span>
         </button>
       </div>
