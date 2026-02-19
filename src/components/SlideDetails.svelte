@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Slide, SlotMeta } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile } from '../lib/store';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile, staticMode } from '../lib/store';
   import { layouts } from './layouts/registry';
   import LayoutGrid from './LayoutGrid.svelte';
   import { fontOptions, primaryColorOptions, backgroundColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
@@ -100,6 +100,26 @@
   let imageSlots = $derived(buildSlots(layoutDef?.schema.images, slide?.content.images));
   let textSlots = $derived(buildSlots(layoutDef?.schema.text, slide?.content.text));
 
+  // URL slots — derived from schema, stored as single string in slide.content.url
+  let urlSlots = $derived(
+    layoutDef?.schema.url
+      ? Object.values(layoutDef.schema.url).map((def, index) => ({
+          index,
+          displayName: def.displayName,
+          placeholder: def.placeholder || '',
+        }))
+      : []
+  );
+
+  let urlValue = $state('');
+  let arenaMessage = $state('');
+
+  // Keep urlValue in sync with slide content
+  $effect(() => {
+    urlValue = slide?.content.url || '';
+    arenaMessage = '';
+  });
+
   function updateImage(index: number, value: string) {
     if (!slide) return;
     const images = [...slide.content.images];
@@ -117,6 +137,66 @@
   function changeLayout(layoutId: string) {
     if (!slide) return;
     updateSlide(slide.id, { layout: layoutId });
+  }
+
+  async function handleUrlSubmit() {
+    if (!slide || !urlValue.trim()) return;
+
+    const url = urlValue.trim();
+
+    // Validate Are.na URL
+    if (!url.match(/are\.na\/block\/\d+/)) {
+      arenaMessage = 'Please enter a valid Are.na block URL (e.g. https://www.are.na/block/12345)';
+      return;
+    }
+
+    arenaMessage = '';
+
+    try {
+      const res = await fetch('/api/fetch-arena', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        arenaMessage = data.error || 'Failed to fetch Are.na block';
+        return;
+      }
+
+      const data = await res.json();
+      const blockClass: string = data.class || '';
+      const isUnsupported = blockClass === 'Media' || blockClass === 'Attachment';
+
+      if (isUnsupported) {
+        arenaMessage = `${blockClass} blocks are not fully supported. Title and description have been populated.`;
+      }
+
+      // Map response to slide content based on block class
+      const images = [...slide.content.images];
+      const text = [...slide.content.text];
+
+      // Ensure arrays are long enough
+      while (images.length < 1) images.push('');
+      while (text.length < 2) text.push('');
+
+      if (blockClass === 'Text') {
+        text[0] = data.title || '';
+        text[1] = data.content || data.description || '';
+        images[0] = '';
+      } else {
+        images[0] = data.image || '';
+        text[0] = data.title || '';
+        text[1] = data.description || '';
+      }
+
+      updateSlide(slide.id, {
+        content: { ...slide.content, images, text, url },
+      });
+    } catch (err) {
+      arenaMessage = 'Failed to fetch Are.na block';
+    }
   }
 
   async function handleDeleteDeck() {
@@ -254,6 +334,23 @@
 
     <SlideDetailsSection name="Content" open={dataOpen} onToggle={() => { dataOpen = !dataOpen; }} class='border-t'>
       {#snippet children()}
+        <!-- URL slots -->
+        {#each urlSlots as slot}
+          <div class="mb-3">
+            <div class="flex items-center justify-between mb-2 gap-1 text-xs">
+              <SlotLabel displayName={slot.displayName} isRequired={true} isUsed={true} />
+            </div>
+            <InputTypeAndEnter
+              placeholder={slot.placeholder}
+              bind:value={urlValue}
+              onsubmit={handleUrlSubmit}
+              ariaLabel={slot.displayName}
+            />
+            {#if arenaMessage}
+              <p class="text-xs text-muted-foreground mt-1">{arenaMessage}</p>
+            {/if}
+          </div>
+        {/each}
         <!-- Text slots -->
         {#each textSlots as slot}
           {@const wrapperClass = slot.isUsed

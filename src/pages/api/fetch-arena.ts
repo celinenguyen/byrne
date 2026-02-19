@@ -35,8 +35,10 @@ export const POST: APIRoute = async ({ request }) => {
     const description = block.description || '';
     // Get the first connected channel name if available
     const channel = block.connections?.[0]?.title || '';
+    const blockClass = block.class || '';
+    const content = block.content || '';
 
-    return new Response(JSON.stringify({ title, image, description, channel }), {
+    return new Response(JSON.stringify({ title, image, description, channel, class: blockClass, content }), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {

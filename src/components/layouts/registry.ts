@@ -4,11 +4,13 @@ import TitleLayout from './TitleLayout.svelte';
 import ImageLayout from './ImageLayout.svelte';
 import TextLayout from './TextLayout.svelte';
 import Image2UpLayout from './Image2UpLayout.svelte';
+import ArenaLayout from './ArenaLayout.svelte';
 
 import titleSettings from './TitleLayout.json';
 import imageSettings from './ImageLayout.json';
 import textSettings from './TextLayout.json';
 import image2UpSettings from './Image2UpLayout.json';
+import arenaSettings from './ArenaLayout.json';
 
 export interface LayoutDefinition {
   id: string;
@@ -16,6 +18,7 @@ export interface LayoutDefinition {
   description?: string;
   component: Component;
   schema: LayoutSettings;
+  requiresServer?: boolean;
 }
 
 export const layouts: Record<string, LayoutDefinition> = {
@@ -46,6 +49,14 @@ export const layouts: Record<string, LayoutDefinition> = {
     description: 'Two images side by side',
     component: Image2UpLayout as unknown as Component,
     schema: image2UpSettings,
+  },
+  Arena: {
+    id: 'Arena',
+    displayName: 'Are.na',
+    description: 'Auto-populate from an Are.na block',
+    component: ArenaLayout as unknown as Component,
+    schema: arenaSettings,
+    requiresServer: true,
   },
 };
 
