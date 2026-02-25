@@ -3,13 +3,13 @@
     "id": "8oov03l3eZahHuj7iH-VQ",
     "title": "Celine's February moodboard",
     "author": "",
-    "updatedAt": "2026-02-25T22:35:08.212Z",
+    "updatedAt": "2026-02-25T22:48:01.434Z",
     "theme": {
       "headingFont": "syne-tactile",
       "bodyFont": "inter",
       "primaryColor": "olive",
       "accentColor": "marine",
-      "backgroundColor": "white",
+      "backgroundColor": "satin-pink",
       "captionFont": "inter"
     },
     "status": "published",
@@ -23,7 +23,7 @@
       "content": {
         "images": [],
         "text": [
-          "celine's collection of visual themes & ideas",
+          "celine's collection of visual themes & ideas (in progress)",
           "february 2026"
         ],
         "url": ""
@@ -107,7 +107,8 @@
             "oklch(0.4807453378040095 0.0399205932174353 82.60764217833984)"
           ]
         ],
-        "customPrimaryColor": "imageColors[0][2]"
+        "customPrimaryColor": "imageColors[0][2]",
+        "customBackgroundColor": "imageColors[0][4]"
       }
     }
   ]
