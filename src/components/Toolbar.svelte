@@ -50,7 +50,11 @@
   <button
     class="p-1.5 rounded-md transition-colors cursor-pointer {$slideListOpen ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
     title="{$slideListOpen ? 'Hide' : 'Show'} slide list"
-    onclick={() => slideListOpen.update((v) => !v)}
+    onclick={() => {
+      const opening = !$slideListOpen;
+      slideListOpen.update((v) => !v);
+      if (opening && $viewMode === 'preview') viewMode.set('edit');
+    }}
   >
     <PanelLeft class="size-4" />
   </button>
@@ -76,7 +80,11 @@
   <button
     class="p-1.5 rounded-md transition-colors cursor-pointer {$detailsOpen ? 'text-foreground bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
     title="{$detailsOpen ? 'Hide' : 'Show'} details panel"
-    onclick={() => detailsOpen.update((v) => !v)}
+    onclick={() => {
+      const opening = !$detailsOpen;
+      detailsOpen.update((v) => !v);
+      if (opening && $viewMode === 'preview') viewMode.set('edit');
+    }}
   >
     <PanelRight class="size-4" />
   </button>

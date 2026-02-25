@@ -1,23 +1,33 @@
 <script lang="ts">
   import * as Tooltip from '$lib/components/ui/tooltip';
+  import ColorSwatch from './ColorSwatch.svelte';
 
   interface Props {
     options: { id: string; label: string; value: string }[];
     value: string;
     onchange: (id: string) => void;
+    dividerBefore?: number;
   }
-  let { options, value, onchange }: Props = $props();
+  let { options, value, onchange, dividerBefore }: Props = $props();
 </script>
 
 <Tooltip.Provider>
-  <div class="flex flex-wrap gap-2">
-    {#each options as opt}
+  <div class="flex flex-wrap gap-2 items-center">
+    {#each options as opt, i}
+      {#if dividerBefore !== undefined && i === dividerBefore}
+        <div class="w-px h-4 bg-border mx-0.5"></div>
+      {/if}
       <Tooltip.Root>
-        <Tooltip.Trigger
-          class="size-6 rounded-full border-2 transition-shadow cursor-pointer {value === opt.id ? 'ring-2 ring-stone-400 ring-offset-1' : 'border-border hover:ring-1 hover:ring-stone-300'}"
-          style="background-color: {opt.value}"
-          onclick={() => onchange(opt.id)}
-        ></Tooltip.Trigger>
+        <Tooltip.Trigger>
+          {#snippet child({ props })}
+            <ColorSwatch
+              {...props}
+              color={opt.value}
+              selected={value === opt.id}
+              onclick={() => onchange(opt.id)}
+            />
+          {/snippet}
+        </Tooltip.Trigger>
         <Tooltip.Content side="bottom" align="center">
           {opt.label}
         </Tooltip.Content>

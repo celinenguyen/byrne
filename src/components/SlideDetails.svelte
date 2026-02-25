@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Slide, SlotMeta } from '../lib/types';
+  import type { Slide, SlotMeta, SlideStyle } from '../lib/types';
   import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile, staticMode } from '../lib/store';
   import { layouts } from './layouts/registry';
   import LayoutGrid from './LayoutGrid.svelte';
-  import { fontOptions, primaryColorOptions, backgroundColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
+  import { fontOptions, fontsForRole, primaryColorOptions, backgroundColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
   import SlideDetailsSection from './SlideDetailsSection.svelte';
   import InputTypeAndEnter from './InputTypeAndEnter.svelte';
   import SlotLabel from './SlotLabel.svelte';
@@ -15,6 +15,11 @@
   import * as Field from '$lib/components/ui/field';
   import { DropdownMenu } from 'bits-ui';
   import * as Select from '$lib/components/ui/select/index.js';
+  import { extractPalette, resolveColorRef, findClosestColorIndex } from '../lib/imageColors';
+
+  function fontStyle(f: typeof fontOptions[number]) {
+    return `font-family: ${f.value}; letter-spacing: ${f.uiTracking}; font-size: ${f.uiSize};`;
+  }
 
   const dmContent = 'z-50 min-w-[140px] rounded-md border border-border bg-popover shadow-md';
   const dmItem = 'flex items-center gap-2 rounded-sm m-1 px-2 py-1.5 text-sm cursor-pointer outline-none hover:bg-accent data-[highlighted]:bg-accent';
@@ -42,6 +47,7 @@
   let layoutDef = $derived(slide ? layouts[slide.layout] : null);
 
   // Collapsible sections
+  let deckOpen = $state(true);
   let dataOpen = $state(true);
   let layoutOpen = $state(true);
   let themeOpen = $state(true);
@@ -55,6 +61,8 @@
   $effect(() => {
     const slot = $focusSlot;
     if (!slot) return;
+    deckOpen = false;
+    layoutOpen = false;
     dataOpen = true;
     queueMicrotask(() => {
       if (slot.type === 'text') {
@@ -204,11 +212,133 @@
     if (!file) return;
     await deleteDeck(file);
   }
+
+  // --- Image color palette extraction ---
+
+  const IMAGE_LAYOUTS = ['Image', 'Image2Up', 'Arena'];
+  let hasImageSlots = $derived(slide ? IMAGE_LAYOUTS.includes(slide.layout) : false);
+
+  // Track which (slideId, slotIndex, url) combos we've already extracted
+  let extractedKeys = new Set<string>();
+
+  $effect(() => {
+    if (!slide || !hasImageSlots) return;
+    const slideId = slide.id;
+    const images = slide.content.images;
+
+    for (let i = 0; i < images.length; i++) {
+      const url = images[i];
+      if (!url) continue;
+      const key = `${slideId}:${i}:${url}`;
+      if (extractedKeys.has(key)) continue;
+      extractedKeys.add(key);
+      triggerExtraction(slideId, i, url);
+    }
+  });
+
+  async function triggerExtraction(slideId: string, slotIndex: number, imageUrl: string) {
+    try {
+      const palette = await extractPalette(imageUrl);
+      // Get current slide state (may have changed during async)
+      const currentDeck = $deck;
+      const currentSlide = currentDeck?.slides.find(s => s.id === slideId);
+      if (!currentSlide) return;
+
+      const style: SlideStyle = { ...(currentSlide.style ?? {}) };
+      const imageColors = [...(style.imageColors ?? [])];
+
+      // Remap existing color references if palette changed
+      const oldPalette = imageColors[slotIndex];
+      if (oldPalette && oldPalette.length > 0) {
+        remapColorRefs(style, slotIndex, oldPalette, palette);
+      }
+
+      // Pad array to slotIndex
+      while (imageColors.length <= slotIndex) imageColors.push(null);
+      imageColors[slotIndex] = palette;
+      style.imageColors = imageColors;
+
+      updateSlide(slideId, { style });
+    } catch (e) {
+      console.warn('Failed to extract palette:', e);
+    }
+  }
+
+  function remapColorRefs(style: SlideStyle, slotIndex: number, oldPalette: string[], newPalette: string[]) {
+    const refs: (keyof Pick<SlideStyle, 'customPrimaryColor' | 'customBackgroundColor' | 'customAccentColor'>)[] =
+      ['customPrimaryColor', 'customBackgroundColor', 'customAccentColor'];
+
+    for (const ref of refs) {
+      const val = style[ref];
+      if (!val) continue;
+      const match = val.match(/^imageColors\[(\d+)]\[(\d+)]$/);
+      if (!match) continue;
+      const refSlot = parseInt(match[1], 10);
+      const refColor = parseInt(match[2], 10);
+      if (refSlot !== slotIndex) continue;
+      // Get old color value and find closest in new palette
+      const oldColor = oldPalette[refColor];
+      if (!oldColor || newPalette.length === 0) continue;
+      const newIndex = findClosestColorIndex(oldColor, newPalette);
+      if (newIndex >= 0) {
+        (style as any)[ref] = `imageColors[${slotIndex}][${newIndex}]`;
+      }
+    }
+  }
+
+  function handleColorAssign(slotIndex: number, colorIndex: number, role: 'primary' | 'background' | 'accent') {
+    if (!slide) return;
+    const ref = `imageColors[${slotIndex}][${colorIndex}]`;
+    const style: SlideStyle = { ...(slide.style ?? {}) };
+
+    if (role === 'primary') style.customPrimaryColor = ref;
+    else if (role === 'background') style.customBackgroundColor = ref;
+    else if (role === 'accent') style.customAccentColor = ref;
+
+    updateSlide(slide.id, { style });
+  }
+
+  // Build augmented color options for deck pickers (with custom slide overrides)
+  let primaryOptions = $derived.by(() => {
+    const base = [...primaryColorOptions];
+    const ref = slide?.style?.customPrimaryColor;
+    if (ref) {
+      const resolved = resolveColorRef(ref, slide?.style?.imageColors);
+      if (resolved) {
+        base.push({ id: '__custom_primary', label: 'Custom color', value: resolved } as any);
+      }
+    }
+    return base;
+  });
+
+  let backgroundOptions = $derived.by(() => {
+    const base = [...backgroundColorOptions];
+    const ref = slide?.style?.customBackgroundColor;
+    if (ref) {
+      const resolved = resolveColorRef(ref, slide?.style?.imageColors);
+      if (resolved) {
+        base.push({ id: '__custom_background', label: 'Custom color', value: resolved } as any);
+      }
+    }
+    return base;
+  });
+
+  let accentOptions = $derived.by(() => {
+    const base = [...accentColorOptions];
+    const ref = slide?.style?.customAccentColor;
+    if (ref) {
+      const resolved = resolveColorRef(ref, slide?.style?.imageColors);
+      if (resolved) {
+        base.push({ id: '__custom_accent', label: 'Custom color', value: resolved } as any);
+      }
+    }
+    return base;
+  });
 </script>
 
 <div class="inset-shadow-sm flex flex-col bg-muted/15">
   {#if slide}
-    <SlideDetailsSection name="Deck">
+    <SlideDetailsSection name="Deck" open={deckOpen} onToggle={() => { deckOpen = !deckOpen; }}>
       {#snippet children()}
         <div class="flex items-center gap-2">
           <div class="flex-1 min-w-0">
@@ -250,11 +380,16 @@
                 onValueChange={(v) => updateTheme({ headingFont: v })}
               >
                 <Select.Trigger class="w-full">
-                  {fontOptions.find((o) => o.id === currentTheme.headingFont)?.label ?? currentTheme.headingFont}
+                  {@const f = fontOptions.find((o) => o.id === currentTheme.headingFont) ?? fontOptions[0]}
+                  <span style={fontStyle(f)}>{f.label}</span>
                 </Select.Trigger>
                 <Select.Content>
-                  {#each fontOptions as opt}
-                    <Select.Item value={opt.id} label={opt.label} />
+                  {#each fontsForRole('heading') as opt}
+                    <Select.Item value={opt.id} label={opt.label}>
+                      {#snippet children()}
+                        <span style={fontStyle(opt)}>{opt.label}</span>
+                      {/snippet}
+                    </Select.Item>
                   {/each}
                 </Select.Content>
               </Select.Root>
@@ -269,11 +404,16 @@
                 onValueChange={(v) => updateTheme({ bodyFont: v })}
               >
                 <Select.Trigger class="w-full">
-                  {fontOptions.find((o) => o.id === currentTheme.bodyFont)?.label ?? currentTheme.bodyFont}
+                  {@const f = fontOptions.find((o) => o.id === currentTheme.bodyFont) ?? fontOptions[0]}
+                  <span style={fontStyle(f)}>{f.label}</span>
                 </Select.Trigger>
                 <Select.Content>
-                  {#each fontOptions as opt}
-                    <Select.Item value={opt.id} label={opt.label} />
+                  {#each fontsForRole('body') as opt}
+                    <Select.Item value={opt.id} label={opt.label}>
+                      {#snippet children()}
+                        <span style={fontStyle(opt)}>{opt.label}</span>
+                      {/snippet}
+                    </Select.Item>
                   {/each}
                 </Select.Content>
               </Select.Root>
@@ -288,11 +428,16 @@
                 onValueChange={(v) => updateTheme({ captionFont: v })}
               >
                 <Select.Trigger class="w-full">
-                  {fontOptions.find((o) => o.id === currentTheme.captionFont)?.label ?? currentTheme.captionFont}
+                  {@const f = fontOptions.find((o) => o.id === currentTheme.captionFont) ?? fontOptions[0]}
+                  <span style={fontStyle(f)}>{f.label}</span>
                 </Select.Trigger>
                 <Select.Content>
-                  {#each fontOptions as opt}
-                    <Select.Item value={opt.id} label={opt.label} />
+                  {#each fontsForRole('caption') as opt}
+                    <Select.Item value={opt.id} label={opt.label}>
+                      {#snippet children()}
+                        <span style={fontStyle(opt)}>{opt.label}</span>
+                      {/snippet}
+                    </Select.Item>
                   {/each}
                 </Select.Content>
               </Select.Root>
@@ -302,9 +447,20 @@
             <Field.Label class="lowercase">Primary color</Field.Label>
             <Field.Content>
               <ColorPicker
-                options={primaryColorOptions}
-                value={currentTheme.primaryColor}
-                onchange={(id) => updateTheme({ primaryColor: id })}
+                options={primaryOptions}
+                value={slide?.style?.customPrimaryColor ? '__custom_primary' : currentTheme.primaryColor}
+                dividerBefore={slide?.style?.customPrimaryColor ? primaryColorOptions.length : undefined}
+                onchange={(id) => {
+                  if (id !== '__custom_primary') {
+                    // Clear custom override when picking a preset
+                    if (slide?.style?.customPrimaryColor) {
+                      const style = { ...slide.style };
+                      delete style.customPrimaryColor;
+                      updateSlide(slide.id, { style });
+                    }
+                    updateTheme({ primaryColor: id });
+                  }
+                }}
               />
             </Field.Content>
           </Field.Root>
@@ -312,9 +468,19 @@
             <Field.Label class="lowercase">Background</Field.Label>
             <Field.Content>
               <ColorPicker
-                options={backgroundColorOptions}
-                value={currentTheme.backgroundColor}
-                onchange={(id) => updateTheme({ backgroundColor: id })}
+                options={backgroundOptions}
+                value={slide?.style?.customBackgroundColor ? '__custom_background' : currentTheme.backgroundColor}
+                dividerBefore={slide?.style?.customBackgroundColor ? backgroundColorOptions.length : undefined}
+                onchange={(id) => {
+                  if (id !== '__custom_background') {
+                    if (slide?.style?.customBackgroundColor) {
+                      const style = { ...slide.style };
+                      delete style.customBackgroundColor;
+                      updateSlide(slide.id, { style });
+                    }
+                    updateTheme({ backgroundColor: id });
+                  }
+                }}
               />
             </Field.Content>
           </Field.Root>
@@ -322,12 +488,30 @@
             <Field.Label class="lowercase">Accent color</Field.Label>
             <Field.Content>
               <ColorPicker
-                options={accentColorOptions}
-                value={currentTheme.accentColor}
-                onchange={(id) => updateTheme({ accentColor: id })}
+                options={accentOptions}
+                value={slide?.style?.customAccentColor ? '__custom_accent' : currentTheme.accentColor}
+                dividerBefore={slide?.style?.customAccentColor ? accentColorOptions.length : undefined}
+                onchange={(id) => {
+                  if (id !== '__custom_accent') {
+                    if (slide?.style?.customAccentColor) {
+                      const style = { ...slide.style };
+                      delete style.customAccentColor;
+                      updateSlide(slide.id, { style });
+                    }
+                    updateTheme({ accentColor: id });
+                  }
+                }}
               />
             </Field.Content>
           </Field.Root>
+        </div>
+      {/snippet}
+    </SlideDetailsSection>
+
+    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }} class="border-t">
+      {#snippet children()}
+        <div class="mt-2">
+          <LayoutGrid selectedLayout={slide.layout} onSelect={changeLayout} cols={2} />
         </div>
       {/snippet}
     </SlideDetailsSection>
@@ -393,15 +577,8 @@
           onUpdate={updateImage}
           openPopoverIndex={openImagePopoverIndex}
           onPopoverClose={() => { openImagePopoverIndex = null; }}
+          onColorAssign={handleColorAssign}
         />
-      {/snippet}
-    </SlideDetailsSection>
-
-    <SlideDetailsSection name="Layout" open={layoutOpen} onToggle={() => { layoutOpen = !layoutOpen; }} class="border-t">
-      {#snippet children()}
-        <div class="mt-2">
-          <LayoutGrid selectedLayout={slide.layout} onSelect={changeLayout} cols={2} />
-        </div>
       {/snippet}
     </SlideDetailsSection>
   {:else}

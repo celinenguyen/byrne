@@ -1,21 +1,14 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { resolvedTheme } from '../../lib/store';
 
   interface Props {
     class?: string;
     children: Snippet;
   }
   let { class: className = '', children }: Props = $props();
-
-  let styleString = $derived(
-    Object.entries($resolvedTheme)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('; ')
-  );
 </script>
 
-<div class="aspect-video w-full h-full relative overflow-hidden {className}" style="{styleString}; background-color: var(--slide-color-bg, white)">
+<div class="aspect-video w-full h-full relative overflow-hidden {className}" style="background-color: var(--slide-color-bg, white)">
   {@render children()}
 </div>
 

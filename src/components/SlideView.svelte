@@ -3,6 +3,7 @@
   import type { Slide } from '../lib/types';
   import { layouts, getSlotInfo } from './layouts/registry';
   import { focusSlot, activeSlot, detailsOpen, resolvedTheme } from '../lib/store';
+  import { slideColorOverrideStyle } from '../lib/theme';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
 
   interface Props {
@@ -19,10 +20,16 @@
 
   let layoutDef = $derived(layouts[slide.layout]);
 
-  let themeStyle = $derived(
+  let deckThemeStyle = $derived(
     Object.entries($resolvedTheme)
       .map(([k, v]) => `${k}: ${v}`)
       .join('; ')
+  );
+
+  let slideOverrideStyle = $derived(slideColorOverrideStyle(slide.style));
+
+  let themeStyle = $derived(
+    slideOverrideStyle ? `${deckThemeStyle}; ${slideOverrideStyle}` : deckThemeStyle
   );
 
   // --- Slot highlight overlay ---

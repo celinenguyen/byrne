@@ -26,11 +26,19 @@ export interface SlideContent {
   url?: string;
 }
 
+export interface SlideStyle {
+  imageColors?: (string[] | null)[];  // imageColors[slotIndex] = [oklch1, ...oklch5] or null
+  customPrimaryColor?: string;        // e.g. "imageColors[0][2]"
+  customBackgroundColor?: string;     // e.g. "imageColors[1][0]"
+  customAccentColor?: string;         // e.g. "imageColors[0][4]"
+}
+
 export interface Slide {
   id: string;
   order: number;
   layout: string;
   content: SlideContent;
+  style?: SlideStyle;
 }
 
 export interface Deck {

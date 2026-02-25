@@ -206,7 +206,7 @@ export function addSlide(layout: string = 'Title') {
 export function duplicateSlide(index: number) {
   const source = get(slides)[index];
   if (!source) return;
-  insertSlideAfter(index, {
+  const newSlide: Slide = {
     id: nanoid(),
     order: index + 1,
     layout: source.layout,
@@ -215,7 +215,11 @@ export function duplicateSlide(index: number) {
       text: [...source.content.text],
       url: source.content.url,
     },
-  });
+  };
+  if (source.style) {
+    newSlide.style = JSON.parse(JSON.stringify(source.style));
+  }
+  insertSlideAfter(index, newSlide);
 }
 
 export function updateSlide(id: string, updates: Partial<Slide>) {
@@ -433,7 +437,8 @@ export async function moveSlideToDeck(slideId: string, targetDeckFile: string) {
   if (!slide) return;
 
   // Deep-copy the slide for the target deck
-  const slideCopy = { ...slide, content: { ...slide.content, images: [...slide.content.images], text: [...slide.content.text] } };
+  const slideCopy: Slide = { ...slide, content: { ...slide.content, images: [...slide.content.images], text: [...slide.content.text] } };
+  if (slide.style) slideCopy.style = JSON.parse(JSON.stringify(slide.style));
 
   if (staticMode) {
     // Load target deck from sessionStorage
