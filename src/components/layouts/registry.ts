@@ -53,7 +53,7 @@ export const layouts: Record<string, LayoutDefinition> = {
   Arena: {
     id: 'Arena',
     displayName: 'Are.na',
-    description: 'Auto-populate from an Are.na block',
+    description: 'Add an image from Are.na',
     component: ArenaLayout as unknown as Component,
     schema: arenaSettings,
     requiresServer: true,

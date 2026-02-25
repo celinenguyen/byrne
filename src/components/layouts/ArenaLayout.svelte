@@ -19,12 +19,12 @@
   <div class="flex flex-col h-full">
     <SlideLayoutImageSlot src={imageSrc} slotName="image" class="flex-1 min-h-0" />
     {#if title}
-      <h2 data-slot="text:title" class="px-6 pt-3 pb-1 text-lg font-semibold" style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
+      <h2 data-slot="text:title" class="px-6 pt-3 pb-1 text-lg font-semibold text-center" style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
         <MarkdownText text={title} inline />
       </h2>
     {/if}
     {#if description}
-      <div data-slot="text:description" class="px-6 pb-3 text-sm prose prose-sm max-w-none" style="font-family: var(--slide-font-body); color: var(--slide-color-primary)">
+      <div data-slot="text:description" class="px-6 pb-3 text-sm prose prose-sm max-w-none text-center" style="font-family: var(--slide-font-body); color: var(--slide-color-primary)">
         <MarkdownText text={description} />
       </div>
     {/if}

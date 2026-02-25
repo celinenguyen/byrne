@@ -26,6 +26,7 @@
     slideListOpen,
     showIntro,
     staticMode,
+    ephemeralMode,
     addSlide,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
@@ -241,7 +242,7 @@
 <div class="h-screen flex flex-col">
   {#if mode !== 'present'}
     <Toolbar />
-    {#if staticMode}
+    {#if ephemeralMode}
       <EphemeralBanner />
     {/if}
   {/if}

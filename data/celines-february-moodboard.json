@@ -3,7 +3,7 @@
     "id": "8oov03l3eZahHuj7iH-VQ",
     "title": "Celine's February moodboard",
     "author": "",
-    "updatedAt": "2026-02-25T22:48:01.434Z",
+    "updatedAt": "2026-02-25T23:15:34.242Z",
     "theme": {
       "headingFont": "syne-tactile",
       "bodyFont": "inter",
@@ -109,6 +109,18 @@
         ],
         "customPrimaryColor": "imageColors[0][2]",
         "customBackgroundColor": "imageColors[0][4]"
+      }
+    },
+    {
+      "id": "wxa5DmtwQ3IXWvOq-kG1a",
+      "order": 3,
+      "layout": "Text",
+      "content": {
+        "images": [],
+        "text": [
+          "here's a longer bit of text\n\n> I could add a blockquote here\n\nbut is the blockquote even registered? what about, say, **bold** text? okay, that works."
+        ],
+        "url": ""
       }
     }
   ]

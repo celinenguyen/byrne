@@ -13,7 +13,7 @@ export interface DeckTheme {
 export type FontRole = 'heading' | 'body' | 'caption';
 
 export const fontOptions = [
-  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.09em', uiSize: '1em', uiTracking: 'inherit', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
+  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.01em', uiSize: '1em', uiTracking: 'inherit', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
   { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif', headingWeight: '500', headingTracking: '0.01em', uiSize: '1.1em', uiTracking: '0.01em', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
   { id: 'syne-tactile', label: 'Syne Tactile', value: '"Syne Tactile", cursive', headingWeight: '400', headingTracking: '0em', uiSize: '1.1em', uiTracking: '0em', usableFor: ['heading'] as FontRole[] },
 ] as const;
