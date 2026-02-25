@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "id": "TQ3CW2NSjra98lfzoWEWS",
+    "title": "sharing with mom and dad!",
+    "author": "",
+    "updatedAt": "2026-02-25T20:44:00.361Z",
+    "theme": {
+      "primaryColor": "olive",
+      "backgroundColor": "satin-pink",
+      "accentColor": "lavender",
+      "headingFont": "inter",
+      "bodyFont": "inter"
+    }
+  },
+  "slides": [
+    {
+      "id": "SuRxAgF7QVpzuI_-AVljN",
+      "order": 0,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "sharing with mom and dad! here's a new title that I want to use",
+          "here's a title with **bolded** text and *italicised* text"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "4RgnzHscfgMKGHu1QGzhH",
+      "order": 1,
+      "layout": "Arena",
+      "content": {
+        "images": [
+          "https://images.are.na/eyJidWNrZXQiOiJhcmVuYV9pbWFnZXMiLCJrZXkiOiIyMzM3MzExNy9vcmlnaW5hbF82NGM2YTA2ODdkNDA1NjViZTQwYjZkNWJhMjAzOWQwYS5qcGciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjEyMDAsImhlaWdodCI6MTIwMCwiZml0IjoiaW5zaWRlIiwid2l0aG91dEVubGFyZ2VtZW50Ijp0cnVlfSwid2VicCI6eyJxdWFsaXR5Ijo3NX0sImpwZWciOnsicXVhbGl0eSI6NzV9LCJyb3RhdGUiOm51bGx9fQ==?bc=0"
+        ],
+        "text": [
+          "Arthur Machado",
+          ""
+        ],
+        "url": "https://www.are.na/block/23373117"
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7805333543285441 0.10834401811262938 55.71710223843932)",
+            "oklch(0.47940166344558865 0.06296523081371087 186.5127602362476)",
+            "oklch(0.917675584358129 0.13793024140630902 103.39308205473584)",
+            "oklch(0.6735847236874565 0.07372923585920228 100.86599740935337)",
+            "oklch(0.5315004976466322 0.04754069695876834 46.29247422400469)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
+      }
+    },
+    {
+      "id": "Fpr3me7AYaBAucFSAiZ_h",
+      "order": 2,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "here's new text"
+        ],
+        "url": ""
+      }
+    }
+  ]
+}

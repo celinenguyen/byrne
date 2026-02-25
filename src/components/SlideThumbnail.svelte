@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Slide } from '../lib/types';
   import { layouts } from './layouts/registry';
+  import { resolvedTheme } from '../lib/store';
+  import { slideColorOverrideStyle } from '../lib/theme';
 
   interface Props {
     slide: Slide;
@@ -17,11 +19,21 @@
   // Measure actual container width to compute scale
   let containerWidth = $state(0);
   let scale = $derived(containerWidth > 0 ? containerWidth / REF_WIDTH : 0);
+
+  let deckThemeStyle = $derived(
+    Object.entries($resolvedTheme)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('; ')
+  );
+  let slideOverrideStyle = $derived(slideColorOverrideStyle(slide.style));
+  let themeStyle = $derived(
+    slideOverrideStyle ? `${deckThemeStyle}; ${slideOverrideStyle}` : deckThemeStyle
+  );
 </script>
 
 <div
   class="w-full overflow-hidden relative {className}"
-  style="aspect-ratio:16/9"
+  style="aspect-ratio:16/9; {themeStyle}"
   bind:clientWidth={containerWidth}
 >
   {#if scale > 0 && layoutDef}

@@ -7,7 +7,7 @@
     "description": { "displayName": "description", "isRequired": false }
   },
   "images": {
-    "image": { "displayName": "image", "isRequired": false }
+    "image": { "displayName": "image", "isRequired": true }
   },
   "url": {
     "arena": { "displayName": "Are.na URL", "isRequired": true, "placeholder": "https://www.are.na/block/..." }

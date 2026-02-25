@@ -47,7 +47,7 @@
 
 <div class="overflow-y-auto md:flex md:flex-col md:gap-4 md:flex-row md:min-h-0 md:h-full md:px-2 md:justify-center">
   <!-- Left: image -->
-  <div class="md:px-4">
+  <div class="md:px-4 md:flex md:items-center">
     <img
       src={speakingInTongues.src}
       alt=""

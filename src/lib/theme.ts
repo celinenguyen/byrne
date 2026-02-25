@@ -9,10 +9,18 @@ export interface DeckTheme {
 }
 
 // -- Font presets --
+// usableFor controls which dropdowns each font appears in
+export type FontRole = 'heading' | 'body' | 'caption';
+
 export const fontOptions = [
-  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.04em' },
-  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif', headingWeight: '500', headingTracking: '0.01em' },
+  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.09em', uiSize: '1em', uiTracking: 'inherit', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
+  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif', headingWeight: '500', headingTracking: '0.01em', uiSize: '1.1em', uiTracking: '0.01em', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
+  { id: 'syne-tactile', label: 'Syne Tactile', value: '"Syne Tactile", cursive', headingWeight: '400', headingTracking: '0em', uiSize: '1.1em', uiTracking: '0em', usableFor: ['heading'] as FontRole[] },
 ] as const;
+
+export function fontsForRole(role: FontRole) {
+  return fontOptions.filter((f) => f.usableFor.includes(role));
+}
 
 // -- Primary color presets --
 export const primaryColorOptions = [
@@ -70,4 +78,32 @@ export function resolveTheme(theme: DeckTheme) {
     '--slide-color-bg': bg(theme.backgroundColor),
     '--slide-color-accent': accent(theme.accentColor),
   };
+}
+
+/** Compute per-slide color overrides as a CSS vars string (only the vars that differ). */
+export function slideColorOverrideStyle(style: import('./types').SlideStyle | undefined): string {
+  if (!style) return '';
+  // Inline the ref resolution to avoid circular imports with imageColors.ts
+  function resolve(ref: string): string | null {
+    if (!ref || !style!.imageColors) return null;
+    const match = ref.match(/^imageColors\[(\d+)]\[(\d+)]$/);
+    if (!match) return null;
+    const palette = style!.imageColors[parseInt(match[1], 10)];
+    if (!palette) return null;
+    return palette[parseInt(match[2], 10)] ?? null;
+  }
+  const parts: string[] = [];
+  if (style.customPrimaryColor) {
+    const v = resolve(style.customPrimaryColor);
+    if (v) parts.push(`--slide-color-primary: ${v}`);
+  }
+  if (style.customBackgroundColor) {
+    const v = resolve(style.customBackgroundColor);
+    if (v) parts.push(`--slide-color-bg: ${v}`);
+  }
+  if (style.customAccentColor) {
+    const v = resolve(style.customAccentColor);
+    if (v) parts.push(`--slide-color-accent: ${v}`);
+  }
+  return parts.join('; ');
 }
