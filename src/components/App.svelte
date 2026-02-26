@@ -236,7 +236,10 @@
 
 
   onMount(() => {
-    initializeDeck();
+    initializeDeck().then(() => {
+      // After deck loads and slides render, scroll to the URL-specified slide
+      tick().then(() => scrollToSlide($currentSlideIndex));
+    });
   });
 </script>
 

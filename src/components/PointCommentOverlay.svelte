@@ -124,7 +124,6 @@
   {#each slotComments as comment, i (comment.id)}
     <PointCommentDot
       {comment}
-      number={i + 1}
       {mode}
       {slotEl}
       onUpdate={(text) => handleCommentUpdate(comment.id, text)}

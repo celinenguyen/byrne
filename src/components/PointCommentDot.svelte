@@ -7,14 +7,13 @@
 
   interface Props {
     comment: PointComment;
-    number: number;
     mode: 'edit' | 'preview' | 'present';
     onUpdate: (text: string) => void;
     onDelete: () => void;
     onMove: (x: number, y: number) => void;
     slotEl: HTMLElement;
   }
-  let { comment, number, mode, onUpdate, onDelete, onMove, slotEl }: Props = $props();
+  let { comment, mode, onUpdate, onDelete, onMove, slotEl }: Props = $props();
 
   let editText = $state('');
   let dotEl: HTMLDivElement | undefined = $state();
@@ -130,22 +129,25 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   bind:this={dotEl}
-  class="absolute z-20 flex items-center justify-center rounded-full select-none transition-[backdrop-filter,background-color] duration-150 {dragging ? 'backdrop-blur-sm' : ''}"
-  style="left: {displayX * 100}%; top: {displayY * 100}%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: {dragging ? 'color-mix(in oklch, var(--slide-color-accent, #c75000), transparent 30%)' : 'var(--slide-color-accent, #c75000)'}; pointer-events: auto; cursor: {dragging ? 'grabbing' : 'pointer'};"
+  class="absolute z-20 flex items-center justify-center w-[1.8em] h-[1.8em] rounded-full select-none pointer-events-auto transition-[backdrop-filter,background-color] duration-150 -translate-x-1/2 -translate-y-1/2 {dragging ? 'cursor-grabbing backdrop-blur-sm' : 'cursor-pointer'}"
+  style:left="{displayX * 100}%"
+  style:top="{displayY * 100}%"
+  style:background={dragging ? 'color-mix(in oklch, var(--slide-color-accent, #c75000), transparent 30%)' : 'var(--slide-color-accent, #c75000)'}
   onclick={handleDotClick}
   onmousedown={handleMouseDown}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
 >
-  <span class="text-white text-[10px] font-bold leading-none">{number}</span>
+  <span class="text-white text-[0.6em] leading-none">✴︎</span>
 </div>
 
 {#if popoverVisible}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     bind:this={popoverEl}
-    class="absolute z-30 bg-white border border-stone-200 rounded-md shadow-lg text-xs"
-    style="left: {displayX * 100}%; top: calc({displayY * 100}% + 16px); transform: translateX(-50%); min-width: 200px; max-width: 280px; pointer-events: auto;"
+    class="absolute z-30 min-w-[200px] max-w-[280px] bg-white border border-stone-200 rounded-md shadow-lg text-xs pointer-events-auto -translate-x-1/2"
+    style:left="{displayX * 100}%"
+    style:top="calc({displayY * 100}% + 1em)"
     onclick={(e) => e.stopPropagation()}
     onkeydown={handlePopoverKeydown}
     transition:fade={{ duration: 120 }}
