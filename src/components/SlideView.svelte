@@ -27,7 +27,11 @@
       .join('; ')
   );
 
-  let slideOverrideStyle = $derived(slideColorOverrideStyle(slide.style));
+  let slideOverrideStyle = $derived(slideColorOverrideStyle(
+    slide.style,
+    $resolvedTheme['--slide-color-primary'],
+    $resolvedTheme['--slide-color-bg'],
+  ));
 
   let themeStyle = $derived(
     slideOverrideStyle ? `${deckThemeStyle}; ${slideOverrideStyle}` : deckThemeStyle
@@ -111,9 +115,10 @@
     if (!highlightEl || !containerEl || !highlightInfo) return '';
     const elRect = highlightEl.getBoundingClientRect();
     const cRect = containerEl.getBoundingClientRect();
-    const top = elRect.top - cRect.top;
-    const left = elRect.left - cRect.left;
-    return `top:${top}px;left:${left}px;width:${elRect.width}px;height:${elRect.height}px`;
+    // the -1 and +1 offsets here make the overlay line up exactly with the edges of the slides
+    const top = elRect.top - cRect.top - 1;
+    const left = elRect.left - cRect.left - 1;
+    return `top:${top}px;left:${left}px;width:${elRect.width + 1}px;height:${elRect.height + 1}px`;
   });
 
   // Walk up from an event target to find the nearest layout slot element

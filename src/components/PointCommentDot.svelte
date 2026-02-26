@@ -15,7 +15,7 @@
   let { comment, mode, onUpdate, onDelete, onMove, slotEl }: Props = $props();
 
   let editText = $state('');
-  let dotEl: HTMLDivElement | undefined = $state();
+  let dotEl: HTMLButtonElement | undefined = $state();
   let popoverEl: HTMLDivElement | undefined = $state();
   let textareaEl: HTMLTextAreaElement | undefined = $state();
 
@@ -46,14 +46,18 @@
     prevIsOpen = open;
   });
 
-  function handleDotClick(e: MouseEvent) {
-    e.stopPropagation();
-    e.preventDefault();
+  function togglePopover() {
     if (isOpen) {
       openCommentPopoverId.set(null);
     } else {
       openCommentPopoverId.set(comment.id);
     }
+  }
+
+  function handleDotClick(e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    togglePopover();
   }
 
   function handleMouseEnter() {
@@ -130,10 +134,10 @@
 
 <svelte:window onclick={handleClickOutside} />
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
+<button
+  type="button"
   bind:this={dotEl}
-  class="absolute z-20 flex items-center justify-center w-[1.8em] h-[1.8em] rounded-full select-none pointer-events-auto transition-[backdrop-filter,background-color] duration-150 -translate-x-1/2 -translate-y-1/2 {dragging ? 'cursor-grabbing backdrop-blur-sm' : 'cursor-pointer'}"
+  class="absolute z-20 flex items-center justify-center w-[1.6em] h-[1.6em] rounded-full select-none pointer-events-auto transition-[backdrop-filter,background-color] duration-150 -translate-x-1/2 -translate-y-1/2 border-0 p-0 {dragging ? 'cursor-grabbing backdrop-blur-sm' : 'cursor-pointer'}"
   style:left="{displayX * 100}%"
   style:top="{displayY * 100}%"
   style:background={dragging ? 'color-mix(in oklch, var(--slide-color-accent, #c75000), transparent 30%)' : 'var(--slide-color-accent, #c75000)'}
@@ -141,9 +145,10 @@
   onmousedown={handleMouseDown}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
+  aria-label={comment.text ? `Comment: ${comment.text.slice(0, 50)}${comment.text.length > 50 ? "…" : ""}` : 'Add comment'}
 >
   <span class="text-white text-[1em] leading-none">✴︎</span>
-</div>
+</button>
 
 {#if popoverVisible}
   <PointCommentPopover

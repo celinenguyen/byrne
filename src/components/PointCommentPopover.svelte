@@ -102,7 +102,7 @@
 <div use:portal={document.body}>
   <div
     bind:this={popoverEl}
-    class="fixed z-50 w-[min(400px,90vw)] backdrop-blur-sm bg-white/80 rounded-sm border border-border shadow-lg text-xs pointer-events-auto"
+    class="fixed z-50 w-[min(400px,90vw)] bg-white/80 rounded-sm border border-border shadow-lg text-xs pointer-events-auto {editable ? 'bg-white/100' : 'bg-white/80 backdrop-blur-sm'}"
     style:left="0"
     style:top="0"
     onclick={(e) => e.stopPropagation()}
@@ -122,7 +122,7 @@
             rows={2}
           ></textarea>
         </Field.Content>
-        <Field.Hint class="mb-2">
+        <Field.Hint class="mt-1 mb-2">
           <Kbd.Root>Enter</Kbd.Root> to save, 
           <Kbd.Root>Esc</Kbd.Root> to close</Field.Hint>
       </Field.Root>
