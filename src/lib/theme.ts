@@ -1,3 +1,8 @@
+import { parse, converter, useMode, modeOklch } from 'culori/fn';
+
+const toOklch = converter('oklch');
+useMode(modeOklch);
+
 // -- Types --
 export interface DeckTheme {
   headingFont: string;
@@ -63,7 +68,7 @@ export function fontsForRole(role: FontRole) {
 export const primaryColorOptions = [
   { id: 'black', label: 'Soft black', value: 'oklch(0.0949 0 0)' },
   { id: 'navy', label: 'Navy', value: 'oklch(0.3265 0.0789 260)' },
-  { id: 'lemaire', label: 'Lemaire', value: 'oklch(0.3706 0.0444 55)' },
+  { id: 'marais', label: 'Marais', value: 'oklch(0.3706 0.0444 55)' },
   { id: 'olive', label: 'Olive', value: 'oklch(0.3912 0.0345 130)' },
   { id: 'rust', label: 'Rust', value: 'oklch(0.3147 0.074 33.8)' },
 ] as const;
@@ -72,9 +77,9 @@ export const primaryColorOptions = [
 export const backgroundColorOptions = [
   { id: 'white', label: 'White', value: 'oklch(1.0 0 0)' },
   { id: 'soy-milk', label: 'Soy milk', value: 'oklch(0.9769 0.0074 82.06)' },
-  { id: 'moss-green', label: 'Moss green', value: 'oklch(0.9397 0.0123 145)' },
+  { id: 'pale-green', label: 'Pale green', value: 'oklch(0.9397 0.0123 145)' },
   { id: 'taupe', label: 'Taupe', value: 'oklch(0.9574 0.0076 55)' },
-  { id: 'satin-pink', label: 'Satin pink', value: 'oklch(0.94 0.0154 350)' },
+  { id: 'satin', label: 'Satin pink', value: 'oklch(0.94 0.0154 350)' },
 ] as const;
 
 // -- Accent color presets --
@@ -96,6 +101,16 @@ export const defaultTheme: DeckTheme = {
   accentColor: 'persimmon',
 };
 
+// -- Link offset for light-on-dark slides --
+export function computeLinkOffset(primaryColor: string, bgColor: string): string {
+  const p = parse(primaryColor);
+  const b = parse(bgColor);
+  if (!p || !b) return '0px';
+  const pL = toOklch(p)?.l ?? 0;
+  const bL = toOklch(b)?.l ?? 0;
+  return pL - bL > 0.3 ? '1px' : '0px';
+}
+
 // -- Resolver: theme keys → CSS values --
 export function resolveTheme(theme: DeckTheme) {
   const font = (id: string) => fontOptions.find((f) => f.id === id) ?? fontOptions[0];
@@ -104,6 +119,8 @@ export function resolveTheme(theme: DeckTheme) {
   const accent = (id: string) => accentColorOptions.find((c) => c.id === id)?.value ?? accentColorOptions[0].value;
 
   const headingFont = font(theme.headingFont);
+  const primaryVal = primary(theme.primaryColor);
+  const bgVal = bg(theme.backgroundColor);
 
   return {
     '--slide-font-heading': headingFont.value,
@@ -112,14 +129,19 @@ export function resolveTheme(theme: DeckTheme) {
     '--slide-heading-line-height': headingFont.headingLineHeight,
     '--slide-font-body': font(theme.bodyFont).value,
     '--slide-font-caption': font(theme.captionFont).value,
-    '--slide-color-primary': primary(theme.primaryColor),
-    '--slide-color-bg': bg(theme.backgroundColor),
+    '--slide-color-primary': primaryVal,
+    '--slide-color-bg': bgVal,
     '--slide-color-accent': accent(theme.accentColor),
+    '--slide-link-offset': computeLinkOffset(primaryVal, bgVal),
   };
 }
 
 /** Compute per-slide color overrides as a CSS vars string (only the vars that differ). */
-export function slideColorOverrideStyle(style: import('./types').SlideStyle | undefined): string {
+export function slideColorOverrideStyle(
+  style: import('./types').SlideStyle | undefined,
+  deckPrimary?: string,
+  deckBg?: string,
+): string {
   if (!style) return '';
   // Inline the ref resolution to avoid circular imports with imageColors.ts
   function resolve(ref: string): string | null {
@@ -131,17 +153,25 @@ export function slideColorOverrideStyle(style: import('./types').SlideStyle | un
     return palette[parseInt(match[2], 10)] ?? null;
   }
   const parts: string[] = [];
+  let resolvedPrimary: string | null = null;
+  let resolvedBg: string | null = null;
   if (style.customPrimaryColor) {
-    const v = resolve(style.customPrimaryColor);
-    if (v) parts.push(`--slide-color-primary: ${v}`);
+    resolvedPrimary = resolve(style.customPrimaryColor);
+    if (resolvedPrimary) parts.push(`--slide-color-primary: ${resolvedPrimary}`);
   }
   if (style.customBackgroundColor) {
-    const v = resolve(style.customBackgroundColor);
-    if (v) parts.push(`--slide-color-bg: ${v}`);
+    resolvedBg = resolve(style.customBackgroundColor);
+    if (resolvedBg) parts.push(`--slide-color-bg: ${resolvedBg}`);
   }
   if (style.customAccentColor) {
     const v = resolve(style.customAccentColor);
     if (v) parts.push(`--slide-color-accent: ${v}`);
+  }
+  // Recompute link offset if either color was overridden
+  if ((resolvedPrimary || resolvedBg) && (deckPrimary || deckBg)) {
+    const finalPrimary = resolvedPrimary ?? deckPrimary!;
+    const finalBg = resolvedBg ?? deckBg!;
+    parts.push(`--slide-link-offset: ${computeLinkOffset(finalPrimary, finalBg)}`);
   }
   return parts.join('; ');
 }

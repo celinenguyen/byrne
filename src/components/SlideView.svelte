@@ -27,7 +27,11 @@
       .join('; ')
   );
 
-  let slideOverrideStyle = $derived(slideColorOverrideStyle(slide.style));
+  let slideOverrideStyle = $derived(slideColorOverrideStyle(
+    slide.style,
+    $resolvedTheme['--slide-color-primary'],
+    $resolvedTheme['--slide-color-bg'],
+  ));
 
   let themeStyle = $derived(
     slideOverrideStyle ? `${deckThemeStyle}; ${slideOverrideStyle}` : deckThemeStyle

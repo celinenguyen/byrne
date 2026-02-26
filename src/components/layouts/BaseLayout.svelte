@@ -19,6 +19,8 @@
   :global(p[data-slot^="text:"] a) {
     color: var(--slide-color-accent);
     text-decoration: none;
+    position: relative;
+    top: var(--slide-link-offset, 0px);
     &:hover {
       text-decoration: underline;
       text-decoration-thickness: 0.06em;
