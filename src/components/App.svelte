@@ -35,6 +35,21 @@
   let mode = $derived($viewMode);
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
+
+  // When view mode changes, panels open/close which resizes the scroll container.
+  // Suppress the IntersectionObserver briefly so layout-shift scroll events
+  // don't change the current slide index, then re-scroll to the current slide.
+  let prevMode = $state(mode);
+  $effect(() => {
+    if (mode === prevMode) return;
+    prevMode = mode;
+    if (mode === 'present') return; // present mode has its own view
+    suppressObserver = true;
+    const idx = $currentSlideIndex;
+    setTimeout(() => {
+      scrollToSlide(idx, true);
+    }, 50);
+  });
   let pending = $derived($pendingDelete);
   let splash = $derived($showIntro);
 
@@ -148,15 +163,15 @@
   // NOT called when the observer advances the index via scrolling.
   let observerDriven = false;
 
-  function scrollToSlide(index: number) {
+  function scrollToSlide(index: number, instant = false) {
     if (!scrollContainer) return;
     const target = scrollContainer.querySelector(`[data-slide-index="${index}"]`);
     if (!target) return;
     suppressObserver = true;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'center' });
     setTimeout(() => {
       suppressObserver = false;
-    }, 600);
+    }, instant ? 50 : 600);
   }
 
   // Watch for currentSlideIndex changes to scroll into view (skip observer-driven ones)
@@ -238,7 +253,7 @@
   onMount(() => {
     initializeDeck().then(() => {
       // After deck loads and slides render, scroll to the URL-specified slide
-      tick().then(() => scrollToSlide($currentSlideIndex));
+      tick().then(() => scrollToSlide($currentSlideIndex, true));
     });
   });
 </script>

@@ -30,4 +30,8 @@
   );
 </script>
 
-<span class={className}>{@html html}</span>
+{#if inline}
+  <span class={className}>{@html html}</span>
+{:else}
+  <div class={className}>{@html html}</div>
+{/if}

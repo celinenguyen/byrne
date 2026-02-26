@@ -49,7 +49,6 @@
   function handleDotClick(e: MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
-    if (mode !== 'edit') return;
     if (isOpen) {
       openCommentPopoverId.set(null);
     } else {
@@ -62,28 +61,29 @@
   }
 
   function handleMouseLeave() {
-    hoverOpen = false;
+    // Don't dismiss hover if pinned open via click
+    if (!isOpen) hoverOpen = false;
   }
 
-  // Click-outside: only the dot with open popover responds
+  // Click-outside: close pinned popover in any mode
   function handleClickOutside(e: MouseEvent) {
-    if (!isOpen || mode !== 'edit') return;
+    if (!isOpen) return;
     const target = e.target as Node;
     if (dotEl?.contains(target) || popoverEl?.contains(target)) return;
     openCommentPopoverId.set(null);
   }
 
   function handlePopoverKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' || e.key === 'Enter') {
+    if (e.key === 'Escape') {
       e.stopPropagation();
       e.preventDefault();
       openCommentPopoverId.set(null);
+    } else if (e.key === 'Delete') {
+      e.stopPropagation();
+      e.preventDefault();
+      editText = '';
+      openCommentPopoverId.set(null);
     }
-  }
-
-  function handlePopoverDelete() {
-    editText = '';
-    openCommentPopoverId.set(null);
   }
 
   // --- Cmd+Drag to move ---
@@ -147,9 +147,9 @@
     {editable}
     x={displayX}
     y={displayY}
+    {slotEl}
     {editText}
     onEditTextChange={(v) => { editText = v; }}
-    onDelete={handlePopoverDelete}
     onKeydown={handlePopoverKeydown}
     bind:textareaEl
     bind:popoverEl
