@@ -20,10 +20,19 @@ export interface DeckSummary {
   publishedAt?: string;
 }
 
+export interface PointComment {
+  id: string;
+  slotIndex: number;
+  x: number;
+  y: number;
+  text: string;
+}
+
 export interface SlideContent {
   images: string[];
   text: string[];
   url?: string;
+  comments?: PointComment[];
 }
 
 export interface SlideStyle {

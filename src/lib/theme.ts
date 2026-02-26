@@ -13,9 +13,36 @@ export interface DeckTheme {
 export type FontRole = 'heading' | 'body' | 'caption';
 
 export const fontOptions = [
-  { id: 'inter', label: 'Inter', value: '"Inter", system-ui, sans-serif', headingWeight: '700', headingTracking: '-0.09em', uiSize: '1em', uiTracking: 'inherit', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
-  { id: 'newsreader', label: 'Newsreader', value: '"Newsreader", "Georgia", serif', headingWeight: '500', headingTracking: '0.01em', uiSize: '1.1em', uiTracking: '0.01em', usableFor: ['heading', 'body', 'caption'] as FontRole[] },
-  { id: 'syne-tactile', label: 'Syne Tactile', value: '"Syne Tactile", cursive', headingWeight: '400', headingTracking: '0em', uiSize: '1.1em', uiTracking: '0em', usableFor: ['heading'] as FontRole[] },
+  { id: 'inter', 
+    label: 'Inter', 
+    value: '"Inter", system-ui, sans-serif', 
+    headingWeight: '600', 
+    headingTracking: '-0.01em', 
+    headingLineHeight: '1',
+    uiSize: '1em', 
+    uiTracking: 'inherit', 
+    usableFor: ['heading', 'body', 'caption'] as FontRole[] 
+  },
+  { id: 'newsreader',
+    label: 'Newsreader',
+    value: '"Newsreader", "Georgia", serif',
+    headingWeight: '425',
+    headingTracking: '0.01em',
+    headingLineHeight: '1.3',
+    uiSize: '1.1em',
+    uiTracking: '0.01em',
+    usableFor: ['heading', 'body', 'caption'] as FontRole[]
+  },
+  { id: 'syne-tactile',
+    label: 'Syne Tactile',
+    value: '"Syne Tactile", cursive',
+    headingWeight: '400',
+    headingTracking: '0em',
+    headingLineHeight: '1.2',
+    uiSize: '1.1em',
+    uiTracking: '0em',
+    usableFor: ['heading'] as FontRole[]
+  },
 ] as const;
 
 export function fontsForRole(role: FontRole) {
@@ -72,6 +99,7 @@ export function resolveTheme(theme: DeckTheme) {
     '--slide-font-heading': headingFont.value,
     '--slide-heading-weight': headingFont.headingWeight,
     '--slide-heading-tracking': headingFont.headingTracking,
+    '--slide-heading-line-height': headingFont.headingLineHeight,
     '--slide-font-body': font(theme.bodyFont).value,
     '--slide-font-caption': font(theme.captionFont).value,
     '--slide-color-primary': primary(theme.primaryColor),

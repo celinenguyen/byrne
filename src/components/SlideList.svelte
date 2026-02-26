@@ -38,9 +38,12 @@
 
   let listContainer: HTMLDivElement | undefined = $state();
 
-  // Scroll the active thumbnail into view when currentSlideIndex changes
+  // Scroll the active thumbnail into view when currentSlideIndex or slides change.
+  // Tracking allSlides ensures this also fires after initial deck load (when slides
+  // render for the first time but currentSlideIndex was already set from the URL).
   $effect(() => {
     const i = idx;
+    allSlides; // track dependency so we re-run when slides load
     if (!listContainer) return;
     tick().then(() => {
       const el = listContainer?.querySelector(`[data-slide-thumb="${i}"]`);

@@ -7,6 +7,15 @@ import { nanoid } from 'nanoid';
 const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
 const BASE_URL: string = import.meta.env.BASE_URL;
 
+// simulateDeployment URL param: behave like a deployed (static) build at runtime
+// — saves go to sessionStorage instead of the server, and the ephemeral banner shows.
+const simulateDeployment: boolean =
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('simulateDeployment') === 'true';
+
+/** True when edits should be ephemeral (sessionStorage-only). */
+const ephemeralMode: boolean = staticMode || simulateDeployment;
+
 // Read initial state from URL params
 function getInitialParams() {
   if (typeof window === 'undefined') return { view: 'edit' as const, slide: 0, deck: '' };
@@ -46,7 +55,8 @@ export const pendingDelete = writable<{
   timer: ReturnType<typeof setTimeout>;
 } | null>(null);
 export const showIntro = writable<boolean>(!initial.deck);
-export { staticMode };
+export const openCommentPopoverId = writable<string | null>(null);
+export { staticMode, ephemeralMode };
 
 // Sync stores -> URL
 function syncURL() {
@@ -61,6 +71,7 @@ function syncURL() {
   params.set('deck', deckFile);
   params.set('view', get(viewMode));
   params.set('slide', String(get(currentSlideIndex) + 1));
+  if (simulateDeployment) params.set('simulateDeployment', 'true');
   const newURL = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState(null, '', newURL);
 }
@@ -122,8 +133,8 @@ export async function loadDeck() {
   const file = get(currentDeckFile);
   if (!file) return;
 
-  if (staticMode) {
-    // Check sessionStorage first
+  // In ephemeral mode, check sessionStorage first (covers both real static and simulated)
+  if (ephemeralMode) {
     const stored = sessionStorage.getItem(`deck:${file}`);
     if (stored) {
       const data: Deck = JSON.parse(stored);
@@ -131,17 +142,13 @@ export async function loadDeck() {
       deck.set(data);
       return;
     }
-    // Fetch from pre-built static JSON
-    const res = await fetch(`${BASE_URL}decks/${encodeURIComponent(file)}.json`);
-    if (res.ok) {
-      const data: Deck = await res.json();
-      data.slides.sort((a, b) => a.order - b.order);
-      deck.set(data);
-    }
-    return;
   }
 
-  const res = await fetch(`/api/deck?file=${encodeURIComponent(file)}`);
+  // Fetch from the appropriate data source (static JSON vs API)
+  const url = staticMode
+    ? `${BASE_URL}decks/${encodeURIComponent(file)}.json`
+    : `/api/deck?file=${encodeURIComponent(file)}`;
+  const res = await fetch(url);
   if (res.ok) {
     const data: Deck = await res.json();
     data.slides.sort((a, b) => a.order - b.order);
@@ -160,7 +167,7 @@ export async function saveDeck() {
   if (!d) return;
   const file = get(currentDeckFile);
 
-  if (staticMode) {
+  if (ephemeralMode) {
     sessionStorage.setItem(`deck:${file}`, JSON.stringify(d));
     return;
   }
@@ -214,6 +221,7 @@ export function duplicateSlide(index: number) {
       images: [...source.content.images],
       text: [...source.content.text],
       url: source.content.url,
+      ...(source.content.comments ? { comments: source.content.comments.map((c) => ({ ...c, id: nanoid() })) } : {}),
     },
   };
   if (source.style) {
@@ -352,7 +360,7 @@ export async function switchDeck(filename: string) {
 }
 
 export async function renameDeck(newTitle: string) {
-  if (staticMode) {
+  if (ephemeralMode) {
     // In static mode, just update in-memory + sessionStorage
     deck.update((d) => {
       if (!d) return d;
@@ -395,7 +403,7 @@ export async function deleteDeck(filename: string) {
   const currentFile = get(currentDeckFile);
   const list = get(deckList);
 
-  if (staticMode) {
+  if (ephemeralMode) {
     sessionStorage.removeItem(`deck:${filename}`);
     deckList.update((l) => l.filter((d) => d.filename !== filename));
   } else {
@@ -440,11 +448,19 @@ export async function moveSlideToDeck(slideId: string, targetDeckFile: string) {
   const slideCopy: Slide = { ...slide, content: { ...slide.content, images: [...slide.content.images], text: [...slide.content.text] } };
   if (slide.style) slideCopy.style = JSON.parse(JSON.stringify(slide.style));
 
-  if (staticMode) {
-    // Load target deck from sessionStorage
+  if (ephemeralMode) {
+    // Load target deck from sessionStorage, falling back to API in simulate mode
+    let targetDeck: Deck;
     const stored = sessionStorage.getItem(`deck:${targetDeckFile}`);
-    if (!stored) return;
-    const targetDeck: Deck = JSON.parse(stored);
+    if (stored) {
+      targetDeck = JSON.parse(stored);
+    } else if (!staticMode) {
+      const res = await fetch(`/api/deck?file=${encodeURIComponent(targetDeckFile)}`);
+      if (!res.ok) return;
+      targetDeck = await res.json();
+    } else {
+      return;
+    }
     slideCopy.order = targetDeck.slides.length;
     targetDeck.slides.push(slideCopy);
     targetDeck.meta.updatedAt = new Date().toISOString();
@@ -470,7 +486,7 @@ export async function moveSlideToDeck(slideId: string, targetDeckFile: string) {
 }
 
 export async function createDeck(title: string) {
-  if (staticMode) {
+  if (ephemeralMode) {
     const id = nanoid();
     const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const newDeck: Deck = {

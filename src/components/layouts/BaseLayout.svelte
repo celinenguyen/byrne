@@ -21,6 +21,8 @@
     text-decoration: none;
     &:hover {
       text-decoration: underline;
+      text-decoration-thickness: 0.06em;
+      text-underline-offset: 0.15em;
     }
   }
 </style>

@@ -3,6 +3,7 @@
   import BaseLayout from './BaseLayout.svelte';
   import MarkdownText from './MarkdownText.svelte';
   import settings from './TitleLayout.json';
+  import { autoScale } from '../../lib/actions/autoScale';
 
   interface Props {
     content: SlideContent;
@@ -14,12 +15,38 @@
 </script>
 
 <BaseLayout>
-  <div class="flex flex-col items-center justify-center h-full px-16 text-center">
-    <h1 data-slot="text:title" class="text-5xl leading-tight" style="font-family: var(--slide-font-heading); font-weight: var(--slide-heading-weight); letter-spacing: var(--slide-heading-tracking); color: var(--slide-color-primary)">
-      <MarkdownText text={title || settings.text.title.placeholder} inline />
-    </h1>
-    {#if subtitle}
-      <p data-slot="text:subtitle" class="mt-4 text-xl text-muted-foreground" style="font-family: var(--slide-font-body)"><MarkdownText text={subtitle} inline /></p>
-    {/if}
+  <div class="@container flex flex-col items-center justify-center h-full px-16 text-center">
+    <div
+      use:autoScale
+      class="flex flex-col items-center justify-center max-h-full"
+    >
+      <div
+        data-slot="text:title"
+        class="[&_p+p]:mt-[0.6em]"
+        style="font-family: var(--slide-font-heading); font-weight: var(--slide-heading-weight); line-height: var(--slide-heading-line-height); letter-spacing: var(--slide-heading-tracking); color: var(--slide-color-primary); text-wrap: balance;"
+      > <!-- the [&_p+p]: adds a top margin for consecutive paragraphs -->
+        <MarkdownText text={title || settings.text.title.placeholder} />
+      </div>
+      {#if subtitle}
+        <div
+          data-slot="text:subtitle"
+          class="mt-6 [&_p+p]:mt-[0.5em]"
+          style="font-family: var(--slide-font-body); color: var(--slide-color-primary);"
+        >
+          <MarkdownText text={subtitle} />
+        </div>
+      {/if}
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  [data-slot="text:title"] {
+    font-size: calc(clamp(1.5rem, 5cqi, 3rem) * var(--auto-scale, 1));
+    line-height: 1.2;
+  }
+  [data-slot="text:subtitle"] {
+    font-size: calc(clamp(1.2rem, 2.5cqi, 1.5rem) * var(--auto-scale, 1));
+    line-height: 1.4;
+  }
+</style>

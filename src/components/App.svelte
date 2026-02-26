@@ -26,13 +26,30 @@
     slideListOpen,
     showIntro,
     staticMode,
+    ephemeralMode,
     addSlide,
+    openCommentPopoverId,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
   let mode = $derived($viewMode);
   let slide = $derived($currentSlide);
   let allSlides = $derived($slides);
+
+  // When view mode changes, panels open/close which resizes the scroll container.
+  // Suppress the IntersectionObserver briefly so layout-shift scroll events
+  // don't change the current slide index, then re-scroll to the current slide.
+  let prevMode = $state(mode);
+  $effect(() => {
+    if (mode === prevMode) return;
+    prevMode = mode;
+    if (mode === 'present') return; // present mode has its own view
+    suppressObserver = true;
+    const idx = $currentSlideIndex;
+    setTimeout(() => {
+      scrollToSlide(idx, true);
+    }, 50);
+  });
   let pending = $derived($pendingDelete);
   let splash = $derived($showIntro);
 
@@ -146,15 +163,15 @@
   // NOT called when the observer advances the index via scrolling.
   let observerDriven = false;
 
-  function scrollToSlide(index: number) {
+  function scrollToSlide(index: number, instant = false) {
     if (!scrollContainer) return;
     const target = scrollContainer.querySelector(`[data-slide-index="${index}"]`);
     if (!target) return;
     suppressObserver = true;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.scrollIntoView({ behavior: instant ? 'instant' : 'smooth', block: 'center' });
     setTimeout(() => {
       suppressObserver = false;
-    }, 600);
+    }, instant ? 50 : 600);
   }
 
   // Watch for currentSlideIndex changes to scroll into view (skip observer-driven ones)
@@ -223,13 +240,21 @@
   // bindings when focus is inside a text input so that normal typing
   // (including Backspace, arrow keys, etc.) isn't intercepted.
   function onKeyDown(e: KeyboardEvent) {
-    if ($viewMode === 'edit' && isTextInput(e.target)) return;
+    // Close open comment popover on Escape before other bindings
+    if (e.key === 'Escape' && $openCommentPopoverId) {
+      openCommentPopoverId.set(null);
+      return;
+    }
+    if (isTextInput(e.target)) return;
     matchBinding(e, $viewMode, bindings);
   }
 
 
   onMount(() => {
-    initializeDeck();
+    initializeDeck().then(() => {
+      // After deck loads and slides render, scroll to the URL-specified slide
+      tick().then(() => scrollToSlide($currentSlideIndex, true));
+    });
   });
 </script>
 
@@ -241,7 +266,7 @@
 <div class="h-screen flex flex-col">
   {#if mode !== 'present'}
     <Toolbar />
-    {#if staticMode}
+    {#if ephemeralMode}
       <EphemeralBanner />
     {/if}
   {/if}

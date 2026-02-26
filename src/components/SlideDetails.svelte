@@ -154,7 +154,7 @@
 
     // Validate Are.na URL
     if (!url.match(/are\.na\/block\/\d+/)) {
-      arenaMessage = 'Please enter a valid Are.na block URL (e.g. https://www.are.na/block/12345)';
+      arenaMessage = 'This isn\'t a valid Are.na block URL! It should look like this https://www.are.na/block/12345)';
       return;
     }
 
@@ -169,7 +169,7 @@
 
       if (!res.ok) {
         const data = await res.json();
-        arenaMessage = data.error || 'Failed to fetch Are.na block';
+        arenaMessage = data.error || 'Couldn\'t fetch the Are.na block :(';
         return;
       }
 
@@ -178,7 +178,7 @@
       const isUnsupported = blockClass === 'Media' || blockClass === 'Attachment';
 
       if (isUnsupported) {
-        arenaMessage = `${blockClass} blocks are not fully supported. Title and description have been populated.`;
+        arenaMessage = `Sorry, ${blockClass} aren't fully supported yet. The title and description hae been added, but nothing else`;
       }
 
       // Map response to slide content based on block class
@@ -203,7 +203,7 @@
         content: { ...slide.content, images, text, url },
       });
     } catch (err) {
-      arenaMessage = 'Failed to fetch Are.na block';
+      arenaMessage = 'Couldn\'t fetch the Are.na block :(';
     }
   }
 
@@ -260,7 +260,7 @@
 
       updateSlide(slideId, { style });
     } catch (e) {
-      console.warn('Failed to extract palette:', e);
+      console.warn('Couldn\'t extract the palette :(', e);
     }
   }
 
