@@ -3,13 +3,13 @@
     "id": "8oov03l3eZahHuj7iH-VQ",
     "title": "Celine's February moodboard",
     "author": "",
-    "updatedAt": "2026-02-25T23:15:34.242Z",
+    "updatedAt": "2026-02-26T07:59:21.385Z",
     "theme": {
-      "headingFont": "syne-tactile",
+      "headingFont": "newsreader",
       "bodyFont": "inter",
       "primaryColor": "olive",
-      "accentColor": "marine",
-      "backgroundColor": "satin-pink",
+      "accentColor": "persimmon",
+      "backgroundColor": "taupe",
       "captionFont": "inter"
     },
     "status": "published",
@@ -30,17 +30,58 @@
       }
     },
     {
-      "id": "NmHSoFWCssV0ht0OqUm3n",
+      "id": "SnkMppEFrFaEjwR59d8LF",
       "order": 1,
-      "layout": "Image",
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "I spent most of my childhood on the internet, reading design and architecture and fashion and technology blogs—"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "pXDxKjNYbgAnrfoFlSl0F",
+      "order": 2,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "—and collecting a lot of images. I used [Pinterest](https://www.pinterest.com/celinenguyen/) for many years. now I use [Are.na](https://www.are.na/celine-nguyen/channels)"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "NmHSoFWCssV0ht0OqUm3n",
+      "order": 3,
+      "layout": "Title",
       "content": {
         "images": [
           "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
         ],
         "text": [
-          "artwork by [Studio Airport](https://www.instagram.com/studio.airport/?hl=en) to accompany Robin Wall Kimmerer's essay '[The Serviceberry](https://emergencemagazine.org/essay/the-serviceberry/),' in *Emergence Magazine* (via [are.na](https://www.are.na/block/22169275))"
+          "sometimes I find an image that has this strange, obscure allure to it. I can't stop looking at it.",
+          ""
         ],
-        "url": ""
+        "url": "",
+        "comments": [
+          {
+            "id": "rsWCNG42NFZ5yazz_hgiB",
+            "slotIndex": 0,
+            "x": 0.4482036687935035,
+            "y": 0.4042174042174042,
+            "text": ""
+          },
+          {
+            "id": "QCXuZfEnGAWKpHHHQDhjm",
+            "slotIndex": 0,
+            "x": 0.533204384268214,
+            "y": 0.47204828366654095,
+            "text": ""
+          }
+        ]
       },
       "style": {
         "imageColors": [
@@ -58,8 +99,102 @@
       }
     },
     {
+      "id": "A8ReJxvhR27RmEUVhRg7_",
+      "order": 4,
+      "layout": "Title",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          "earlier this month, for example, I came across this image on Are.na. it had been saved by a South Korean graphic designer, [Yanju Jeong](https://www.are.na/block/22169275)",
+          ""
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "HcfPyL5OoJZY5rREVgVvC",
+            "slotIndex": 0,
+            "x": 0.4482036687935035,
+            "y": 0.4042174042174042,
+            "text": ""
+          },
+          {
+            "id": "09P9obOynR_gUnRj_THio",
+            "slotIndex": 0,
+            "x": 0.533204384268214,
+            "y": 0.47204828366654095,
+            "text": ""
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314218)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.6846130502126)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]",
+        "customAccentColor": "imageColors[0][0]"
+      }
+    },
+    {
+      "id": "4eGueUkgla6IgrPQb1Gpt",
+      "order": 5,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          "the image is an illustration by [Studio Airport](https://www.instagram.com/studio.airport/?hl=en) to accompany Robin Wall Kimmerer's essay '[The Serviceberry](https://emergencemagazine.org/essay/the-serviceberry/),' in *Emergence Magazine*"
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "dZ5VEYcvG7-X88NC0CFN2",
+            "slotIndex": 0,
+            "x": 0.27563986368909515,
+            "y": 0.10127710127710128,
+            "text": "I love how enigmatic these little openings are—and the collision between something very natural, physical, dimensional (the leaves) and something much more flat and constructed (the 2D cutouts, which remind us that this is a photograph of some leaves, not the actual leaves themselves)"
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314218)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.6846130502126)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]",
+        "customAccentColor": "imageColors[0][0]"
+      }
+    },
+    {
+      "id": "Uz5XboktdVTBFJEZRaS6u",
+      "order": 6,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "whenever I find an image that captivates me, that I feel some *affinity* to (as the critic Brian [might say](https://www.nyrb.com/products/affinities))\n\n"
+        ],
+        "url": ""
+      }
+    },
+    {
       "id": "hczVAf2qFTdPhEiWXKHzt",
-      "order": 2,
+      "order": 7,
       "layout": "Image2Up",
       "content": {
         "images": [
@@ -85,7 +220,7 @@
     },
     {
       "id": "RvoWmJokGpcteFPRLaP4J",
-      "order": 3,
+      "order": 8,
       "layout": "Arena",
       "content": {
         "images": [
@@ -113,7 +248,7 @@
     },
     {
       "id": "wxa5DmtwQ3IXWvOq-kG1a",
-      "order": 3,
+      "order": 8,
       "layout": "Text",
       "content": {
         "images": [],

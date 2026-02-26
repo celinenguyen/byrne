@@ -6,6 +6,9 @@
 export function keyboardClick(callback: () => void) {
   return (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
+      // Don't intercept when typing in a text field
+      const el = e.target;
+      if (el instanceof HTMLElement && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
       e.preventDefault();
       callback();
     }

@@ -55,6 +55,7 @@ export const pendingDelete = writable<{
   timer: ReturnType<typeof setTimeout>;
 } | null>(null);
 export const showIntro = writable<boolean>(!initial.deck);
+export const openCommentPopoverId = writable<string | null>(null);
 export { staticMode, ephemeralMode };
 
 // Sync stores -> URL
@@ -220,6 +221,7 @@ export function duplicateSlide(index: number) {
       images: [...source.content.images],
       text: [...source.content.text],
       url: source.content.url,
+      ...(source.content.comments ? { comments: source.content.comments.map((c) => ({ ...c, id: nanoid() })) } : {}),
     },
   };
   if (source.style) {

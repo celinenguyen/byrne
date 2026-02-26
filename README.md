@@ -41,11 +41,11 @@ I made this app because I *didn't* want all the flexibility of apps like PowerPo
 
 - **Decks** are defined by a **name**, optional **style preferences** (which apply to every slide), and a list of slides. Each deck is represented by a `.json` file.
 - Each **slide** has:
-  - A **layout** (is it a `Title` slide with a large heading and optional subheading? an `Image` slide with just 1 image and an optional caption?).
+  - A **layout** (is it a `Title` slide with a heading and optional subheading? an `Image` slide with just 1 image and an optional caption?).
   - Some **content**, which is used by different layouts in different ways. The content can be:
     - Text: Each slide can have up to 2 blocks of text. You can use Markdown formatting to bold, italicize, and add links to text.
     - Images: Each slide can have up to 2 images.
-- Each **layout** uses the slide's **content** in different ways. The `Title` layout takes the 1st text block and displays it as a large heading. The `Image` layout takes the 1st text block and displays it as the image caption.
+- Each **layout** uses the slide's **content** in different ways. The `Title` layout takes the 1st text block and displays it as a heading. The `Image` layout takes the 1st text block and displays it as the image caption.
 
 ## What layouts are available?
 
@@ -53,8 +53,7 @@ Each layout is represented by a `.svelte` file. If a layout uses any text or ima
 
 | Layout | What it shows |
 |--------|---------------|
-| `Title` | Large heading with optional subtitle |
-| `Text` | Full-slide text block |
+| `Title` | Heading with optional subtitle |
 | `Image` | Full-width image with an optional caption |
 | `2-Up Image` | Two images, side by side, with optional captions for each |
 

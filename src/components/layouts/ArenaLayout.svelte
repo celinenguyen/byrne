@@ -19,7 +19,7 @@
   <div class="flex flex-col h-full">
     <SlideLayoutImageSlot src={imageSrc} slotName="image" class="flex-1 min-h-0" />
     {#if title}
-      <h2 data-slot="text:title" class="px-6 pt-3 pb-1 text-lg font-semibold text-center" style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
+      <h2 data-slot="text:title" class="px-6 py-2 text-lg font-semibold text-center" style="font-family: var(--slide-font-heading); color: var(--slide-color-primary)">
         <MarkdownText text={title} inline />
       </h2>
     {/if}

@@ -28,6 +28,7 @@
     staticMode,
     ephemeralMode,
     addSlide,
+    openCommentPopoverId,
   } from '../lib/store';
   import { keyboardClick, matchBinding, type KeyBinding } from '../lib/keyboard';
 
@@ -224,7 +225,12 @@
   // bindings when focus is inside a text input so that normal typing
   // (including Backspace, arrow keys, etc.) isn't intercepted.
   function onKeyDown(e: KeyboardEvent) {
-    if ($viewMode === 'edit' && isTextInput(e.target)) return;
+    // Close open comment popover on Escape before other bindings
+    if (e.key === 'Escape' && $openCommentPopoverId) {
+      openCommentPopoverId.set(null);
+      return;
+    }
+    if (isTextInput(e.target)) return;
     matchBinding(e, $viewMode, bindings);
   }
 

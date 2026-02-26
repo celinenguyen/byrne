@@ -2,13 +2,11 @@ import type { Component } from 'svelte';
 import type { LayoutSettings } from '../../lib/types';
 import TitleLayout from './TitleLayout.svelte';
 import ImageLayout from './ImageLayout.svelte';
-import TextLayout from './TextLayout.svelte';
 import Image2UpLayout from './Image2UpLayout.svelte';
 import ArenaLayout from './ArenaLayout.svelte';
 
 import titleSettings from './TitleLayout.json';
 import imageSettings from './ImageLayout.json';
-import textSettings from './TextLayout.json';
 import image2UpSettings from './Image2UpLayout.json';
 import arenaSettings from './ArenaLayout.json';
 
@@ -35,13 +33,6 @@ export const layouts: Record<string, LayoutDefinition> = {
     description: 'Full-width image with caption',
     component: ImageLayout as unknown as Component,
     schema: imageSettings,
-  },
-  Text: {
-    id: 'Text',
-    displayName: 'Text',
-    description: 'Full-slide text block',
-    component: TextLayout as unknown as Component,
-    schema: textSettings,
   },
   Image2Up: {
     id: 'Image2Up',

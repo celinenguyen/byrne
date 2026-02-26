@@ -27,9 +27,9 @@
       slideListOpen.set(false);
       wasPreview = true;
     } else if (mode !== 'preview' && wasPreview) {
-      // Leaving preview — restore panel state
-      if (savedDetailsOpen !== null) detailsOpen.set(savedDetailsOpen);
-      if (savedSlideListOpen !== null) slideListOpen.set(savedSlideListOpen);
+      // Leaving preview — always expand both panels
+      detailsOpen.set(true);
+      slideListOpen.set(true);
       savedDetailsOpen = null;
       savedSlideListOpen = null;
       wasPreview = false;
