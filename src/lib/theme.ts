@@ -43,6 +43,16 @@ export const fontOptions = [
     uiTracking: '0em',
     usableFor: ['heading'] as FontRole[]
   },
+  { id: 'reforma-1969',
+    label: 'Reforma 1969',
+    value: '"Reforma 1969 Blanca", "Georgia", serif',
+    headingWeight: '400',
+    headingTracking: '0.01em',
+    headingLineHeight: '1.2',
+    uiSize: '1.1em',
+    uiTracking: '0.01em',
+    usableFor: ['heading', 'body', 'caption'] as FontRole[]
+  },
 ] as const;
 
 export function fontsForRole(role: FontRole) {
