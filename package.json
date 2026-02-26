@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "build:pages": "node scripts/prepare-static.mjs && BUILD_TARGET=pages astro build",
+    "build:vercel": "node scripts/prepare-static.mjs && BUILD_TARGET=vercel astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -13,6 +14,7 @@
     "@astrojs/node": "^9.5.3",
     "@astrojs/react": "^4.4.2",
     "@astrojs/svelte": "^7.2.5",
+    "@astrojs/vercel": "^9.0.4",
     "@celinenguyen/software-as-leisure-activity": "^0.3.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",

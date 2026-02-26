@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 
+export const prerender = false;
+
 function extractMeta(html: string, property: string): string {
   // Match <meta property="og:..." content="..."> or <meta name="og:..." content="...">
   const regex = new RegExp(
