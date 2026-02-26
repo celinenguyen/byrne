@@ -22,7 +22,7 @@
     >
       <div
         data-slot="text:title"
-        class="title-text [&_p+p]:mt-[0.6em]"
+        class="[&_p+p]:mt-[0.6em]"
         style="font-family: var(--slide-font-heading); font-weight: var(--slide-heading-weight); line-height: var(--slide-heading-line-height); letter-spacing: var(--slide-heading-tracking); color: var(--slide-color-primary); text-wrap: balance;"
       > <!-- the [&_p+p]: adds a top margin for consecutive paragraphs -->
         <MarkdownText text={title || settings.text.title.placeholder} />
@@ -30,7 +30,7 @@
       {#if subtitle}
         <div
           data-slot="text:subtitle"
-          class="subtitle-text mt-6 [&_p+p]:mt-[0.5em]"
+          class="mt-6 [&_p+p]:mt-[0.5em]"
           style="font-family: var(--slide-font-body); color: var(--slide-color-primary);"
         >
           <MarkdownText text={subtitle} />
@@ -41,11 +41,11 @@
 </BaseLayout>
 
 <style>
-  .title-text {
+  [data-slot="text:title"] {
     font-size: calc(clamp(1.5rem, 5cqi, 3rem) * var(--auto-scale, 1));
     line-height: 1.2;
   }
-  .subtitle-text {
+  [data-slot="text:subtitle"] {
     font-size: calc(clamp(1.2rem, 2.5cqi, 1.5rem) * var(--auto-scale, 1));
     line-height: 1.4;
   }

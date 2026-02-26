@@ -122,7 +122,9 @@
             rows={2}
           ></textarea>
         </Field.Content>
-        <Field.Hint><Kbd.Root>Esc</Kbd.Root> to close</Field.Hint>
+        <Field.Hint class="mb-2">
+          <Kbd.Root>Enter</Kbd.Root> to save, 
+          <Kbd.Root>Esc</Kbd.Root> to close</Field.Hint>
       </Field.Root>
     {:else}
       <div class="border-transparent rounded p-1.5">
