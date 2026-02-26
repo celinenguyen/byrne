@@ -23,7 +23,7 @@ export const layouts: Record<string, LayoutDefinition> = {
   Title: {
     id: 'Title',
     displayName: 'Title',
-    description: 'Large heading with optional subtitle',
+    description: 'Heading with optional subtitle',
     component: TitleLayout as unknown as Component,
     schema: titleSettings,
   },
