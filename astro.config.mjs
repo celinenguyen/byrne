@@ -25,7 +25,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     define: {
-      'import.meta.env.PUBLIC_STATIC_MODE': JSON.stringify(isPages),
+      'import.meta.env.PUBLIC_STATIC_MODE': JSON.stringify(isPages || isVercel),
     },
     server: {
       watch: {
