@@ -3,6 +3,7 @@
   import BaseLayout from './BaseLayout.svelte';
   import SlideLayoutImageSlot from './SlideLayoutImageSlot.svelte';
   import MarkdownText from './MarkdownText.svelte';
+  import { autoScale } from '../../lib/actions/autoScale';
 
   interface Props {
     content: SlideContent;
@@ -20,14 +21,20 @@
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgLeft} slotName="left" class="flex-1 min-h-0 rounded" />
       {#if capLeft}
-        <div data-slot="text:leftCaption" class="mt-2 text-xs prose prose-sm max-w-none" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)"><MarkdownText text={capLeft} /></div>
+        <div use:autoScale={{ minScale: 0.7 }} data-slot="text:leftCaption" class="caption-text mt-2 prose prose-sm max-w-none" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)"><MarkdownText text={capLeft} /></div>
       {/if}
     </div>
     <div class="flex flex-col">
       <SlideLayoutImageSlot src={imgRight} slotName="right" class="flex-1 min-h-0 rounded" />
       {#if capRight}
-        <div data-slot="text:rightCaption" class="mt-2 text-xs prose prose-sm max-w-none" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)"><MarkdownText text={capRight} /></div>
+        <div use:autoScale={{ minScale: 0.7 }} data-slot="text:rightCaption" class="caption-text mt-2 prose prose-sm max-w-none" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)"><MarkdownText text={capRight} /></div>
       {/if}
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .caption-text {
+    font-size: calc(clamp(0.75rem, 2cqi, 1rem) * var(--auto-scale, 1));
+  }
+</style>

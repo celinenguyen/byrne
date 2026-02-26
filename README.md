@@ -214,3 +214,58 @@ YourNewLayoutId: {
 ```
 
 Once you've done all that, your layout will appear in the app!
+
+## Auto-scaling text with `use:autoScale`
+
+When a slide has a lot of text, it can overflow its container. The `autoScale` Svelte action handles this automatically by progressively shrinking text to fit, and falling back to scrolling if it still overflows at the minimum scale.
+
+### How it works
+
+`autoScale` attaches a `ResizeObserver` to the element. Whenever the element resizes (or the content changes), it:
+
+1. Resets the `--auto-scale` CSS custom property to `1`
+2. Measures `scrollHeight` vs `clientHeight`
+3. If the content overflows, sets `--auto-scale` to `clientHeight / scrollHeight` (clamped to a minimum of `0.5`)
+4. If the content *still* overflows at the minimum scale, enables `overflow-y: auto` so the user can scroll
+
+### Setting font sizes with `clamp()` and `cqi` units
+
+Use CSS `clamp()` with container query inline (`cqi`) units so that font sizes respond to the slide's container width. Then multiply by `var(--auto-scale, 1)` so that `autoScale` can shrink text when it overflows vertically.
+
+Some useful presets:
+
+| Preset | `clamp()` value | Use case |
+|--------|----------------|----------|
+| Large | `clamp(1.5rem, 5cqi, 3rem)` | Titles, headings |
+| Medium | `clamp(0.875rem, 2.5cqi, 1.25rem)` | Subtitles, body text |
+| Small | `clamp(0.75rem, 2cqi, 1rem)` | Captions, footnotes |
+
+### Usage example
+
+```svelte
+<script lang="ts">
+  import { autoScale } from '../../lib/actions/autoScale';
+</script>
+
+<div use:autoScale class="max-h-full">
+  <h1 class="heading">My heading</h1>
+  <p class="body">Some body text that might be long...</p>
+</div>
+
+<style>
+  .heading {
+    font-size: calc(clamp(1.5rem, 5cqi, 3rem) * var(--auto-scale, 1));
+  }
+  .body {
+    font-size: calc(clamp(0.875rem, 2.5cqi, 1.25rem) * var(--auto-scale, 1));
+  }
+</style>
+```
+
+You can customize the minimum scale and the CSS variable name:
+
+```svelte
+<div use:autoScale={{ minScale: 0.3, cssVar: '--my-scale' }}>
+  ...
+</div>
+```

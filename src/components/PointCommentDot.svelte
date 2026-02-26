@@ -78,6 +78,10 @@
       e.stopPropagation();
       e.preventDefault();
       openCommentPopoverId.set(null);
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.stopPropagation();
+      e.preventDefault();
+      openCommentPopoverId.set(null);
     } else if (e.key === 'Delete') {
       e.stopPropagation();
       e.preventDefault();

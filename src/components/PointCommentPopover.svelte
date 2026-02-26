@@ -12,6 +12,7 @@
 
 <script lang="ts">
   import { fade } from 'svelte/transition';
+  import { computePosition, autoUpdate, flip, shift, offset } from '@floating-ui/dom';
   import * as Field from '$lib/components/ui/field';
   import * as Kbd from '$lib/components/ui/kbd';
   import MarkdownText from './layouts/MarkdownText.svelte';
@@ -52,28 +53,40 @@
     autoResize(el);
   }
 
-  // Compute viewport-fixed position from the slot element + fractional x/y
-  let fixedLeft = $state(0);
-  let fixedTop = $state(0);
-
-  function updatePosition() {
-    if (!slotEl) return;
-    const rect = slotEl.getBoundingClientRect();
-    fixedLeft = rect.left + x * rect.width;
-    fixedTop = rect.top + y * rect.height;
-  }
-
+  // Use Floating UI with a virtual reference element at the dot position
   $effect(() => {
-    // Re-run when position or element changes
-    x; y; slotEl;
-    updatePosition();
+    if (!slotEl || !popoverEl) return;
+    const el = popoverEl;
 
-    window.addEventListener('scroll', updatePosition, true);
-    window.addEventListener('resize', updatePosition);
-    return () => {
-      window.removeEventListener('scroll', updatePosition, true);
-      window.removeEventListener('resize', updatePosition);
+    const virtualRef = {
+      getBoundingClientRect() {
+        const rect = slotEl.getBoundingClientRect();
+        const px = rect.left + x * rect.width;
+        const py = rect.top + y * rect.height;
+        return {
+          x: px, y: py,
+          top: py, left: px, bottom: py, right: px,
+          width: 0, height: 0,
+        };
+      },
     };
+
+    const cleanup = autoUpdate(virtualRef, el, () => {
+      computePosition(virtualRef, el, {
+        strategy: 'fixed',
+        placement: 'bottom',
+        middleware: [
+          offset(12),
+          flip({ padding: 8 }),
+          shift({ padding: 8 }),
+        ],
+      }).then(({ x: fx, y: fy }) => {
+        el.style.left = `${fx}px`;
+        el.style.top = `${fy}px`;
+      });
+    });
+
+    return cleanup;
   });
 
   // Auto-resize when editable opens (handles existing text).
@@ -89,9 +102,9 @@
 <div use:portal={document.body}>
   <div
     bind:this={popoverEl}
-    class="fixed z-50 max-w-[400px] backdrop-blur-sm bg-white/80 rounded-sm border border-border shadow-lg text-xs pointer-events-auto -translate-x-1/2"
-    style:left="{fixedLeft}px"
-    style:top="calc({fixedTop}px + 1.8em)"
+    class="fixed z-50 w-[min(400px,90vw)] backdrop-blur-sm bg-white/80 rounded-sm border border-border shadow-lg text-xs pointer-events-auto"
+    style:left="0"
+    style:top="0"
     onclick={(e) => e.stopPropagation()}
     onkeydown={onKeydown}
     transition:fade={{ duration: 120 }}
