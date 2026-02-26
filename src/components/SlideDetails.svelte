@@ -18,7 +18,7 @@
   import { extractPalette, resolveColorRef, findClosestColorIndex } from '../lib/imageColors';
 
   function fontStyle(f: typeof fontOptions[number]) {
-    return `font-family: ${f.value}; letter-spacing: ${f.uiTracking}; font-size: ${f.uiSize};`;
+    return `font-family: ${f.value}; letter-spacing: ${f.uiTracking}; font-size: ${f.uiSize}; line-height: 1;`;
   }
 
   const dmContent = 'z-50 min-w-[140px] rounded-md border border-border bg-popover shadow-md';

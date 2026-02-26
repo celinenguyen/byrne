@@ -38,16 +38,6 @@ export const fontOptions = [
     uiTracking: '0.01em',
     usableFor: ['heading', 'body', 'caption'] as FontRole[]
   },
-  { id: 'syne-tactile',
-    label: 'Syne Tactile',
-    value: '"Syne Tactile", cursive',
-    headingWeight: '400',
-    headingTracking: '0em',
-    headingLineHeight: '1.2',
-    uiSize: '1.1em',
-    uiTracking: '0em',
-    usableFor: ['heading'] as FontRole[]
-  },
   { id: 'reforma-1969',
     label: 'Reforma 1969',
     value: '"Reforma 1969 Blanca", "Georgia", serif',
