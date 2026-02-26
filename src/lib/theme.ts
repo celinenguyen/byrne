@@ -91,14 +91,15 @@ export const defaultTheme: DeckTheme = {
   accentColor: 'persimmon',
 };
 
-// -- Link offset for light-on-dark slides --
+/* optical offset for light-on-dark slides, since the accent color
+ * will be brighter and therefore perceived as 'higher' than the primary text */
 export function computeLinkOffset(primaryColor: string, bgColor: string): string {
   const p = parse(primaryColor);
   const b = parse(bgColor);
   if (!p || !b) return '0px';
   const pL = toOklch(p)?.l ?? 0;
   const bL = toOklch(b)?.l ?? 0;
-  return pL - bL > 0.3 ? '1px' : '0px';
+  return pL - bL > 0.3 ? '-0.027em' : '0px';
 }
 
 // -- Resolver: theme keys → CSS values --

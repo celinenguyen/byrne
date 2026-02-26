@@ -19,7 +19,7 @@
   <div class="flex flex-col h-full">
     <SlideLayoutImageSlot src={imageSrc} slotName="image" class="flex-1 min-h-0" />
     {#if caption}
-      <div use:autoScale={{ minScale: 0.7 }} data-slot="text:caption" class="px-6 py-2 prose prose-sm max-w-none text-center" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)">
+      <div use:autoScale={{ minScale: 0.7 }} data-slot="text:caption" class="px-6 py-3 max-w-none text-center" style="font-family: var(--slide-font-caption); color: var(--slide-color-primary)">
         <MarkdownText text={caption} />
       </div>
     {/if}
@@ -28,6 +28,6 @@
 
 <style>
   [data-slot="text:caption"] {
-    font-size: calc(clamp(1rem, 2cqi, 1.2rem) * var(--auto-scale, 1));
+    font-size: calc(clamp(0.4rem, 1.2cqi, 1.2rem) * var(--auto-scale, 1));
   }
 </style>

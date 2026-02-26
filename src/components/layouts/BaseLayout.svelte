@@ -20,7 +20,9 @@
     color: var(--slide-color-accent);
     text-decoration: none;
     position: relative;
-    top: var(--slide-link-offset, 0px);
+    /* optical offset for light-on-dark slides, since the accent color
+     * will be brighter and therefore perceived as 'higher' than the primary text */
+    bottom: var(--slide-link-offset, 0px);
     &:hover {
       text-decoration: underline;
       text-decoration-thickness: 0.06em;
