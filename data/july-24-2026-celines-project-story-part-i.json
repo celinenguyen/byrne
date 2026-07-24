@@ -3,14 +3,16 @@
     "id": "rU9PQtqOIM",
     "title": "July 24, 2026: Celine's project story, part I",
     "author": "",
-    "updatedAt": "2026-07-24T20:46:13.375Z",
+    "updatedAt": "2026-07-24T20:53:38.652Z",
     "theme": {
       "backgroundColor": "black",
       "primaryColor": "white",
       "headingFont": "inter",
       "captionFont": "inter",
       "accentColor": "lavender"
-    }
+    },
+    "status": "published",
+    "publishedAt": "2026-07-24T20:50:18.000Z"
   },
   "slides": [
     {
