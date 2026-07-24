@@ -1,9 +1,9 @@
 {
   "meta": {
-    "id": "cOBszSJH--B-WpwpAyc9h",
-    "title": "project story for ultralight",
+    "id": "rU9PQtqOIM",
+    "title": "July 24, 2026: Celine's project story, part I",
     "author": "",
-    "updatedAt": "2026-07-24T20:13:42.435Z",
+    "updatedAt": "2026-07-24T20:46:13.375Z",
     "theme": {
       "backgroundColor": "black",
       "primaryColor": "white",
@@ -404,7 +404,9 @@
         "images": [
           "/images/ldVYLyDXr0.png"
         ],
-        "text": [],
+        "text": [
+          "a sci-fi novel set far in the future…"
+        ],
         "url": ""
       },
       "style": {
@@ -426,7 +428,7 @@
       "content": {
         "images": [],
         "text": [
-          "\"At first, we engaged in a large research project to study how to preserve information across geologic eons…Scientists realized that in terms of data longevity, storage devices from our time were better…[like] USB flash drives and hard drives…But none of these were a match for printed material.\"",
+          "\"We engaged in a large research project to study how to preserve information across geologic eons…in terms of data longevity, storage devices from our time were better…[like] USB flash drives and hard drives…But none of these were a match for printed material.\"",
           "a character in Liu Cixin's _Death's End_"
         ],
         "url": ""
@@ -564,7 +566,7 @@
       "content": {
         "images": [],
         "text": [
-          "how can I combine…\n\nart + technology + memory + loss + history"
+          "how can I combine…\n\nart + technology + archiving + memory + loss + history"
         ],
         "url": ""
       }
@@ -736,6 +738,17 @@
           "attention + trans history + pointers + memory!"
         ],
         "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.608846013685856 0.23759906174815348 5.587928114925654)",
+            "oklch(0.3785367569709462 0.14456523071369204 4.020418202768606)",
+            "oklch(0.872524210224531 0.06905811822642283 351.69314641777856)",
+            "oklch(0.5950566952393419 0.045897975040843315 347.0557057309117)",
+            "oklch(0.3384026918441932 0.0072297017901766765 3.7567137203957257)"
+          ]
+        ]
       }
     }
   ]

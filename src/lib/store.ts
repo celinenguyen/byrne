@@ -3,6 +3,7 @@ import type { Deck, DeckSummary, Slide, SlideContent } from './types';
 import type { DeckTheme } from './theme';
 import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
+import { generateDeckId } from './id';
 
 const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
 const BASE_URL: string = import.meta.env.BASE_URL;
@@ -16,17 +17,18 @@ const simulateDeployment: boolean =
 /** True when edits should be ephemeral (sessionStorage-only). */
 const ephemeralMode: boolean = staticMode || simulateDeployment;
 
-// Read initial state from URL params
+// Read initial state from URL params. The `deck` param holds a stable deck
+// id (not a filename), so renaming a deck never breaks a bookmarked/shared URL.
 function getInitialParams() {
-  if (typeof window === 'undefined') return { view: 'edit' as const, slide: 0, deck: '' };
+  if (typeof window === 'undefined') return { view: 'edit' as const, slide: 0, deckId: '' };
   const params = new URLSearchParams(window.location.search);
   const view = params.get('view');
   const slide = params.get('slide');
-  const deckParam = params.get('deck') ?? '';
+  const deckId = params.get('deck') ?? '';
   return {
     view: (view === 'edit' || view === 'preview' || view === 'present') ? view as 'edit' | 'preview' | 'present' : 'edit' as const,
     slide: slide ? Math.max(0, parseInt(slide, 10) - 1) : 0,
-    deck: deckParam,
+    deckId,
   };
 }
 
@@ -43,7 +45,9 @@ viewMode.subscribe((v) => {
     viewModeBeforePresent.set(v as 'edit' | 'preview');
   }
 });
-export const currentDeckFile = writable<string>(initial.deck);
+// Holds the on-disk filename used for API/storage calls, resolved from the
+// URL's deck id once the deck list has loaded (see initializeDeck).
+export const currentDeckFile = writable<string>('');
 export const deckList = writable<DeckSummary[]>([]);
 export const focusSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
 export const activeSlot = writable<{ type: 'image' | 'text'; index: number } | null>(null);
@@ -54,21 +58,26 @@ export const pendingDelete = writable<{
   index: number;
   timer: ReturnType<typeof setTimeout>;
 } | null>(null);
-export const showIntro = writable<boolean>(!initial.deck);
+export const showIntro = writable<boolean>(!initial.deckId);
 export const openCommentPopoverId = writable<string | null>(null);
 export { staticMode, ephemeralMode };
 
-// Sync stores -> URL
+// Guards against syncURL running (and clobbering the URL's deck id) before
+// initializeDeck has had a chance to resolve it against the loaded deck list.
+let initialized = false;
+
+// Sync stores -> URL. Keyed off the loaded deck's stable id (not its
+// filename), so renaming a deck never changes its URL.
 function syncURL() {
-  if (typeof window === 'undefined') return;
-  const deckFile = get(currentDeckFile);
-  if (!deckFile) {
-    // On splash page — clean URL
+  if (typeof window === 'undefined' || !initialized) return;
+  const d = get(deck);
+  if (!d) {
+    // No deck loaded — clean URL
     window.history.replaceState(null, '', window.location.pathname);
     return;
   }
   const params = new URLSearchParams();
-  params.set('deck', deckFile);
+  params.set('deck', d.meta.id);
   params.set('view', get(viewMode));
   params.set('slide', String(get(currentSlideIndex) + 1));
   if (simulateDeployment) params.set('simulateDeployment', 'true');
@@ -82,7 +91,6 @@ export function exitPresent() {
 
 viewMode.subscribe(() => syncURL());
 currentSlideIndex.subscribe(() => syncURL());
-currentDeckFile.subscribe(() => syncURL());
 
 export const resolvedTheme = derived(deck, ($deck) => {
   const merged: DeckTheme = { ...defaultTheme, ...($deck?.meta?.theme ?? {}) };
@@ -119,14 +127,22 @@ export async function loadDeckList(): Promise<DeckSummary[]> {
   return [];
 }
 
-/** Bootstrap: load deck list; open a deck if one is specified in the URL */
+/** Bootstrap: load deck list; open a deck if one is specified in the URL (by id) */
 export async function initializeDeck() {
+  initialized = true;
   const list = await loadDeckList();
-  const current = get(currentDeckFile);
-  if (get(currentDeckFile)) {
-    showIntro.set(false);
-    await loadDeck();
+  if (initial.deckId) {
+    const match = list.find((d) => d.id === initial.deckId);
+    if (match) {
+      showIntro.set(false);
+      currentDeckFile.set(match.filename);
+      await loadDeck();
+      return;
+    }
+    // Stale/unknown deck id — fall back to the splash screen and drop it from the URL
+    showIntro.set(true);
   }
+  syncURL();
 }
 
 export async function loadDeck() {
@@ -140,6 +156,7 @@ export async function loadDeck() {
       const data: Deck = JSON.parse(stored);
       data.slides.sort((a, b) => a.order - b.order);
       deck.set(data);
+      syncURL();
       return;
     }
   }
@@ -153,6 +170,7 @@ export async function loadDeck() {
     const data: Deck = await res.json();
     data.slides.sort((a, b) => a.order - b.order);
     deck.set(data);
+    syncURL();
   }
 }
 
@@ -425,6 +443,7 @@ export async function deleteDeck(filename: string) {
       currentDeckFile.set('');
       deck.set(null);
       showIntro.set(true);
+      syncURL();
     }
   }
 }
@@ -487,7 +506,7 @@ export async function moveSlideToDeck(slideId: string, targetDeckFile: string) {
 
 export async function createDeck(title: string) {
   if (ephemeralMode) {
-    const id = nanoid();
+    const id = generateDeckId();
     const filename = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const newDeck: Deck = {
       meta: {
