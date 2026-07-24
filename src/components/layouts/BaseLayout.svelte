@@ -1,21 +1,14 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { resolvedTheme } from '../../lib/store';
 
   interface Props {
     class?: string;
     children: Snippet;
   }
   let { class: className = '', children }: Props = $props();
-
-  let styleString = $derived(
-    Object.entries($resolvedTheme)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('; ')
-  );
 </script>
 
-<div class="aspect-video w-full h-full relative overflow-hidden {className}" style="{styleString}; background-color: var(--slide-color-bg, white)">
+<div class="aspect-video w-full h-full relative overflow-hidden {className}" style="background-color: var(--slide-color-bg, white)">
   {@render children()}
 </div>
 
@@ -26,8 +19,14 @@
   :global(p[data-slot^="text:"] a) {
     color: var(--slide-color-accent);
     text-decoration: none;
+    position: relative;
+    /* optical offset for light-on-dark slides, since the accent color
+     * will be brighter and therefore perceived as 'higher' than the primary text */
+    bottom: var(--slide-link-offset, 0px);
     &:hover {
       text-decoration: underline;
+      text-decoration-thickness: 0.06em;
+      text-underline-offset: 0.15em;
     }
   }
 </style>

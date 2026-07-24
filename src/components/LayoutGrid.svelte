@@ -37,7 +37,7 @@
             </Item.Root>
           </Tooltip.Trigger>
           <Tooltip.Content>
-            Because this makes an API call, this is only available when running the app yourself
+            This is only available on Vercel or when running locally :( because it makes an API call!
           </Tooltip.Content>
         </Tooltip.Root>
       </Tooltip.Provider>

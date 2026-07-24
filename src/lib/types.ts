@@ -20,10 +20,26 @@ export interface DeckSummary {
   publishedAt?: string;
 }
 
+export interface PointComment {
+  id: string;
+  slotIndex: number;
+  x: number;
+  y: number;
+  text: string;
+}
+
 export interface SlideContent {
   images: string[];
   text: string[];
   url?: string;
+  comments?: PointComment[];
+}
+
+export interface SlideStyle {
+  imageColors?: (string[] | null)[];  // imageColors[slotIndex] = [oklch1, ...oklch5] or null
+  customPrimaryColor?: string;        // e.g. "imageColors[0][2]"
+  customBackgroundColor?: string;     // e.g. "imageColors[1][0]"
+  customAccentColor?: string;         // e.g. "imageColors[0][4]"
 }
 
 export interface Slide {
@@ -31,6 +47,7 @@ export interface Slide {
   order: number;
   layout: string;
   content: SlideContent;
+  style?: SlideStyle;
 }
 
 export interface Deck {

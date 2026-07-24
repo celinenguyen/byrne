@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
-  import type { Slide } from '../lib/types';
+  import { onDestroy, tick } from 'svelte';
+  import type { Slide, PointComment } from '../lib/types';
   import { layouts, getSlotInfo } from './layouts/registry';
-  import { focusSlot, activeSlot, detailsOpen, resolvedTheme } from '../lib/store';
+  import { focusSlot, activeSlot, detailsOpen, resolvedTheme, updateSlide } from '../lib/store';
+  import { slideColorOverrideStyle } from '../lib/theme';
   import DeleteSlideButton from './DeleteSlideButton.svelte';
+  import PointCommentOverlay from './PointCommentOverlay.svelte';
 
   interface Props {
     slide: Slide;
@@ -19,10 +21,20 @@
 
   let layoutDef = $derived(layouts[slide.layout]);
 
-  let themeStyle = $derived(
+  let deckThemeStyle = $derived(
     Object.entries($resolvedTheme)
       .map(([k, v]) => `${k}: ${v}`)
       .join('; ')
+  );
+
+  let slideOverrideStyle = $derived(slideColorOverrideStyle(
+    slide.style,
+    $resolvedTheme['--slide-color-primary'],
+    $resolvedTheme['--slide-color-bg'],
+  ));
+
+  let themeStyle = $derived(
+    slideOverrideStyle ? `${deckThemeStyle}; ${slideOverrideStyle}` : deckThemeStyle
   );
 
   // --- Slot highlight overlay ---
@@ -103,9 +115,10 @@
     if (!highlightEl || !containerEl || !highlightInfo) return '';
     const elRect = highlightEl.getBoundingClientRect();
     const cRect = containerEl.getBoundingClientRect();
-    const top = elRect.top - cRect.top;
-    const left = elRect.left - cRect.left;
-    return `top:${top}px;left:${left}px;width:${elRect.width}px;height:${elRect.height}px`;
+    // the -1 and +1 offsets here make the overlay line up exactly with the edges of the slides
+    const top = elRect.top - cRect.top - 1;
+    const left = elRect.left - cRect.left - 1;
+    return `top:${top}px;left:${left}px;width:${elRect.width + 1}px;height:${elRect.height + 1}px`;
   });
 
   // Walk up from an event target to find the nearest layout slot element
@@ -177,6 +190,7 @@
   // Pin the highlight so it doesn't flash off during the async focus transition.
   function handleClick(e: MouseEvent) {
     if (!interactive) return;
+    if (e.metaKey || e.ctrlKey) return; // Cmd+Click is for comment placement
     const result = findSlotElement(e.target);
     if (result) {
       pinnedEl = result.el;
@@ -188,11 +202,41 @@
 
   function handleKeyDown(e: KeyboardEvent) {
     if (!interactive || (e.key !== 'Enter' && e.key !== ' ')) return;
+    // Don't intercept when typing in a text field (e.g. comment textarea)
+    const el = e.target;
+    if (el instanceof HTMLElement && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
     e.preventDefault();
     const result = findSlotElement(e.target);
     if (result) {
       focusSlot.set({ type: result.info.type, index: result.info.index });
     }
+  }
+
+  // --- Point comment overlays for image slots ---
+  let imageSlots = $state<{ el: HTMLElement; index: number }[]>([]);
+
+  // Discover image slot elements inside the layout
+  $effect(() => {
+    // Re-run when content or layout changes
+    slide.content;
+    slide.layout;
+    containerEl;
+    tick().then(() => {
+      if (!containerEl) { imageSlots = []; return; }
+      const els = containerEl.querySelectorAll<HTMLElement>('[data-slot^="image:"]');
+      imageSlots = Array.from(els).map((el) => {
+        const info = getSlotInfo(slide.layout, el);
+        return { el, index: info?.index ?? 0 };
+      });
+    });
+  });
+
+  let slideComments = $derived(slide.content.comments ?? []);
+
+  function handleCommentsChange(newComments: PointComment[]) {
+    updateSlide(slide.id, {
+      content: { ...slide.content, comments: newComments },
+    });
   }
 </script>
 
@@ -202,7 +246,7 @@
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
     tabindex={interactive ? 0 : undefined}
-    class="w-full h-full rounded-xs relative border border-border shadow-sm {current ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
+    class="w-full h-full rounded-xs relative shadow-sm {mode === 'present' ? 'border-0' : 'border border-border'} {current ? 'border-1 border-stone-300 shadow-md' : dimmed ? 'opacity-50' : ''}"
     style={themeStyle}
     bind:this={containerEl}
     onmouseover={handleMouseOver}
@@ -231,6 +275,20 @@
         </div>
       </div>
     {/if}
+
+    {#each imageSlots as slot (slot.index)}
+      {#if containerEl}
+        <PointCommentOverlay
+          comments={slideComments}
+          slotIndex={slot.index}
+          slideId={slide.id}
+          {mode}
+          slotEl={slot.el}
+          {containerEl}
+          onCommentsChange={handleCommentsChange}
+        />
+      {/if}
+    {/each}
   </div>
   {#if interactive}
     <DeleteSlideButton slideId={slide.id} class="top-1 right-1" />

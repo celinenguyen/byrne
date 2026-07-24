@@ -20,17 +20,20 @@
 
 <!-- svelte-ignore a11y_label_has_associated_control -->
 <ButtonGroup.Root class="w-full {className}">
-  <InputGroup.Root class="group flex-1">
+  <InputGroup.Root class="group relative flex-1 overflow-hidden">
     <InputGroup.Input
       {placeholder}
       bind:value
       onkeydown={handleKeydown}
       {autofocus}
     />
-    <InputGroup.Addon align="inline-end">
-      <InputGroup.Button size="icon-xs" onclick={onsubmit} aria-label={ariaLabel} class="opacity-0 transition-opacity group-focus-within:opacity-100">
-        <ArrowRight class="size-4" />
-      </InputGroup.Button>
-    </InputGroup.Addon>
+    <button
+      type="button"
+      onclick={onsubmit}
+      aria-label={ariaLabel}
+      class="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded p-0.5 opacity-0 shadow-[0_0_8px_6px_white] transition-opacity group-focus-within:opacity-95 bg-white"
+    >
+      <ArrowRight class="size-4" />
+    </button>
   </InputGroup.Root>
 </ButtonGroup.Root>

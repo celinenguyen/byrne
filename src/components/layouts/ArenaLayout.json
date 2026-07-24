@@ -1,13 +1,13 @@
 {
   "id": "Arena",
   "displayName": "Are.na",
-  "description": "Auto-populate from an Are.na block",
+  "description": "Add an image from Are.na",
   "text": {
     "title": { "displayName": "title", "isRequired": false, "placeholder": "Untitled" },
     "description": { "displayName": "description", "isRequired": false }
   },
   "images": {
-    "image": { "displayName": "image", "isRequired": false }
+    "image": { "displayName": "image", "isRequired": true }
   },
   "url": {
     "arena": { "displayName": "Are.na URL", "isRequired": true, "placeholder": "https://www.are.na/block/..." }

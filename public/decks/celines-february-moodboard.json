@@ -1,11 +1,17 @@
 {
   "meta": {
     "id": "8oov03l3eZahHuj7iH-VQ",
-    "title": "celine's february moodboard",
+    "title": "Celine's February moodboard",
     "author": "",
-    "startDate": "",
-    "endDate": "",
-    "updatedAt": "2026-02-16T15:20:51.703Z",
+    "updatedAt": "2026-02-26T11:36:08.041Z",
+    "theme": {
+      "headingFont": "newsreader",
+      "bodyFont": "newsreader",
+      "primaryColor": "olive",
+      "accentColor": "persimmon",
+      "backgroundColor": "taupe",
+      "captionFont": "inter"
+    },
     "status": "published",
     "publishedAt": "2026-02-17T00:00:00.000Z"
   },
@@ -14,25 +20,263 @@
       "id": "pKANdiRRxayi8Nla4t-md",
       "order": 0,
       "layout": "Title",
-      "data": {
+      "content": {
         "images": [],
         "text": [
-          "visual themes i'm drawn to",
-          "february 2026"
+          "I've been thinking a lot about why we (or why I, at least) collect certain images.",
+          ""
         ],
         "url": ""
       }
     },
     {
-      "id": "NmHSoFWCssV0ht0OqUm3n",
+      "id": "SnkMppEFrFaEjwR59d8LF",
       "order": 1,
-      "layout": "Image",
-      "data": {
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "I spent most of my childhood on the internet. (And the library.) \n\nI loved reading design and architecture and fashion and photography blogs—"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "pXDxKjNYbgAnrfoFlSl0F",
+      "order": 2,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "—and collecting all the beautiful, strange, fascinating images I found. \n\nFor many years, I used [Pinterest](https://www.pinterest.com/celinenguyen/) for this. Now I use [Are.na](https://www.are.na/celine-nguyen/channels), which lets me collect quotes and PDFs too."
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "dDuqopSA3r4IkafdN_UiI",
+      "order": 3,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "I would 'collect' any image that had a strange, obscure allure to it. Images that I couldn't stop looking at."
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "A8ReJxvhR27RmEUVhRg7_",
+      "order": 4,
+      "layout": "Title",
+      "content": {
         "images": [
           "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
         ],
         "text": [
-          "artwork by [Studio Airport](https://www.instagram.com/studio.airport/?hl=en) to accompany Robin Wall Kimmerer's essay '[The Serviceberry](https://emergencemagazine.org/essay/the-serviceberry/),' in *Emergence Magazine* (via [are.na](https://www.are.na/block/22169275))"
+          "Earlier this month, for example, I came across an image that a South Korean graphic designer, [Yanju Jeong](https://www.are.na/block/22169275), had saved to Are.na",
+          ""
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "HcfPyL5OoJZY5rREVgVvC",
+            "slotIndex": 0,
+            "x": 0.4482036687935035,
+            "y": 0.4042174042174042,
+            "text": ""
+          },
+          {
+            "id": "09P9obOynR_gUnRj_THio",
+            "slotIndex": 0,
+            "x": 0.533204384268214,
+            "y": 0.47204828366654095,
+            "text": ""
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314218)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.6846130502126)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "4eGueUkgla6IgrPQb1Gpt",
+      "order": 5,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          "It's an illustration by the Netherlands-based [Studio Airport](https://www.instagram.com/studio.airport/?hl=en), to accompany Robin Wall Kimmerer's essay '[The Serviceberry](https://emergencemagazine.org/essay/the-serviceberry/)' in *Emergence Magazine*"
+        ],
+        "url": "",
+        "comments": []
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314218)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.6846130502126)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "v1a6Efgj-Z_zOcXTtkjKX",
+      "order": 6,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "After I came across this image online, I pulled out the two copies of _Emergence_ that I own and spent my evening rereading them."
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "BU02-BiPHS-xxY6oiclNF",
+      "order": 7,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "And then I came back to that image I'd found online."
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "Uz5XboktdVTBFJEZRaS6u",
+      "order": 8,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "Whenever I find an image that captivates me, that I feel some *affinity* to (as the critic Brian Dillon [might say](https://www.nyrb.com/products/affinities))"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "E_RyOo8FD_15h_X1cwURu",
+      "order": 9,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "I want to understand why I'm responding to it. Is it the content? The form? The colors? The composition? What is it about _this specific image_ that is so alluring?"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "hUD6kNrfucKiNhdLWZJCw",
+      "order": 10,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "It helps to start small—to point to very specific moments in the image.",
+          "_An academic might describe this as an exercise in 'close looking'_"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "KnoqcU5KeLfgKh_L_Usm_",
+      "order": 11,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "Let's look at this image together—",
+          "_(you can hover on the_ ✴︎ _icons to see what I'm noticing)_"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "rFFuVAmLxf5C5fvmRooXt",
+      "order": 12,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          ""
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "FDHa08Ev2cIvXJoC4gkzb",
+            "slotIndex": 0,
+            "x": 0.22538999462076384,
+            "y": 0.10670030724154068,
+            "text": "One of the intriguing things about this image is the contrast between\n\n* something very natural, physical, dimensional (the leaves)\n* and something much more flat and constructed (the 2D cutouts)\n\nThe cutouts remind us that we're looking at a photograph of some leaves, not the actual leaves themselves. (As Magritte said, _Ceci n'est pas un pipe_)"
+          },
+          {
+            "id": "kLryeftCWjElJl5lt_Lhk",
+            "slotIndex": 0,
+            "x": 0.6209355292825015,
+            "y": 0.3541213095407655,
+            "text": "The cutouts look very natural—slightly uneven edges and a little bit dimensional, like they've been punched out from paper."
+          },
+          {
+            "id": "Iu2_zpd9IO0RMv0jbKmRF",
+            "slotIndex": 0,
+            "x": 0.8877892932283955,
+            "y": 0.860396999742722,
+            "text": "You can see these thin white borders—even more evidence they were manually punched out."
+          },
+          {
+            "id": "1FeFBnZNd5zeVe1aGE4vp",
+            "slotIndex": 0,
+            "x": 0.4949245939675174,
+            "y": 0.8022686259345192,
+            "text": "The image has a beautiful ying/yang feeling of formality and balance: the left is mostly filled, with the circles creating minute openings and negative space…\n\nand the right is empty, with a profusion of circles in the foreground. (It's also interesting that they're more clustered in the bottom right corner, as if they're a little heavy and have sunken down.)"
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314218)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.6846130502126)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "QnrsCGkAOKBuytLyJydhb",
+      "order": 13,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "There's a lot to look at, and notice, in just one image.",
+          ""
         ],
         "url": ""
       }
