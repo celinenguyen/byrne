@@ -18,9 +18,10 @@ export const fontOptions = [
 export const primaryColorOptions = [
   { id: 'black', label: 'Soft black', value: 'oklch(0.0949 0 0)' },
   { id: 'navy', label: 'Navy', value: 'oklch(0.3265 0.0789 260)' },
-  { id: 'lemaire', label: 'Lemaire', value: 'oklch(0.3706 0.0444 55)' },
+  { id: 'almond', label: 'Almond', value: 'oklch(0.3706 0.0444 55)' },
   { id: 'olive', label: 'Olive', value: 'oklch(0.3912 0.0345 130)' },
   { id: 'rust', label: 'Rust', value: 'oklch(0.3147 0.074 33.8)' },
+  { id: 'white', label: 'White', value: 'oklch(1.0 0 0)' },
 ] as const;
 
 // -- Background color presets --
@@ -30,6 +31,7 @@ export const backgroundColorOptions = [
   { id: 'moss-green', label: 'Moss green', value: 'oklch(0.9397 0.0123 145)' },
   { id: 'taupe', label: 'Taupe', value: 'oklch(0.9574 0.0076 55)' },
   { id: 'satin-pink', label: 'Satin pink', value: 'oklch(0.94 0.0154 350)' },
+  { id: 'black', label: 'Soft black', value: 'oklch(0.0949 0 0)' },
 ] as const;
 
 // -- Accent color presets --
