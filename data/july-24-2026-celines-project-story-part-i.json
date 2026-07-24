@@ -3,7 +3,7 @@
     "id": "rU9PQtqOIM",
     "title": "July 24, 2026: Celine's project story, part I",
     "author": "",
-    "updatedAt": "2026-07-24T20:53:38.652Z",
+    "updatedAt": "2026-07-24T22:03:25.188Z",
     "theme": {
       "backgroundColor": "black",
       "primaryColor": "white",
@@ -45,7 +45,8 @@
       "content": {
         "images": [],
         "text": [
-          "(spring 2022)\n\nI encounter a shimmering point"
+          "( spring 2022 )\n\n",
+          "I encounter a shimmering point"
         ],
         "url": ""
       }
@@ -70,12 +71,25 @@
             "oklch(0.6367600357959382 0 none)",
             "oklch(0.36721280192535233 0.05102521323502945 343.17079765099675)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "f6E_jr_s73nz2SYQvl_7L",
+      "order": 3,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://www.guggenheim.org/wp-content/uploads/2017/05/checklist-brandon-restoration-code-11.jpg"
+        ],
+        "text": [],
+        "url": ""
       }
     },
     {
       "id": "-1J754Gn1G7xW6bz4Pd5O",
-      "order": 3,
+      "order": 4,
       "layout": "Image",
       "content": {
         "images": [
@@ -95,12 +109,13 @@
             "oklch(0.6281052638572214 0.059779583475671756 62.82640011580133)",
             "oklch(0.3934520299661178 0.0352295399893859 71.60993514472688)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "33tllgxXbPz2I2cuZfnQM",
-      "order": 4,
+      "order": 5,
       "layout": "Image",
       "content": {
         "images": [
@@ -120,12 +135,13 @@
             "oklch(0.5897233334558787 0.01689545259616028 235.57768757359486)",
             "oklch(0.38382497112490904 0.004003387370875951 196.9895729340962)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "_KxXYIbLtJ_u5yJzao2df",
-      "order": 5,
+      "order": 6,
       "layout": "Image",
       "content": {
         "images": [
@@ -145,24 +161,26 @@
             "oklch(0.5656390017710702 0.006807590643444745 223.51974415513595)",
             "oklch(0.34871393911434273 0.008572128691812961 233.9060783813602)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "agyFJ-4nAB7aLFbA8BRNF",
-      "order": 6,
+      "order": 7,
       "layout": "Title",
       "content": {
         "images": [],
         "text": [
-          "( autumn → winter 2024 )\n\nthe opportunity to begin a project comes up…"
+          "( autumn → winter 2024 )\n\n",
+          "the opportunity to begin a project comes up"
         ],
         "url": ""
       }
     },
     {
       "id": "nXKFZqFeUsz5lPG3kI7KW",
-      "order": 7,
+      "order": 8,
       "layout": "Image",
       "content": {
         "images": [
@@ -182,12 +200,13 @@
             "oklch(0.5449564613410293 0.06271208677813776 351.81702345356774)",
             "oklch(0.48097767179879736 0.052029554792510584 75.88024897234199)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][3]"
       }
     },
     {
       "id": "sv8LdZAKjmU2E1Ymf29Tq",
-      "order": 8,
+      "order": 9,
       "layout": "Image",
       "content": {
         "images": [
@@ -205,12 +224,13 @@
             "oklch(0.5600103504424414 0.03238089440599431 350.19208816399714)",
             "oklch(0.4530260819208415 0.005005256987909631 337.486788153788)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][3]"
       }
     },
     {
       "id": "tWRm7yaW7mb1c6DRlB-cD",
-      "order": 9,
+      "order": 10,
       "layout": "Title",
       "content": {
         "images": [],
@@ -222,7 +242,7 @@
     },
     {
       "id": "gwUcyuGyG7_cVGKfKMzp2",
-      "order": 10,
+      "order": 11,
       "layout": "Image",
       "content": {
         "images": [
@@ -240,12 +260,13 @@
             "oklch(0.5416295541715124 0.08803128054315557 25.892321680537325)",
             "oklch(0.37401705922238676 0.04979387347562796 279.14288890415577)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "-vbF6mVAr6PSzFSkDKduC",
-      "order": 11,
+      "order": 12,
       "layout": "Image",
       "content": {
         "images": [
@@ -265,12 +286,13 @@
             "oklch(0.6449621654853421 0.05343072437060026 77.64347645564759)",
             "oklch(0.3645573156429045 0.045926677772533495 56.4778692719869)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][1]"
       }
     },
     {
       "id": "AJ4E6gSczwcBaaNDD2p3H",
-      "order": 12,
+      "order": 13,
       "layout": "Image",
       "content": {
         "images": [
@@ -290,16 +312,18 @@
             "oklch(0.6728325388346263 0.06820586921812971 77.00548513090645)",
             "oklch(0.42200281281855095 0.027287413904396464 77.8890589166034)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "rMTtZTWxtXzCZ8jmIYkFH",
-      "order": 13,
+      "order": 14,
       "layout": "Title",
       "content": {
         "images": [],
         "text": [
+          "loose thoughts —",
           "attention spans (short/long)\n\nI liked the non–computer art the most (unexpected!)\n\nit's so easy to lose digital information…"
         ],
         "url": ""
@@ -307,7 +331,7 @@
     },
     {
       "id": "5GorniwrxYnS8FcBpj_-l",
-      "order": 14,
+      "order": 15,
       "layout": "Image",
       "content": {
         "images": [
@@ -315,19 +339,6 @@
         ],
         "text": [
           "from Suzanne Treister's _[Fictional Videogame Stills](https://www.suzannetreister.net/Ampages/Amenu.html)_, 1992"
-        ],
-        "url": ""
-      }
-    },
-    {
-      "id": "iw8rbKkxSOdtIic-mqaZH",
-      "order": 15,
-      "layout": "Title",
-      "content": {
-        "images": [],
-        "text": [
-          "“The original Amiga floppy disks which stored the image files are corrupt, but the photographic art works remain.”",
-          "[Suzanne Treister](https://www.suzannetreister.net/Ampages/Amenu.html)"
         ],
         "url": ""
       }
@@ -395,7 +406,8 @@
             "oklch(0.6367600357959382 0 none)",
             "oklch(0.36721280192535233 0.05102521323502945 343.17079765099675)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][0]"
       }
     },
     {
@@ -420,7 +432,8 @@
             "oklch(0.5774492172026624 0.06818416964040265 257.5252739687493)",
             "oklch(0.3877480185107491 0.058600934952700925 263.5356194576615)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
@@ -458,7 +471,8 @@
             "oklch(0.5863164681546698 0 none)",
             "oklch(0.3523247402852869 0 none)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][1]"
       }
     },
     {
@@ -468,7 +482,8 @@
       "content": {
         "images": [],
         "text": [
-          "( winter → spring 2025 )\n\nas I was drafting…"
+          "( winter → spring 2025 )\n\n",
+          "as I was drafting…"
         ],
         "url": ""
       }
@@ -495,7 +510,8 @@
             "oklch(0.5733925456025806 0.09425233554942623 250.22683198337145)",
             "oklch(0.425697314070384 0.03427269190907305 45.660033602962194)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
@@ -562,20 +578,34 @@
       }
     },
     {
-      "id": "--aRdewlAQ4oyrs7cdmbW",
+      "id": "DB93RknyV8eMAuQqOROrj",
       "order": 27,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://blog.geocities.institute/wp-content/uploads/68d826c36c5e069628a3fa471e7502d7c5d43412.png"
+        ],
+        "text": [
+          "the [One Terabyte of Kilobyte Age](https://blog.geocities.institute/) project"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "--aRdewlAQ4oyrs7cdmbW",
+      "order": 28,
       "layout": "Title",
       "content": {
         "images": [],
         "text": [
-          "how can I combine…\n\nart + technology + archiving + memory + loss + history"
+          "can I combine…art + technology + archiving + memory + loss + history"
         ],
         "url": ""
       }
     },
     {
       "id": "ybR9Mv97QYGehzJBUs2ck",
-      "order": 28,
+      "order": 29,
       "layout": "Image",
       "content": {
         "images": [
@@ -598,7 +628,7 @@
     },
     {
       "id": "spayoHnYsmWMiJafIl2Hd",
-      "order": 29,
+      "order": 30,
       "layout": "Title",
       "content": {
         "images": [],
@@ -610,19 +640,19 @@
     },
     {
       "id": "Z4mqfpzY1qTuWuaowydMH",
-      "order": 30,
+      "order": 31,
       "layout": "Title",
       "content": {
         "images": [],
         "text": [
-          "“archival silence“ and who is absent from history"
+          "“archival silence“ and who is absent from history…"
         ],
         "url": ""
       }
     },
     {
       "id": "dtf1pU7YJOOb4iPulQJAx",
-      "order": 31,
+      "order": 32,
       "layout": "Image",
       "content": {
         "images": [
@@ -645,25 +675,28 @@
     },
     {
       "id": "T_djG6-P5kLBRxEzCHnlQ",
-      "order": 32,
+      "order": 33,
       "layout": "Title",
       "content": {
         "images": [],
         "text": [
-          "(spring 2025)\n\nfinishing my project"
+          "( spring 2025 )\n\n",
+          "gathering ~all~ almost all of my shimmering points together"
         ],
         "url": ""
       }
     },
     {
       "id": "qVybItsZWOJvXtHwKRYip",
-      "order": 33,
+      "order": 34,
       "layout": "Image",
       "content": {
         "images": [
           "/images/hFffOTr-Il.png"
         ],
-        "text": [],
+        "text": [
+          "in _Empty Set_'s [Decay](https://www.emptysetmag.com/articles/the-afterlives-of-computer-art) issue"
+        ],
         "url": ""
       },
       "style": {
@@ -675,12 +708,13 @@
             "oklch(0.6317749253848725 0.045990079808285456 217.07733704887193)",
             "oklch(0.44707847137300977 0.057508103843185346 103.31280619565196)"
           ]
-        ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
       }
     },
     {
       "id": "Q1qgt1cK8rFaMLQ6qPAe_",
-      "order": 34,
+      "order": 35,
       "layout": "Image",
       "content": {
         "images": [
@@ -705,7 +739,7 @@
     },
     {
       "id": "h_Nu4P3qVfx9whDfqL1-r",
-      "order": 35,
+      "order": 36,
       "layout": "Image",
       "content": {
         "images": [
@@ -730,7 +764,7 @@
     },
     {
       "id": "QVdC7q9zx8jUVA_JsMU1j",
-      "order": 36,
+      "order": 37,
       "layout": "Image",
       "content": {
         "images": [
