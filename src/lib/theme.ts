@@ -21,7 +21,7 @@ export const fontOptions = [
   { id: 'inter', 
     label: 'Inter', 
     value: '"Inter", system-ui, sans-serif', 
-    headingWeight: '600', 
+    headingWeight: '500', 
     headingTracking: '-0.01em', 
     headingLineHeight: '1',
     uiSize: '1em', 
