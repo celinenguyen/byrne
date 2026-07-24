@@ -3,6 +3,7 @@ import { readFile, readdir, writeFile, rename, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { nanoid } from 'nanoid';
 import { slugify } from '../../lib/slugify';
+import { generateDeckId } from '../../lib/id';
 
 const DATA_DIR = join(process.cwd(), 'data');
 
@@ -16,8 +17,17 @@ export const GET: APIRoute = async () => {
         const raw = await readFile(join(DATA_DIR, f), 'utf-8');
         const data = JSON.parse(raw);
         const filename = f.replace(/\.json$/, '');
+
+        // Backfill a stable id for any deck that predates id-based URLs
+        let id = data.meta?.id;
+        if (!id) {
+          id = generateDeckId();
+          data.meta = { ...data.meta, id };
+          await writeFile(join(DATA_DIR, f), JSON.stringify(data, null, 2), 'utf-8');
+        }
+
         return {
-          id: data.meta?.id ?? filename,
+          id,
           title: data.meta?.title ?? filename,
           filename,
           updatedAt: data.meta?.updatedAt ?? '',
@@ -47,7 +57,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    const id = nanoid();
+    const id = generateDeckId();
     const now = new Date().toISOString();
     let filename = slugify(title);
     if (!filename) filename = 'untitled';

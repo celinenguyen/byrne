@@ -22,11 +22,9 @@
   }
 
   let html = $derived(
-    smartQuotes(
-      inline
-        ? (marked.parseInline(text, { async: false }) as string)
-        : (marked.parse(text, { async: false }) as string)
-    )
+    inline
+      ? (marked.parseInline(smartQuotes(text), { async: false }) as string)
+      : (marked.parse(smartQuotes(text), { async: false }) as string)
   );
 </script>
 

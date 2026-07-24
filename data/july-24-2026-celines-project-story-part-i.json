@@ -1,0 +1,755 @@
+{
+  "meta": {
+    "id": "rU9PQtqOIM",
+    "title": "July 24, 2026: Celine's project story, part I",
+    "author": "",
+    "updatedAt": "2026-07-24T20:46:13.375Z",
+    "theme": {
+      "backgroundColor": "black",
+      "primaryColor": "white",
+      "headingFont": "inter",
+      "captionFont": "inter",
+      "accentColor": "lavender"
+    }
+  },
+  "slides": [
+    {
+      "id": "QusKv_CaW7rYzMU_snNIW",
+      "order": 0,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/hFffOTr-Il.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.48106493857166993 0.09833629125144189 63.482705887386224)",
+            "oklch(0.39885654745999 0.10837739085086365 23.378884355420016)",
+            "oklch(0.8553582267909039 0.07960204435103219 107.97081352242071)",
+            "oklch(0.6317749253848725 0.045990079808285456 217.07733704887193)",
+            "oklch(0.44707847137300977 0.057508103843185346 103.31280619565196)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "DnsWqva3BVJWjev59Shkq",
+      "order": 1,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "(spring 2022)\n\nI encounter a shimmering point"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "iZFcnsucoigO10wlPAtFB",
+      "order": 2,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/UsnQ6PNpP4.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.8659505836518162 0.18776329393515354 109.75404344673336)",
+            "oklch(0.3969265113457592 0.15637868403925975 18.287634998379126)",
+            "oklch(0.9006075544002704 0.0340091288675456 289.37151260191007)",
+            "oklch(0.6367600357959382 0 none)",
+            "oklch(0.36721280192535233 0.05102521323502945 343.17079765099675)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "-1J754Gn1G7xW6bz4Pd5O",
+      "order": 3,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/Zk-IVqWzXT.png"
+        ],
+        "text": [
+          "from the art dealer and BBC presenter Philip Mould's [Twitter](https://x.com/philipmould/status/927543312487206912)"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6357727809698684 0.10331769781489276 76.87485865713496)",
+            "oklch(0.5152349038142447 0.1029329672706101 71.1502193500701)",
+            "oklch(0.924280892840865 0.036078948508015816 43.833626890219776)",
+            "oklch(0.6281052638572214 0.059779583475671756 62.82640011580133)",
+            "oklch(0.3934520299661178 0.0352295399893859 71.60993514472688)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "33tllgxXbPz2I2cuZfnQM",
+      "order": 4,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/SOEY84n0R5.png"
+        ],
+        "text": [
+          "the writer and curator Rea McNamara in _[Hyperallergic](https://hyperallergic.com/rip-adobe-flash-five-takeaways-about-the-plug-ins-legacy-in-net-art/)_"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7076557860212584 0.1459541789296015 233.8790001875455)",
+            "oklch(0.4471214451078514 0.08998717573768428 233.0910802595605)",
+            "oklch(0.8924270503306728 0.06053511019091143 347.4087489045616)",
+            "oklch(0.5897233334558787 0.01689545259616028 235.57768757359486)",
+            "oklch(0.38382497112490904 0.004003387370875951 196.9895729340962)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "_KxXYIbLtJ_u5yJzao2df",
+      "order": 5,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/VGpKBd-BbA.png"
+        ],
+        "text": [
+          ""
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5530633211324146 0.2510921738215083 295.15879313416235)",
+            "oklch(0.31242690339774476 0.16624758880036763 290.69030826588346)",
+            "oklch(0.74558639330905 0.13431566267828696 308.7267433475751)",
+            "oklch(0.5656390017710702 0.006807590643444745 223.51974415513595)",
+            "oklch(0.34871393911434273 0.008572128691812961 233.9060783813602)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "agyFJ-4nAB7aLFbA8BRNF",
+      "order": 6,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "( autumn → winter 2024 )\n\nthe opportunity to begin a project comes up…"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "nXKFZqFeUsz5lPG3kI7KW",
+      "order": 7,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/Sk3DSpsE2Y.png"
+        ],
+        "text": [
+          ""
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.8175523101633898 0.16692221414374678 83.84415666825211)",
+            "oklch(0.4707512324772326 0.08184706370674058 88.25488564826242)",
+            "oklch(0.8888329598131486 0.12455579692238707 88.57983470966276)",
+            "oklch(0.5449564613410293 0.06271208677813776 351.81702345356774)",
+            "oklch(0.48097767179879736 0.052029554792510584 75.88024897234199)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "sv8LdZAKjmU2E1Ymf29Tq",
+      "order": 8,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/43PDK7V2PA.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6231021029624098 0.24823145059729892 0.3417698473305907)",
+            "oklch(0.386083308283536 0.1515327109700554 359.0714061711029)",
+            "oklch(0.8936541242757422 0.06213890139100991 346.87423842551993)",
+            "oklch(0.5600103504424414 0.03238089440599431 350.19208816399714)",
+            "oklch(0.4530260819208415 0.005005256987909631 337.486788153788)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "tWRm7yaW7mb1c6DRlB-cD",
+      "order": 9,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "what's a _new_ thing I'd like to write about?"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "gwUcyuGyG7_cVGKfKMzp2",
+      "order": 10,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/ujF5J_dcLz.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.41730598954029274 0.21415717132015025 265.5205295326968)",
+            "oklch(0.31316934203132557 0.19651240686103222 265.43103511834966)",
+            "oklch(0.7837093849081952 0.05410128917314522 13.996333693992614)",
+            "oklch(0.5416295541715124 0.08803128054315557 25.892321680537325)",
+            "oklch(0.37401705922238676 0.04979387347562796 279.14288890415577)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "-vbF6mVAr6PSzFSkDKduC",
+      "order": 11,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/4ati91nRoJ.png"
+        ],
+        "text": [
+          "Pol Bury, _[3069 White Dots on an Oval Background](https://www.tate.org.uk/art/artworks/bury-3069-white-dots-on-an-oval-background-t00918)_, 1966"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6488172075647903 0.10792096672716554 64.70125136792392)",
+            "oklch(0.4255869423705904 0.08641856703703171 61.076238791328535)",
+            "oklch(0.8178900935175943 0.0566078175565985 66.89511893899099)",
+            "oklch(0.6449621654853421 0.05343072437060026 77.64347645564759)",
+            "oklch(0.3645573156429045 0.045926677772533495 56.4778692719869)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "AJ4E6gSczwcBaaNDD2p3H",
+      "order": 12,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/QOqIEG7xkb.png"
+        ],
+        "text": [
+          "Vladimir Bonačić, _Random 63_ and _GF.E 16-S_ and _GF.E 16-NS_, 1969"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7917248753527261 0.10768346595511269 77.00759743200499)",
+            "oklch(0.41538145222134876 0.07150520050060656 56.872810043936575)",
+            "oklch(0.8450157708725469 0.08099391875736581 77.41516593760915)",
+            "oklch(0.6728325388346263 0.06820586921812971 77.00548513090645)",
+            "oklch(0.42200281281855095 0.027287413904396464 77.8890589166034)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "rMTtZTWxtXzCZ8jmIYkFH",
+      "order": 13,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "attention spans (short/long)\n\nI liked the non–computer art the most (unexpected!)\n\nit's so easy to lose digital information…"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "5GorniwrxYnS8FcBpj_-l",
+      "order": 14,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://www.modernartoxford.org.uk/cms/wp-content/uploads/2024/12/Treister_AreYDream-scaled.jpg"
+        ],
+        "text": [
+          "from Suzanne Treister's _[Fictional Videogame Stills](https://www.suzannetreister.net/Ampages/Amenu.html)_, 1992"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "iw8rbKkxSOdtIic-mqaZH",
+      "order": 15,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "“The original Amiga floppy disks which stored the image files are corrupt, but the photographic art works remain.”",
+          "[Suzanne Treister](https://www.suzannetreister.net/Ampages/Amenu.html)"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "1tqdxj1Pejqk3FereVToV",
+      "order": 16,
+      "layout": "Image2Up",
+      "content": {
+        "images": [
+          "/images/45MbxruYmK.png",
+          "/images/GkH9XM8PWr.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7860049471001935 0.15501803471582476 75.32351155946296)",
+            "oklch(0.5597792552459138 0.12338548269506802 240.32100918835462)",
+            "oklch(0.8519793439697603 0.0665648567782251 68.22098269318202)",
+            "oklch(0.5675672255114607 0.08925913531635189 36.27408024210479)",
+            "oklch(0.4053977431874312 0.015165080884272649 91.688202308304)"
+          ],
+          [
+            "oklch(0.5160874583361004 0.06968571824854586 71.43291610959444)",
+            "oklch(0.2722514746441696 0.05746126245852056 263.54957521701255)",
+            "oklch(0.8188050557235124 0.04649940089440269 74.67423997630141)",
+            "oklch(0.6451588746567817 0.07648403569285168 67.80655088304951)",
+            "oklch(0.41068690823689785 0.052266057189926725 41.72980727758157)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "xcHvkqJoP6_eppDtOsJ-R",
+      "order": 17,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "what are _older_ things that I want to use somehow?"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "Mjij0VzAMl9bXzZeMkVS-",
+      "order": 18,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/UsnQ6PNpP4.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.8659505836518162 0.18776329393515354 109.75404344673336)",
+            "oklch(0.3969265113457592 0.15637868403925975 18.287634998379126)",
+            "oklch(0.9006075544002704 0.0340091288675456 289.37151260191007)",
+            "oklch(0.6367600357959382 0 none)",
+            "oklch(0.36721280192535233 0.05102521323502945 343.17079765099675)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "bG4e-6oUB4LoZdaTcKR-I",
+      "order": 19,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/ldVYLyDXr0.png"
+        ],
+        "text": [
+          "a sci-fi novel set far in the future…"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5190542405899669 0.16441368158603037 26.83834680943562)",
+            "oklch(0.3859014698120861 0.13376406755231618 25.713681499146634)",
+            "oklch(0.8277830564137494 0.07590625369837939 218.69099766613715)",
+            "oklch(0.5774492172026624 0.06818416964040265 257.5252739687493)",
+            "oklch(0.3877480185107491 0.058600934952700925 263.5356194576615)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "yr7JwyjEjiQbqMZrI0vEw",
+      "order": 20,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "\"We engaged in a large research project to study how to preserve information across geologic eons…in terms of data longevity, storage devices from our time were better…[like] USB flash drives and hard drives…But none of these were a match for printed material.\"",
+          "a character in Liu Cixin's _Death's End_"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "AleOU3X6iOW43p1K1ojZU",
+      "order": 21,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/zfRur3p5Pi.png"
+        ],
+        "text": [
+          "a very stream-of-consciousness email back to my editor"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5817485289222719 0.1561947152679328 261.3284777055846)",
+            "oklch(0.34351605512519195 0.1023348914917351 261.28725083038023)",
+            "oklch(0.7765674442896721 0.08105688179148961 264.9410673654534)",
+            "oklch(0.5863164681546698 0 none)",
+            "oklch(0.3523247402852869 0 none)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "qtIBkyFEBL1n6MFMAs-Mm",
+      "order": 22,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "( winter → spring 2025 )\n\nas I was drafting…"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "V6qI4esc3oR12xztwOiE0",
+      "order": 23,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/M0loKZEOC6.png"
+        ],
+        "text": [
+          "from journalists at the _[Washington Post](https://archive.ph/w7Qd0)_"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.48533690913238475 0.1243104264946388 253.53566134950285)",
+            "oklch(0.34080546193064604 0.12061663978275146 259.6301696557496)",
+            "oklch(0.8936541242757422 0.06213890139100991 346.87423842551993)",
+            "oklch(0.5733925456025806 0.09425233554942623 250.22683198337145)",
+            "oklch(0.425697314070384 0.03427269190907305 45.660033602962194)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "2tOw2it_9l2H31hl1Amz6",
+      "order": 24,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "can I bring this into my essay somehow?",
+          "especially since my shimmering point, Shu Lea Cheang's _[Brandon](https://www.guggenheim.org/artwork/15337)_, is about trans history…"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "XcUfdUd-oQDpcjevKif5f",
+      "order": 25,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/1Wjz3mLlD3.png"
+        ],
+        "text": [
+          "from Julian Lucas at the _[New Yorker](https://www.newyorker.com/news/the-lede/the-data-hoarders-resisting-trumps-purge)_"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5008618788472088 0.2731018149006322 264.3413794182974)",
+            "oklch(0.4011081633675487 0.15687281846398374 28.21648575844859)",
+            "oklch(0.7824314072592969 0.1273298701875913 43.15865832246638)",
+            "oklch(0.5827727315090468 0.07583222945295676 342.99026789612196)",
+            "oklch(0.25130471863522574 0.01887931461565196 178.8063732871901)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "pofBdAeB27XhJJf_sIN2R",
+      "order": 26,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/ryOqJ6KVcb.png"
+        ],
+        "text": [
+          "a [how-to](https://www.reddit.com/r/DataHoarder/comments/1ihalfe/how_you_can_help_archive_us_government_data_right/) for amateur archivists"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7560465010409926 0.15890663342056488 53.46739803218826)",
+            "oklch(0.43579615765012936 0.1178318692058665 47.76612123789395)",
+            "oklch(0.8621281691668732 0.07877298798652439 52.635146937248805)",
+            "oklch(0.5474370154868756 0.010556607363795115 232.5085514233865)",
+            "oklch(0.3793399003895099 0.010529200552803623 196.7167169929312)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "--aRdewlAQ4oyrs7cdmbW",
+      "order": 27,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "how can I combine…\n\nart + technology + archiving + memory + loss + history"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "ybR9Mv97QYGehzJBUs2ck",
+      "order": 28,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/-LI7pysdim.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5245589324473695 0.15795285272997317 263.426382907953)",
+            "oklch(0.33889302498300583 0.09272660699833304 263.07822750734096)",
+            "oklch(0.8924270503306728 0.06053511019091143 347.4087489045616)",
+            "oklch(0.5416360620357898 0.052880531392117625 308.72645472237843)",
+            "oklch(0.3670766791886361 0.0021835483263349434 247.88387016680312)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "spayoHnYsmWMiJafIl2Hd",
+      "order": 29,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "memories that are “garbage“ and can be removed…"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "Z4mqfpzY1qTuWuaowydMH",
+      "order": 30,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "“archival silence“ and who is absent from history"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "dtf1pU7YJOOb4iPulQJAx",
+      "order": 31,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/SRLF40xzB-.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7106674785297752 0.16220543200745097 60.07283820344404)",
+            "oklch(0.5348640886862253 0.15552668553277862 253.8538444811726)",
+            "oklch(0.744887309753367 0.14804883334464672 22.73803871983391)",
+            "oklch(0.6271166847544105 0.01863711110014444 343.9131945257185)",
+            "oklch(0.36409735417935224 0.006482962699757026 325.70924652069124)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "T_djG6-P5kLBRxEzCHnlQ",
+      "order": 32,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "(spring 2025)\n\nfinishing my project"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "qVybItsZWOJvXtHwKRYip",
+      "order": 33,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/hFffOTr-Il.png"
+        ],
+        "text": [],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.48106493857166993 0.09833629125144189 63.482705887386224)",
+            "oklch(0.39885654745999 0.10837739085086365 23.378884355420016)",
+            "oklch(0.8553582267909039 0.07960204435103219 107.97081352242071)",
+            "oklch(0.6317749253848725 0.045990079808285456 217.07733704887193)",
+            "oklch(0.44707847137300977 0.057508103843185346 103.31280619565196)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "Q1qgt1cK8rFaMLQ6qPAe_",
+      "order": 34,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/mZu4-M-N5P.png"
+        ],
+        "text": [
+          "art + attention"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5988450305844505 0.2295544274320096 4.759470291309636)",
+            "oklch(0.3747734393997212 0.13942388451939783 3.5539651273208803)",
+            "oklch(0.8703096892713603 0.06647253799430275 351.80111801550174)",
+            "oklch(0.5950566952393419 0.045897975040843315 347.0557057309117)",
+            "oklch(0.38568679085638513 0.035839251182012574 357.14060258855653)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "h_Nu4P3qVfx9whDfqL1-r",
+      "order": 35,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/GG1yr5EHFB.png"
+        ],
+        "text": [
+          "amateur archiving"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5988450305844505 0.2295544274320096 4.759470291309636)",
+            "oklch(0.3747734393997212 0.13942388451939783 3.5539651273208803)",
+            "oklch(0.8703096892713603 0.06647253799430275 351.80111801550174)",
+            "oklch(0.5950566952393419 0.045897975040843315 347.0557057309117)",
+            "oklch(0.33734717402216163 0.0058592808446552335 0.35244789220112566)"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "QVdC7q9zx8jUVA_JsMU1j",
+      "order": 36,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "/images/K1TNnAGTvk.png"
+        ],
+        "text": [
+          "attention + trans history + pointers + memory!"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.608846013685856 0.23759906174815348 5.587928114925654)",
+            "oklch(0.3785367569709462 0.14456523071369204 4.020418202768606)",
+            "oklch(0.872524210224531 0.06905811822642283 351.69314641777856)",
+            "oklch(0.5950566952393419 0.045897975040843315 347.0557057309117)",
+            "oklch(0.3384026918441932 0.0072297017901766765 3.7567137203957257)"
+          ]
+        ]
+      }
+    }
+  ]
+}

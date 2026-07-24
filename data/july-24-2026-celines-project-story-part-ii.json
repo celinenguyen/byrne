@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "id": "ZLbOjceAXh",
+    "title": "July 24, 2026: Celine's project story, part II",
+    "author": "",
+    "updatedAt": "2026-07-24T20:41:44.188Z",
+    "theme": {
+      "headingFont": "reforma-1969",
+      "primaryColor": "white",
+      "backgroundColor": "black",
+      "captionFont": "reforma-1969",
+      "accentColor": "lavender"
+    }
+  },
+  "slides": [
+    {
+      "id": "pcsuqfNQVWEf93smFVY8c",
+      "order": 0,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "the story of a project-in-progress"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "ShJYVi0yDLRDENawVl9WG",
+      "order": 1,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://www.nyrb.com/cdn/shop/products/Affinities_final.jpg?v=1658761363&width=1445"
+        ],
+        "text": [
+          ""
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "Oe7aat-3oNYfEVFmm5CC_",
+            "slotIndex": 0,
+            "x": 0.68928035982009,
+            "y": 0.08529068798933867,
+            "text": "published by [NYRB in the US](https://www.nyrb.com/cdn/shop/products/Affinities_final.jpg?v=1658761363&width=1445)"
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7629127831536907 0.13261245197057536 42.288790012766036)",
+            "oklch(0.3825301534481896 0.0882098823299273 246.77962995697823)",
+            "oklch(0.7608342354822364 0.12162053313284638 34.85861187587043)",
+            "oklch(0.6185245935382087 0.07517025042534496 63.597039330214905)",
+            "oklch(0.46056942807574625 0.08493347657636952 147.76283450273797)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][1]"
+      }
+    },
+    {
+      "id": "nCuUs8RviANbTCGt9v_aJ",
+      "order": 2,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://goodpress.co.uk/cdn/shop/products/IMG_2910080_2048x.jpg?v=1676466223"
+        ],
+        "text": [
+          "image from [Good Press](https://goodpress.co.uk/products/affinities-by-brian-dillon), a bookstore in Glasgow"
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.5675803634535714 0.07868683947246503 51.03286908553681)",
+            "oklch(0.4108419615667633 0.08058548232664423 53.371367246007864)",
+            "oklch(0.6736623773735219 0.09012643816854622 23.197642108025192)",
+            "oklch(0.5865110069315985 0.08015004944492195 46.02170641475674)",
+            "oklch(0.3932824191506675 0.056204974255872835 51.67146476771248)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][1]"
+      }
+    },
+    {
+      "id": "858uxVQw0of3dktey9tgw",
+      "order": 3,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://www.nyrb.com/cdn/shop/products/9781681375243.jpg?v=1586210812&width=1800"
+        ],
+        "text": [
+          ""
+        ],
+        "url": ""
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.7059477341420217 0.07652238120978115 213.3960380405481)",
+            "oklch(0.5215332844873996 0.07296872977268928 70.91000449404855)",
+            "oklch(0.906096125948903 0.07028484031995891 84.41133395121742)",
+            "oklch(0.5984882749141697 0.08584468163584377 31.092024307357857)",
+            "oklch(0.37395419695670556 0.03163619003086611 49.101565403770465)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]"
+      }
+    },
+    {
+      "id": "HlF0BgB603NDE5tbUwFRg",
+      "order": 4,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "how can I observe things very, _very_ closely…and share those observations?"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "FHYSEQ28jwscrs2ZqTTiM",
+      "order": 5,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          "noticing an illustration by [Studio Airport](https://www.instagram.com/studio.airport/?hl=en), via [Yanju Jeong](https://www.are.na/block/22169275)'s Are.na"
+        ],
+        "url": "",
+        "comments": []
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314219)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.684613050212604)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "gQXsh-bOnu1gsO5ja1Bco",
+      "order": 6,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://d2w9rnfcy7mm78.cloudfront.net/22169275/original_11c0f617883b3d9b318247abbd4d4048.jpg?1686205619?bc=0"
+        ],
+        "text": [
+          ""
+        ],
+        "url": "",
+        "comments": [
+          {
+            "id": "yaOvsjt3yfPLLMrAyQHFK",
+            "slotIndex": 0,
+            "x": 0.22538999462076384,
+            "y": 0.10670030724154068,
+            "text": "One of the intriguing things about this image is the contrast between\n\n* something very natural, physical, dimensional (the leaves)\n* and something much more flat and constructed (the 2D cutouts)\n\nThe cutouts remind us that we're looking at a photograph of some leaves, not the actual leaves themselves. (As Magritte said, _Ceci n'est pas un pipe_)"
+          },
+          {
+            "id": "CKD6PeTbc03T0DSOl4nfk",
+            "slotIndex": 0,
+            "x": 0.6209355292825015,
+            "y": 0.3541213095407655,
+            "text": "The cutouts look very natural—slightly uneven edges and a little bit dimensional, like they've been punched out from paper."
+          },
+          {
+            "id": "VpX90f4CrAcZBrCbZKXu3",
+            "slotIndex": 0,
+            "x": 0.8877892932283955,
+            "y": 0.860396999742722,
+            "text": "You can see these thin white borders—even more evidence they were manually punched out."
+          },
+          {
+            "id": "AlKjfS5DK0Pwar3KzQCo2",
+            "slotIndex": 0,
+            "x": 0.4949245939675174,
+            "y": 0.8022686259345192,
+            "text": "The image has a beautiful ying/yang feeling of formality and balance:\n- The **left** is mostly filled, with the circles creating minute openings and negative space…\n- The **right** is empty, with a profusion of circles in the foreground. (It's also interesting that they're more clustered in the bottom right corner, as if they're a little heavy and have sunken down.)"
+          }
+        ]
+      },
+      "style": {
+        "imageColors": [
+          [
+            "oklch(0.6354201673816211 0.1141822051847819 15.207523837325963)",
+            "oklch(0.35192621564679366 0.08602516769498884 17.508708645627546)",
+            "oklch(0.9615119415928823 0.014680785859258751 33.07133054314219)",
+            "oklch(0.5819606119347038 0.08009299666142859 16.684613050212604)",
+            "oklch(0.4531978476946797 0.040897762011613666 80.80020425484261)"
+          ]
+        ],
+        "customBackgroundColor": "imageColors[0][4]",
+        "customPrimaryColor": "imageColors[0][2]"
+      }
+    },
+    {
+      "id": "juZFVWj6GmsYMAdwnC8Ln",
+      "order": 7,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "to be continued—"
+        ],
+        "url": ""
+      }
+    }
+  ]
+}

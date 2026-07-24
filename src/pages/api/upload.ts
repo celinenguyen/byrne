@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { nanoid } from 'nanoid';
 
@@ -17,8 +17,9 @@ export const POST: APIRoute = async ({ request }) => {
     const ext = file.name.split('.').pop() || 'png';
     const filename = `${nanoid(10)}.${ext}`;
     const buffer = Buffer.from(await file.arrayBuffer());
-    const outputPath = join(process.cwd(), 'public', 'images', filename);
-    await writeFile(outputPath, buffer);
+    const imagesDir = join(process.cwd(), 'public', 'images');
+    await mkdir(imagesDir, { recursive: true });
+    await writeFile(join(imagesDir, filename), buffer);
 
     return new Response(
       JSON.stringify({ path: `/images/${filename}` }),

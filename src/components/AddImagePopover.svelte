@@ -30,6 +30,14 @@
     if (open) urlValue = currentUrl ?? '';
   });
 
+  // Listen for paste on the window rather than a specific element so it
+  // fires regardless of which control inside the popover has focus.
+  $effect(() => {
+    if (!open || staticMode) return;
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  });
+
   function submitUrl() {
     const trimmed = urlValue.trim();
     if (!trimmed) return;
@@ -70,6 +78,15 @@
     dragging = false;
     const file = e.dataTransfer?.files?.[0];
     if (file) uploadFile(file);
+  }
+
+  function handlePaste(e: ClipboardEvent) {
+    const item = Array.from(e.clipboardData?.items ?? []).find((i) => i.type.startsWith('image/'));
+    const file = item?.getAsFile();
+    if (file) {
+      e.preventDefault();
+      uploadFile(file);
+    }
   }
 
   let fileInput: HTMLInputElement | undefined = $state();
