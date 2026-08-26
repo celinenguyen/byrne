@@ -8,9 +8,11 @@ import type { AstroCookies } from 'astro';
  *
  *   - The **OAuth app** (`GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`) only
  *     proves *who you are*. It asks for `read:user` and nothing more.
- *   - A separate **fine-grained PAT** (`GITHUB_TOKEN`, added in a later
- *     milestone) is what actually commits deck JSON. It never leaves the
- *     server and is never in a cookie.
+ *   - A separate **fine-grained PAT** (`GITHUB_REPO_TOKEN`) is what actually
+ *     commits deck JSON. It never leaves the server and is never in a cookie.
+ *     It is deliberately not named `GITHUB_TOKEN`, because the `gh` CLI reads
+ *     that name from the shell and a stale shell token would silently
+ *     override it in local development.
  *
  * Keeping them separate means a stolen session can only call this app's own
  * endpoints — it can't write to the repo directly.

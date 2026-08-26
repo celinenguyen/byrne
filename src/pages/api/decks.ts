@@ -1,83 +1,75 @@
 import type { APIRoute } from 'astro';
-import { readFile, readdir, writeFile, rename, unlink } from 'node:fs/promises';
-import { join } from 'node:path';
 import { nanoid } from 'nanoid';
 import { slugify } from '../../lib/slugify';
 import { generateDeckId } from '../../lib/id';
+import type { Deck } from '../../lib/types';
+import { DeckConflictError, getDeckStorage } from '../../lib/storage';
 
-const DATA_DIR = join(process.cwd(), 'data');
+export const prerender = false;
 
-export const GET: APIRoute = async () => {
+/**
+ * Deck collection: list, create, rename, delete.
+ *
+ * All methods are owner-only — the list includes drafts, so it must not be
+ * public. Visitors get the published-only manifest from `public/decks/`.
+ */
+
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+function isUnsafeFilename(filename: string): boolean {
+  return filename.includes('..') || filename.includes('/') || filename.includes('\\');
+}
+
+/** Pick a filename derived from `title` that doesn't collide with an existing deck. */
+function uniqueFilename(title: string, taken: string[], allow?: string): string {
+  const base = slugify(title) || 'untitled';
+  let candidate = base;
+  let counter = 2;
+  while (taken.includes(candidate) && candidate !== allow) {
+    candidate = `${base}-${counter}`;
+    counter++;
+  }
+  return candidate;
+}
+
+export const GET: APIRoute = async ({ locals }) => {
+  if (!locals.canEdit) {
+    return json({ error: 'Not found' }, 404);
+  }
+
   try {
-    const files = await readdir(DATA_DIR);
-    const jsonFiles = files.filter((f) => f.endsWith('.json'));
-
-    const summaries = await Promise.all(
-      jsonFiles.map(async (f) => {
-        const raw = await readFile(join(DATA_DIR, f), 'utf-8');
-        const data = JSON.parse(raw);
-        const filename = f.replace(/\.json$/, '');
-
-        // Backfill a stable id for any deck that predates id-based URLs
-        let id = data.meta?.id;
-        if (!id) {
-          id = generateDeckId();
-          data.meta = { ...data.meta, id };
-          await writeFile(join(DATA_DIR, f), JSON.stringify(data, null, 2), 'utf-8');
-        }
-
-        return {
-          id,
-          title: data.meta?.title ?? filename,
-          filename,
-          updatedAt: data.meta?.updatedAt ?? '',
-          slideCount: data.slides?.length ?? 0,
-        };
-      })
-    );
-
-    return new Response(JSON.stringify(summaries), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json(await getDeckStorage().list());
   } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: String(err) }, 500);
   }
 };
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { title } = await request.json();
+    const { title } = (await request.json()) as { title?: string };
     if (!title || typeof title !== 'string') {
-      return new Response(JSON.stringify({ error: 'title is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'title is required' }, 400);
     }
 
+    const storage = getDeckStorage();
     const id = generateDeckId();
     const now = new Date().toISOString();
-    let filename = slugify(title);
-    if (!filename) filename = 'untitled';
+    const filename = uniqueFilename(title, await storage.listFilenames());
 
-    // Avoid filename collisions
-    const existing = await readdir(DATA_DIR);
-    let candidate = filename;
-    let counter = 2;
-    while (existing.includes(candidate + '.json')) {
-      candidate = `${filename}-${counter}`;
-      counter++;
-    }
-    filename = candidate;
-
-    const deck = {
+    const deck: Deck = {
       meta: {
         id,
         title,
         author: '',
         updatedAt: now,
+        // New decks start as drafts, so nothing reaches the public build until
+        // it's explicitly published.
+        status: 'draft',
       },
       slides: [
         {
@@ -89,116 +81,85 @@ export const POST: APIRoute = async ({ request }) => {
       ],
     };
 
-    await writeFile(join(DATA_DIR, filename + '.json'), JSON.stringify(deck, null, 2), 'utf-8');
+    await storage.write(filename, deck, { message: `Create deck: ${title}` });
 
-    return new Response(
-      JSON.stringify({ id, title, filename, updatedAt: now, slideCount: 1 }),
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+    return json({ id, title, filename, updatedAt: now, slideCount: 1, status: 'draft' });
   } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: String(err) }, 500);
   }
 };
 
 /** PATCH — rename a deck (update title and filename) */
 export const PATCH: APIRoute = async ({ request }) => {
   try {
-    const { currentFilename, newTitle } = await request.json();
+    const { currentFilename, newTitle } = (await request.json()) as {
+      currentFilename?: string;
+      newTitle?: string;
+    };
     if (!currentFilename || !newTitle || typeof newTitle !== 'string') {
-      return new Response(JSON.stringify({ error: 'currentFilename and newTitle are required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'currentFilename and newTitle are required' }, 400);
+    }
+    if (isUnsafeFilename(currentFilename)) {
+      return json({ error: 'Invalid filename' }, 400);
     }
 
-    // Validate current filename
-    if (currentFilename.includes('..') || currentFilename.includes('/') || currentFilename.includes('\\')) {
-      return new Response(JSON.stringify({ error: 'Invalid filename' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    const storage = getDeckStorage();
+    const stored = await storage.read(currentFilename);
+    if (!stored) {
+      return json({ error: 'Deck not found' }, 404);
     }
 
-    const oldPath = join(DATA_DIR, currentFilename + '.json');
-    const raw = await readFile(oldPath, 'utf-8');
-    const data = JSON.parse(raw);
+    const deck = stored.deck;
+    deck.meta.title = newTitle;
+    deck.meta.updatedAt = new Date().toISOString();
 
-    // Update the title and updatedAt in meta
-    data.meta.title = newTitle;
-    data.meta.updatedAt = new Date().toISOString();
-
-    // Compute new filename
-    let newFilename = slugify(newTitle);
-    if (!newFilename) newFilename = 'untitled';
-
-    // If filename changed, check for collisions and rename the file
-    if (newFilename !== currentFilename) {
-      const existing = await readdir(DATA_DIR);
-      let candidate = newFilename;
-      let counter = 2;
-      while (existing.includes(candidate + '.json') && candidate !== currentFilename) {
-        candidate = `${newFilename}-${counter}`;
-        counter++;
-      }
-      newFilename = candidate;
-
-      await writeFile(oldPath, JSON.stringify(data, null, 2), 'utf-8');
-      const newPath = join(DATA_DIR, newFilename + '.json');
-      await rename(oldPath, newPath);
-    } else {
-      await writeFile(oldPath, JSON.stringify(data, null, 2), 'utf-8');
-    }
-
-    return new Response(
-      JSON.stringify({ title: newTitle, filename: newFilename }),
-      { headers: { 'Content-Type': 'application/json' } }
+    const newFilename = uniqueFilename(
+      newTitle,
+      await storage.listFilenames(),
+      currentFilename
     );
+
+    if (newFilename === currentFilename) {
+      await storage.write(currentFilename, deck, {
+        sha: stored.sha,
+        message: `Rename deck: ${newTitle}`,
+      });
+    } else {
+      // Write the new path before removing the old one, so a failure between
+      // the two leaves a duplicate rather than losing the deck. On the GitHub
+      // backend this is two commits; a single-commit rename would need the Git
+      // Trees API.
+      await storage.write(newFilename, deck, { message: `Rename deck: ${newTitle}` });
+      await storage.remove(currentFilename, { message: `Rename deck: ${newTitle}` });
+    }
+
+    return json({ title: newTitle, filename: newFilename });
   } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    if (err instanceof DeckConflictError) {
+      return json({ error: err.message, conflict: true }, 409);
+    }
+    return json({ error: String(err) }, 500);
   }
 };
 
 /** DELETE — delete a deck by filename */
 export const DELETE: APIRoute = async ({ request }) => {
   try {
-    const { filename } = await request.json();
+    const { filename } = (await request.json()) as { filename?: string };
     if (!filename || typeof filename !== 'string') {
-      return new Response(JSON.stringify({ error: 'filename is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'filename is required' }, 400);
+    }
+    if (isUnsafeFilename(filename)) {
+      return json({ error: 'Invalid filename' }, 400);
     }
 
-    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-      return new Response(JSON.stringify({ error: 'Invalid filename' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const filePath = join(DATA_DIR, filename + '.json');
-    await unlink(filePath);
-
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    await getDeckStorage().remove(filename);
+    return json({ success: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    if (message.includes('ENOENT')) {
-      return new Response(JSON.stringify({ error: 'Deck not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    if (message.includes('ENOENT') || (err as Error)?.name === 'DeckNotFoundError') {
+      return json({ error: 'Deck not found' }, 404);
     }
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: String(err) }, 500);
   }
 };
