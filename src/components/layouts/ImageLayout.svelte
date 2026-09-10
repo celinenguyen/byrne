@@ -28,6 +28,6 @@
 
 <style>
   [data-slot="text:caption"] {
-    font-size: calc(clamp(0.4rem, 1.2cqi, 1.2rem) * var(--auto-scale, 1));
+    font-size: calc(clamp(0.8rem, 1.2cqi, 1.2rem) * var(--auto-scale, 1));
   }
 </style>

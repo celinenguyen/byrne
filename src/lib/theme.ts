@@ -23,7 +23,7 @@ export const fontOptions = [
     value: '"Inter", system-ui, sans-serif', 
     headingWeight: '500', 
     headingTracking: '-0.01em', 
-    headingLineHeight: '1',
+    headingLineHeight: '1.4',
     uiSize: '1em', 
     uiTracking: 'inherit', 
     usableFor: ['heading', 'body', 'caption'] as FontRole[] 
