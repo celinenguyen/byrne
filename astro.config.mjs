@@ -4,16 +4,16 @@ import svelte from '@astrojs/svelte';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
-import vercel from '@astrojs/vercel';
+import cloudflare from '@astrojs/cloudflare';
 
-const buildTarget = process.env.BUILD_TARGET; // 'vercel' | undefined (dev/server)
-const isVercel = buildTarget === 'vercel';
+const buildTarget = process.env.BUILD_TARGET; // 'cloudflare' | undefined (dev/server)
+const isCloudflare = buildTarget === 'cloudflare';
 
 /** @type {import('astro').AstroUserConfig['output']} */
-const output = isVercel ? 'static' : 'server';
+const output = isCloudflare ? 'static' : 'server';
 
 /** @type {import('astro').AstroUserConfig['adapter']} */
-const adapter = isVercel ? vercel() : node({ mode: 'standalone' });
+const adapter = isCloudflare ? cloudflare() : node({ mode: 'standalone' });
 
 // https://astro.build/config
 export default defineConfig({
@@ -23,7 +23,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     define: {
-      'import.meta.env.PUBLIC_STATIC_MODE': JSON.stringify(isVercel),
+      'import.meta.env.PUBLIC_STATIC_MODE': JSON.stringify(isCloudflare),
     },
     server: {
       watch: {

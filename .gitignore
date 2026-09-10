@@ -1,5 +1,7 @@
 # build output
 dist/
+.wrangler/
+# local Vercel link state; remove once the Vercel project is deleted (phase 2)
 .vercel/
 
 # generated static deck files (created by prepare-static.mjs)
