@@ -5,10 +5,23 @@ import { defaultTheme, resolveTheme } from './theme';
 import { nanoid } from 'nanoid';
 import { generateDeckId } from './id';
 
-const staticMode: boolean = import.meta.env.PUBLIC_STATIC_MODE;
-const BASE_URL: string = import.meta.env.BASE_URL;
+declare global {
+  interface Window {
+    /** Set by src/pages/index.astro from the middleware's session check. */
+    __BYRNE__?: { canEdit: boolean };
+  }
+}
 
-// simulateDeployment URL param: behave like a deployed (static) build at runtime
+/** True when this visitor is signed in as the deck owner (always true in dev). */
+const canEdit: boolean = typeof window !== 'undefined' && window.__BYRNE__?.canEdit === true;
+
+/**
+ * True when this visitor can't use the server's write features (saving,
+ * uploads, Are.na fetches). They can still read published decks from the API.
+ */
+const staticMode: boolean = !canEdit;
+
+// simulateDeployment URL param: behave like a signed-out visitor at runtime
 // — saves go to sessionStorage instead of the server, and the ephemeral banner shows.
 const simulateDeployment: boolean =
   typeof window !== 'undefined' &&
@@ -60,7 +73,7 @@ export const pendingDelete = writable<{
 } | null>(null);
 export const showIntro = writable<boolean>(!initial.deckId);
 export const openCommentPopoverId = writable<string | null>(null);
-export { staticMode, ephemeralMode };
+export { canEdit, staticMode, ephemeralMode };
 
 // Guards against syncURL running (and clobbering the URL's deck id) before
 // initializeDeck has had a chance to resolve it against the loaded deck list.
@@ -106,18 +119,9 @@ export const slideCount = derived(slides, ($slides) => $slides.length);
 
 let saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// --- I/O functions: branched on staticMode ---
+// --- I/O functions: writes branched on ephemeralMode ---
 
 export async function loadDeckList(): Promise<DeckSummary[]> {
-  if (staticMode) {
-    const res = await fetch(`${BASE_URL}decks/manifest.json`);
-    if (res.ok) {
-      const data: DeckSummary[] = await res.json();
-      deckList.set(data);
-      return data;
-    }
-    return [];
-  }
   const res = await fetch('/api/decks');
   if (res.ok) {
     const data: DeckSummary[] = await res.json();
@@ -161,11 +165,7 @@ export async function loadDeck() {
     }
   }
 
-  // Fetch from the appropriate data source (static JSON vs API)
-  const url = staticMode
-    ? `${BASE_URL}decks/${encodeURIComponent(file)}.json`
-    : `/api/deck?file=${encodeURIComponent(file)}`;
-  const res = await fetch(url);
+  const res = await fetch(`/api/deck?file=${encodeURIComponent(file)}`);
   if (res.ok) {
     const data: Deck = await res.json();
     data.slides.sort((a, b) => a.order - b.order);
@@ -468,17 +468,15 @@ export async function moveSlideToDeck(slideId: string, targetDeckFile: string) {
   if (slide.style) slideCopy.style = JSON.parse(JSON.stringify(slide.style));
 
   if (ephemeralMode) {
-    // Load target deck from sessionStorage, falling back to API in simulate mode
+    // Load target deck from sessionStorage, falling back to the API
     let targetDeck: Deck;
     const stored = sessionStorage.getItem(`deck:${targetDeckFile}`);
     if (stored) {
       targetDeck = JSON.parse(stored);
-    } else if (!staticMode) {
+    } else {
       const res = await fetch(`/api/deck?file=${encodeURIComponent(targetDeckFile)}`);
       if (!res.ok) return;
       targetDeck = await res.json();
-    } else {
-      return;
     }
     slideCopy.order = targetDeck.slides.length;
     targetDeck.slides.push(slideCopy);

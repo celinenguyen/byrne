@@ -8,10 +8,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:cf": "node scripts/prepare-static.mjs && BUILD_TARGET=cloudflare astro build && node scripts/postbuild-cf.mjs",
+    "build:cf": "BUILD_TARGET=cloudflare astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "npm run build:cf && wrangler deploy"
+    "deploy": "npm run build:cf && wrangler deploy",
+    "seed:r2": "node scripts/seed-r2.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",

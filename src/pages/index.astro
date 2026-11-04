@@ -2,6 +2,13 @@
 import App from '../components/App.svelte';
 import '../styles/globals.css';
 import { faviconDataUrl } from '@celinenguyen/software-as-leisure-activity/favicon';
+
+// Rendered per request so the middleware's verdict on this visitor reaches the
+// client before the app boots (see `canEdit` in src/lib/store.ts). The UI
+// branching on it is cosmetic; the middleware is what enforces it.
+export const prerender = false;
+const canEdit = Astro.locals.canEdit === true;
+Astro.response.headers.set('Cache-Control', 'private, no-store');
 ---
 
 <html lang="en">
@@ -13,6 +20,7 @@ import { faviconDataUrl } from '@celinenguyen/software-as-leisure-activity/favic
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
     <title>Slide decks as social activity</title>
+    <script is:inline define:vars={{ canEdit }}>window.__BYRNE__ = { canEdit };</script>
   </head>
   <body class="h-screen overflow-hidden flex flex-col">
     <App client:only="svelte" />

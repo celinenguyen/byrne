@@ -6,25 +6,20 @@ import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
 import cloudflare from '@astrojs/cloudflare';
 
-const buildTarget = process.env.BUILD_TARGET; // 'cloudflare' | undefined (dev/server)
-const isCloudflare = buildTarget === 'cloudflare';
-
-/** @type {import('astro').AstroUserConfig['output']} */
-const output = isCloudflare ? 'static' : 'server';
+// `npm run dev` runs under Node and reads/writes data/ on disk; the deployed
+// build runs on Cloudflare Workers and uses R2 (see src/lib/storage/index.ts).
+const isCloudflare = process.env.BUILD_TARGET === 'cloudflare';
 
 /** @type {import('astro').AstroUserConfig['adapter']} */
 const adapter = isCloudflare ? cloudflare() : node({ mode: 'standalone' });
 
 // https://astro.build/config
 export default defineConfig({
-  output,
+  output: 'server',
   adapter,
   integrations: [svelte(), react()],
   vite: {
     plugins: [tailwindcss()],
-    define: {
-      'import.meta.env.PUBLIC_STATIC_MODE': JSON.stringify(isCloudflare),
-    },
     server: {
       watch: {
         ignored: ['**/data/**']

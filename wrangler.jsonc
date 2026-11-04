@@ -4,16 +4,20 @@
   "compatibility_date": "2026-09-10",
   "compatibility_flags": ["nodejs_compat"],
 
-  // Phase 1 is a static build, so the Worker does nothing but serve assets.
-  // Phase 3 flips astro.config.mjs to output: 'server' and adds the R2 bucket
-  // binding below, at which point this Worker starts handling /api/* on demand.
+  // Static assets (dist/client, including public/images) are served before the
+  // Worker runs; everything else, including /api/* and uploaded images, goes
+  // through the Astro app.
   "observability": { "enabled": true },
 
   // Cloudflare creates the DNS record for a custom domain itself; the zone only
   // has to be on Cloudflare nameservers.
   "workers_dev": true,
-  "routes": [{ "pattern": "decks.celinenguyen.com", "custom_domain": true }]
+  "routes": [{ "pattern": "decks.celinenguyen.com", "custom_domain": true }],
 
-  // Phase 3:
-  // "r2_buckets": [{ "binding": "DECKS", "bucket_name": "byrne-decks" }]
+  // Deck JSON and uploaded images. Layout is documented in src/lib/storage/r2.ts.
+  "r2_buckets": [{ "binding": "DECKS", "bucket_name": "byrne-decks" }]
+
+  // Secrets (set with `wrangler secret put`, never committed):
+  //   GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET
+  // See .env.example.
 }
