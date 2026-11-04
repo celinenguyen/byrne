@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Slide, SlotMeta, SlideStyle } from '../lib/types';
-  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile, staticMode } from '../lib/store';
+  import { updateSlide, focusSlot, activeSlot, deck, renameDeck, updateTheme, deleteDeck, currentDeckFile, staticMode, canEdit, setDeckStatus } from '../lib/store';
   import { layouts } from './layouts/registry';
   import LayoutGrid from './LayoutGrid.svelte';
   import { fontOptions, fontsForRole, primaryColorOptions, backgroundColorOptions, accentColorOptions, defaultTheme } from '../lib/theme';
@@ -11,6 +11,8 @@
   import ImagePicker from './ImagePicker.svelte';
   import Ellipsis from '@lucide/svelte/icons/ellipsis';
   import Trash from '@lucide/svelte/icons/trash';
+  import Globe from '@lucide/svelte/icons/globe';
+  import GlobeLock from '@lucide/svelte/icons/globe-lock';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as Field from '$lib/components/ui/field';
   import { DropdownMenu } from 'bits-ui';
@@ -359,6 +361,20 @@
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content class={dmContent}>
+                {#if canEdit}
+                  {#if $deck?.meta.status === 'published'}
+                    <DropdownMenu.Item class={dmItem} onSelect={() => setDeckStatus('draft')}>
+                      <GlobeLock class="size-4 text-muted-foreground" />
+                      Unpublish deck
+                    </DropdownMenu.Item>
+                  {:else}
+                    <DropdownMenu.Item class={dmItem} onSelect={() => setDeckStatus('published')}>
+                      <Globe class="size-4 text-muted-foreground" />
+                      Publish deck
+                    </DropdownMenu.Item>
+                  {/if}
+                  <DropdownMenu.Separator class="h-px bg-border" />
+                {/if}
                 <DropdownMenu.Item
                   class="{dmItem} group hover:text-destructive hover:bg-destructive/10 data-[highlighted]:bg-destructive/10"
                   onSelect={handleDeleteDeck}

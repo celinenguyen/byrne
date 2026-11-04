@@ -448,6 +448,24 @@ export async function deleteDeck(filename: string) {
   }
 }
 
+/**
+ * Publish or unpublish the current deck. Published decks are visible to
+ * signed-out visitors; drafts are owner-only (see src/pages/api/deck.ts).
+ * Saved right away rather than debounced, since it changes who can see it.
+ */
+export async function setDeckStatus(status: 'draft' | 'published') {
+  deck.update((d) => {
+    if (!d) return d;
+    const meta = { ...d.meta, status };
+    if (status === 'published') meta.publishedAt = new Date().toISOString();
+    return { ...d, meta };
+  });
+  if (saveTimeout) clearTimeout(saveTimeout);
+  await saveDeck();
+  const file = get(currentDeckFile);
+  deckList.update((list) => list.map((item) => (item.filename === file ? { ...item, status } : item)));
+}
+
 export function updateTheme(updates: Partial<DeckTheme>) {
   deck.update((d) => {
     if (!d) return d;
