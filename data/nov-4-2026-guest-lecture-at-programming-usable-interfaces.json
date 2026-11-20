@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "id": "iuucA2gL3s",
+    "title": "Nov 4, 2026: Guest lecture at Programming Usable Interfaces",
+    "author": "",
+    "updatedAt": "2026-11-04T12:27:17.981Z",
+    "theme": {
+      "headingFont": "reforma-1969",
+      "captionFont": "reforma-1969",
+      "backgroundColor": "soy-milk"
+    }
+  },
+  "slides": [
+    {
+      "id": "jkxA1_iWXG7ZS20sGWqHD",
+      "order": 0,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [
+          "Desi"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "JZyIWrMS-MTGDw8S7SYNn",
+      "order": 1,
+      "layout": "Image",
+      "content": {
+        "images": [
+          "https://www.index-space.org/_next/image?url=https%3A%2F%2Findex-sanity.b-cdn.net%2Fimages%2Fyb96fmyv%2Fproduction%2F37ff6d514cf07cc9fb3c6e5a007241e5cbf308dd-2500x1786.jpg&w=1920&q=80"
+        ],
+        "text": [
+          "what do I want to offer [Index Space](https://www.index-space.org/) as an artist resident?"
+        ],
+        "url": ""
+      }
+    },
+    {
+      "id": "TwajPKRd5xuXmo90As6HN",
+      "order": 2,
+      "layout": "Title",
+      "content": {
+        "images": [],
+        "text": [],
+        "url": ""
+      }
+    }
+  ]
+}
